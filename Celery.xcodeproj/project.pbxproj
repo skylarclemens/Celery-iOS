@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E02CEF72A992A4500B4A9B8 /* Model.swift */; };
+		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -14,6 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E02CEF72A992A4500B4A9B8 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,6 +36,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7E02CEF62A99282100B4A9B8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7E02CEF72A992A4500B4A9B8 /* Model.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		7EB7CFD22A5F75B3000B04FE = {
 			isa = PBXGroup;
 			children = (
@@ -51,8 +63,10 @@
 		7EB7CFDD2A5F75B3000B04FE /* Celery */ = {
 			isa = PBXGroup;
 			children = (
+				7E02CEF62A99282100B4A9B8 /* Model */,
 				7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */,
 				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
+				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
 				7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */,
 				7EB7CFE42A5F75B4000B04FE /* Preview Content */,
 			);
@@ -137,8 +151,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
+				7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
