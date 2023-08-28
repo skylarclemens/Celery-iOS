@@ -18,6 +18,9 @@ final class AuthenticationViewModel: ObservableObject {
     private var signInWithAppleService: SignInAppleService { SignInAppleService.shared }
     private var authStateHandler: AuthStateDidChangeListenerHandle?
     
+    init() {
+        registerAuthStateHandler()
+    }
     
     func restorePrevSignIn() {
         Task { [weak self] in
@@ -61,6 +64,14 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func signOut() throws {
+        do {
+            try Auth.auth().signOut()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
     func getUser() -> User? {
         guard case .signedIn(let user) = authState else {
             return nil
@@ -80,7 +91,6 @@ final class AuthenticationViewModel: ObservableObject {
                     self.authState = .signedOut
                     self.displayName = ""
                 }
-                
             }
         }
     }

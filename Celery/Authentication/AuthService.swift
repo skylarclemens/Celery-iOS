@@ -10,6 +10,7 @@ import AuthenticationServices
 import FirebaseAuth
 import CryptoKit
 
+@MainActor
 final class SignInAppleService {
     public static let shared = SignInAppleService()
     private var currentNonce: String?
@@ -70,14 +71,6 @@ final class SignInAppleService {
         } catch {
             print("Error authenticating: \(error.localizedDescription)")
             return .signedOut
-        }
-    }
-    
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
-        } catch {
-            print(error.localizedDescription)
         }
     }
 }

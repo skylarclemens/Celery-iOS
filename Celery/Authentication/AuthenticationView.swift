@@ -13,11 +13,11 @@ struct AuthenticationView: View {
     var body: some View {
         VStack {
             SignInWithAppleButton(.signIn) { request in
-                authViewModel.handleSignInWithAppleRequest (request)
+                authViewModel.handleSignInWithAppleRequest(request)
             } onCompletion: { result in
                 authViewModel.signInWithApple(result)
             }
-            .frame(height: 45)
+            .frame(height: 50)
             .padding()
             Spacer()
         }

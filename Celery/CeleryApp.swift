@@ -27,9 +27,6 @@ struct CeleryApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(authViewModel)
-                .onAppear {
-                    authViewModel.restorePrevSignIn()
-                }
         }
     }
 }
