@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var amount = 11.38
+    @State var showUserSettings = false
     
     init() {
-      // Large Navigation Title
-      UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-      // Inline Navigation Title
+        // Inline Navigation Title
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
     
@@ -58,6 +58,20 @@ struct HomeView: View {
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showUserSettings = true
+                    } label: {
+                        Image(systemName: "person.crop.circle")
+                            .foregroundColor(.white)
+                            .accessibilityLabel("Open user settings")
+                    }
+                }
+            }
+            .sheet(isPresented: $showUserSettings){
+                UserSettingsView()
+            }
         }
     }
 }
@@ -65,5 +79,6 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+            .environmentObject(AuthenticationViewModel())
     }
 }
