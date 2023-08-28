@@ -9,13 +9,18 @@ import Foundation
 import FirebaseAuth
 import AuthenticationServices
 
+enum AuthState: Equatable {
+    case signedIn(User)
+    case signedOut
+}
+
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
     @Published var authState: AuthState = .signedOut
     @Published var displayName: String = ""
     @Published var currentUser: User?
     
-    private var signInWithAppleService: SignInAppleService { SignInAppleService.shared }
+    private let signInWithAppleHelper = SignInAppleHelper()
     private var authStateHandler: AuthStateDidChangeListenerHandle?
     
     init() {
@@ -25,7 +30,7 @@ final class AuthenticationViewModel: ObservableObject {
     func restorePrevSignIn() {
         Task { [weak self] in
             if self?.authState == .signedOut {
-                let state = await self?.signInWithAppleService.restorePrevSignIn()
+                let state = await self?.signInWithAppleHelper.restorePrevSignIn()
                 if case .signedIn(let user) = state {
                     self?.currentUser = user
                 }
@@ -35,12 +40,12 @@ final class AuthenticationViewModel: ObservableObject {
     }
     
     func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
-        return signInWithAppleService.handleSignInWithAppleRequest(request)
+        return signInWithAppleHelper.handleSignInWithAppleRequest(request)
     }
     
     func signInWithApple(_ result: Result<ASAuthorization, Error>) {
         Task { [weak self] in
-            let state = await self?.signInWithAppleService.signInWithApple(result)
+            let state = await self?.signInWithAppleHelper.signInWithApple(result)
             if case .signedIn(let user) = state {
                 self?.currentUser = user
             }

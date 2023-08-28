@@ -10,9 +10,10 @@ import AuthenticationServices
 import FirebaseAuth
 import CryptoKit
 
+// MARK: Sign in with Apple Authentication
+
 @MainActor
-final class SignInAppleService {
-    public static let shared = SignInAppleService()
+final class SignInAppleHelper {
     private var currentNonce: String?
     
     func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
@@ -75,7 +76,7 @@ final class SignInAppleService {
     }
 }
 
-extension SignInAppleService {
+extension SignInAppleHelper {
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -107,9 +108,4 @@ extension SignInAppleService {
         
         return hashString
     }
-}
-
-enum AuthState: Equatable {
-    case signedIn(User)
-    case signedOut
 }
