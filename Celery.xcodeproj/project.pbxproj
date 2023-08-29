@@ -44,6 +44,8 @@
 		7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270AD2A9E55C7006067CD /* UserManager.swift */; };
 		7E6270B12A9E788F006067CD /* Debt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B02A9E788F006067CD /* Debt.swift */; };
 		7E6270B32A9E807D006067CD /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B22A9E807D006067CD /* ExpenseManager.swift */; };
+		7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B42A9E8883006067CD /* CreateExpenseView.swift */; };
+		7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B62A9E8DE6006067CD /* TransactionsView.swift */; };
 		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
@@ -64,6 +66,8 @@
 		7E6270AF2A9E57BB006067CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7E6270B02A9E788F006067CD /* Debt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debt.swift; sourceTree = "<group>"; };
 		7E6270B22A9E807D006067CD /* ExpenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
+		7E6270B42A9E8883006067CD /* CreateExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpenseView.swift; sourceTree = "<group>"; };
+		7E6270B62A9E8DE6006067CD /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
 				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
 				7E6270A42A9D529E006067CD /* UserProfileView.swift */,
+				7E6270B42A9E8883006067CD /* CreateExpenseView.swift */,
+				7E6270B62A9E8DE6006067CD /* TransactionsView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -294,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
+				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7E02CF392A99422600B4A9B8 /* AuthenticationViewModel.swift in Sources */,
@@ -305,6 +312,7 @@
 				7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */,
 				7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */,
 				7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */,
+				7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

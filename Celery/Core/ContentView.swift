@@ -18,6 +18,10 @@ struct ContentView: View {
                         .tabItem {
                             Label("Home", systemImage: "house")
                         }
+                    CreateExpenseView()
+                        .tabItem {
+                            Label("Add", systemImage: "plus")
+                        }
                 }
             case .signedOut:
                 AuthenticationView()

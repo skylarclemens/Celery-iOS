@@ -53,7 +53,7 @@ struct HomeView: View {
                     .cornerRadius(16)
                 }
                 .frame(maxHeight: 140)
-                Spacer()
+                TransactionsView()
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)

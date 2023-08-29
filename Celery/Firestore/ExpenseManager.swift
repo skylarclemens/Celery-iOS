@@ -48,8 +48,8 @@ final class ExpenseManager {
         try await expenseDocument(expenseId).getDocument(as: Expense.self, decoder: decoder)
     }
     
-    func getUsersExpenses(user: UserInfo) async throws -> [Expense] {
-        try await collection.whereField("payer_id", isEqualTo: user.id).getDocuments(as: Expense.self)
+    func getUsersExpenses(userId: String) async throws -> [Expense] {
+        try await collection.whereField("payer_id", isEqualTo: userId).getDocuments(as: Expense.self)
     }
 }
 
