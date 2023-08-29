@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var amount = 11.38
-    @State var showUserSettings = false
     
     init() {
         // Inline Navigation Title
@@ -44,7 +43,7 @@ struct HomeView: View {
                             .kerning(0.96)
                             .foregroundStyle(
                                 .white.gradient
-                                    .shadow(.inner(color: .black.opacity(0.1), radius: 3, x: 0, y: -2))
+                                    .shadow(.inner(color: .black.opacity(0.1), radius: 0, x: 0, y: -2))
                                     .shadow(.drop(color: .black.opacity(0.25), radius: 0, x: 0, y: 2))
                             )
                     }
@@ -60,17 +59,14 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        showUserSettings = true
+                    NavigationLink {
+                        UserProfileView()
                     } label: {
                         Image(systemName: "person.crop.circle")
                             .foregroundColor(.white)
                             .accessibilityLabel("Open user settings")
                     }
                 }
-            }
-            .sheet(isPresented: $showUserSettings){
-                UserSettingsView()
             }
         }
     }

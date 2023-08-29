@@ -39,7 +39,11 @@
 		7E02CF372A993C1200B4A9B8 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E02CF362A993C1200B4A9B8 /* AuthHelper.swift */; };
 		7E02CF392A99422600B4A9B8 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E02CF382A99422600B4A9B8 /* AuthenticationViewModel.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
-		7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserSettingsView.swift */; };
+		7E6270A52A9D529E006067CD /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserProfileView.swift */; };
+		7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */; };
+		7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270AD2A9E55C7006067CD /* UserManager.swift */; };
+		7E6270B12A9E788F006067CD /* Debt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B02A9E788F006067CD /* Debt.swift */; };
+		7E6270B32A9E807D006067CD /* ExpenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B22A9E807D006067CD /* ExpenseManager.swift */; };
 		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
@@ -54,7 +58,12 @@
 		7E02CF382A99422600B4A9B8 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		7E6270A02A9D26AC006067CD /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
-		7E6270A42A9D529E006067CD /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
+		7E6270A42A9D529E006067CD /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreManager.swift; sourceTree = "<group>"; };
+		7E6270AD2A9E55C7006067CD /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		7E6270AF2A9E57BB006067CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7E6270B02A9E788F006067CD /* Debt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debt.swift; sourceTree = "<group>"; };
+		7E6270B22A9E807D006067CD /* ExpenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseManager.swift; sourceTree = "<group>"; };
 		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
@@ -105,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				7E02CEF72A992A4500B4A9B8 /* Model.swift */,
+				7E6270B02A9E788F006067CD /* Debt.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -117,6 +127,26 @@
 				7E6270A02A9D26AC006067CD /* AuthenticationView.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		7E6270AB2A9E5419006067CD /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
+				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
+				7E6270A42A9D529E006067CD /* UserProfileView.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		7E6270AC2A9E55BE006067CD /* Firestore */ = {
+			isa = PBXGroup;
+			children = (
+				7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */,
+				7E6270AD2A9E55C7006067CD /* UserManager.swift */,
+				7E6270B22A9E807D006067CD /* ExpenseManager.swift */,
+			);
+			path = Firestore;
 			sourceTree = "<group>";
 		};
 		7EB7CFD22A5F75B3000B04FE = {
@@ -138,11 +168,11 @@
 		7EB7CFDD2A5F75B3000B04FE /* Celery */ = {
 			isa = PBXGroup;
 			children = (
+				7E6270AF2A9E57BB006067CD /* Info.plist */,
 				7E6270A32A9D438C006067CD /* Celery.entitlements */,
 				7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */,
-				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
-				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
-				7E6270A42A9D529E006067CD /* UserSettingsView.swift */,
+				7E6270AB2A9E5419006067CD /* Core */,
+				7E6270AC2A9E55BE006067CD /* Firestore */,
 				7E6270A22A9D3AFA006067CD /* Authentication */,
 				7E02CEF62A99282100B4A9B8 /* Model */,
 				7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */,
@@ -263,13 +293,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7E02CF392A99422600B4A9B8 /* AuthenticationViewModel.swift in Sources */,
+				7E6270B32A9E807D006067CD /* ExpenseManager.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
-				7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */,
+				7E6270A52A9D529E006067CD /* UserProfileView.swift in Sources */,
 				7E02CF372A993C1200B4A9B8 /* AuthHelper.swift in Sources */,
 				7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */,
+				7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */,
+				7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */,
 				7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,9 +437,9 @@
 				DEVELOPMENT_TEAM = 2798XB6UZN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Celery/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -433,9 +467,9 @@
 				DEVELOPMENT_TEAM = 2798XB6UZN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Celery/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

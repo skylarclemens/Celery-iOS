@@ -54,7 +54,8 @@ final class SignInAppleHelper {
                 let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                           idToken: idTokenString,
                                                           rawNonce: nonce)
-                return await signInOnFirebase(with: credential)
+                
+                return await signInOnFirebase(with: credential, appleIDCredential: appleIDCredential)
             } else {
                 return .signedOut
             }
@@ -64,14 +65,30 @@ final class SignInAppleHelper {
         }
     }
     
-    func signInOnFirebase(with credential: AuthCredential) async -> AuthState {
+    func signInOnFirebase(with credential: AuthCredential, appleIDCredential: ASAuthorizationAppleIDCredential) async -> AuthState {
         do {
             let authDataResult = try await Auth.auth().signIn(with: credential)
             let user = authDataResult.user
+            await updateDisplayName(for: user, with: appleIDCredential)
             return .signedIn(user)
         } catch {
             print("Error authenticating: \(error.localizedDescription)")
             return .signedOut
+        }
+    }
+    
+    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential) async {
+        if let currentDisplayName = Auth.auth().currentUser?.displayName,
+           !currentDisplayName.isEmpty {
+            
+        } else {
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = appleIDCredential.displayName()
+            do {
+                try await changeRequest.commitChanges()
+            } catch {
+                print("Unable to update current user's display name: \(error.localizedDescription)")
+            }
         }
     }
 }

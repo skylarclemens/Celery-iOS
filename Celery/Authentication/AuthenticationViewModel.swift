@@ -48,24 +48,10 @@ final class AuthenticationViewModel: ObservableObject {
             let state = await self?.signInWithAppleHelper.signInWithApple(result)
             if case .signedIn(let user) = state {
                 self?.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                try? await UserManager.shared.createNewUser(user: currentUser)
             }
             self?.authState = state ?? .signedOut
-        }
-    }
-    
-    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential) async {
-        if let currentDisplayName = Auth.auth().currentUser?.displayName,
-           !currentDisplayName.isEmpty {
-            
-        } else {
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = appleIDCredential.displayName()
-            do {
-                try await changeRequest.commitChanges()
-                self.displayName = Auth.auth().currentUser?.displayName ?? ""
-            } catch {
-                print("Unable to update current user's display name: \(error.localizedDescription)")
-            }
         }
     }
     
@@ -77,7 +63,7 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    func getUser() -> User? {
+    func getUser() throws -> User? {
         guard case .signedIn(let user) = authState else {
             return nil
         }
