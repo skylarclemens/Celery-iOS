@@ -10,8 +10,13 @@ import FirebaseAuth
 import AuthenticationServices
 
 enum AuthState: Equatable {
+    case authenticating
     case signedIn(User)
     case signedOut
+}
+
+enum AuthType {
+    case login, signUp
 }
 
 @MainActor
@@ -21,7 +26,16 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var currentUser: User?
     
     private let signInWithAppleHelper = SignInAppleHelper()
+    private let signInWithEmailHelper = SignInEmailPasswordHelper()
     private var authStateHandler: AuthStateDidChangeListenerHandle?
+    
+    @Published var email = ""
+    @Published var password = ""
+    @Published var confirmPassword = ""
+    @Published var isValid = false
+    @Published var errorMessage = ""
+    
+    @Published var currentAuthType: AuthType = .login
     
     init() {
         registerAuthStateHandler()
@@ -54,6 +68,41 @@ final class AuthenticationViewModel: ObservableObject {
             self?.authState = state ?? .signedOut
         }
     }
+    
+    func signInWithEmailPassword() async {
+        self.authState = .authenticating
+        do {
+            let state = try await self.signInWithEmailHelper.signInWithEmailPassword(email: self.email, password: self.password)
+            if case .signedIn(let user) = state {
+                self.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                try? await UserManager.shared.createNewUser(user: currentUser)
+            }
+            self.authState = state
+        } catch {
+            print(error)
+            self.errorMessage = error.localizedDescription
+            self.authState = .signedOut
+        }
+    }
+    
+    func signUpWithEmailPassword() async {
+        self.authState = .authenticating
+        do {
+            let state = try await self.signInWithEmailHelper.signUpWithEmailPassword(email: self.email, password: self.password)
+            if case .signedIn(let user) = state {
+                self.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                try? await UserManager.shared.createNewUser(user: currentUser)
+            }
+            self.authState = state
+        } catch {
+            print(error)
+            self.errorMessage = error.localizedDescription
+            self.authState = .signedOut
+        }
+    }
+
     
     func signOut() throws {
         do {

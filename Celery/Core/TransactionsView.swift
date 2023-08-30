@@ -23,7 +23,8 @@ struct TransactionsView: View {
     var body: some View {
         List {
             Section {
-                if let fetchedExpenses = viewModel.userExpenses {
+                if let fetchedExpenses = viewModel.userExpenses,
+                   !fetchedExpenses.isEmpty {
                     ForEach(fetchedExpenses) { expense in
                         HStack {
                             VStack(alignment: .leading) {
@@ -38,15 +39,19 @@ struct TransactionsView: View {
                                 Text("+")
                                 Text(expense.amount ?? 0, format: .currency(code: "USD"))
                             }
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
                             .foregroundStyle(Color(red: 0.42, green: 0.61, blue: 0.36))
                         }
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 4)
                     }
+                } else {
+                    Text("No expenses")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
             } header: {
                 Text("Transactions")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundStyle(.primary)
                     .textCase(nil)
                     .padding(.bottom, 8)

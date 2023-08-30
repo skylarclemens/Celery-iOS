@@ -126,3 +126,28 @@ extension SignInAppleHelper {
         return hashString
     }
 }
+
+@MainActor
+final class SignInEmailPasswordHelper {
+    func signInWithEmailPassword(email: String, password: String) async throws -> AuthState {
+        do {
+            let authDataResult = try await Auth.auth().signIn(withEmail: email, password: password)
+            let user = authDataResult.user
+            return .signedIn(user)
+        } catch {
+            print(error)
+            return .signedOut
+        }
+    }
+    
+    func signUpWithEmailPassword(email: String, password: String) async throws -> AuthState {
+        do {
+            let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
+            let user = authDataResult.user
+            return .signedIn(user)
+        } catch {
+            print(error)
+            return .signedOut
+        }
+    }
+}
