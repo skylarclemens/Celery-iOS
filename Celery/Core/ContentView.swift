@@ -23,6 +23,10 @@ struct ContentView: View {
                         .tabItem {
                             Label("Add", systemImage: "plus")
                         }
+                    FriendsView()
+                        .tabItem {
+                            Label("Friends", systemImage: "person.2")
+                        }
                 }
             case .signedOut, .authenticating:
                 VStack {

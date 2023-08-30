@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var amount = 11.38
+    @State var amount = 0.00
     
     init() {
         // Inline Navigation Title

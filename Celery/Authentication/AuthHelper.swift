@@ -69,7 +69,7 @@ final class SignInAppleHelper {
         do {
             let authDataResult = try await Auth.auth().signIn(with: credential)
             let user = authDataResult.user
-            await updateDisplayName(for: user, with: appleIDCredential)
+            await updateAppleDisplayName(for: user, with: appleIDCredential)
             return .signedIn(user)
         } catch {
             print("Error authenticating: \(error.localizedDescription)")
@@ -77,7 +77,7 @@ final class SignInAppleHelper {
         }
     }
     
-    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential) async {
+    func updateAppleDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential) async {
         if let currentDisplayName = Auth.auth().currentUser?.displayName,
            !currentDisplayName.isEmpty {
             
@@ -140,10 +140,14 @@ final class SignInEmailPasswordHelper {
         }
     }
     
-    func signUpWithEmailPassword(email: String, password: String) async throws -> AuthState {
+    func signUpWithEmailPassword(email: String, password: String, displayName: String) async throws -> AuthState {
         do {
             let authDataResult = try await Auth.auth().createUser(withEmail: email, password: password)
             let user = authDataResult.user
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = displayName
+            try await changeRequest.commitChanges()
+            
             return .signedIn(user)
         } catch {
             print(error)

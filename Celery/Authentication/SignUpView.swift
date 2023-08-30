@@ -9,9 +9,10 @@ import SwiftUI
 import AuthenticationServices
 
 private enum FocusableField: Hashable {
-  case email
-  case password
-  case confirmPassword
+    case email
+    case password
+    case displayName
+    case confirmPassword
 }
 
 struct SignUpView: View {
@@ -26,8 +27,8 @@ struct SignUpView: View {
                     Image(systemName: "at")
                     TextField("Email", text: $authViewModel.email)
                         .focused($focusedInput, equals: .email)
+                        .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
                         .submitLabel(.next)
                         .onSubmit {
                             self.focusedInput = .password
@@ -43,6 +44,7 @@ struct SignUpView: View {
                     Image(systemName: "lock.fill")
                     SecureField("Password", text: $authViewModel.password)
                         .focused($focusedInput, equals: .password)
+                        .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         .submitLabel(.next)
                         .onSubmit {
@@ -59,7 +61,23 @@ struct SignUpView: View {
                     Image(systemName: "lock.fill")
                     SecureField("Confirm password", text: $authViewModel.confirmPassword)
                         .focused($focusedInput, equals: .confirmPassword)
+                        .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
+                        .submitLabel(.next)
+                        .onSubmit {
+                            self.focusedInput = .displayName
+                        }
+                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(.secondary.opacity(0.25), lineWidth: 1)
+                        .background(RoundedRectangle(cornerRadius: 16).fill(.background))
+                )
+                HStack(spacing: 16) {
+                    Image(systemName: "person")
+                    TextField("Display name", text: $authViewModel.displayName)
+                        .focused($focusedInput, equals: .displayName)
                         .submitLabel(.done)
                         .onSubmit {
                             self.focusedInput = nil
@@ -70,7 +88,7 @@ struct SignUpView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .strokeBorder(.secondary.opacity(0.25), lineWidth: 1)
-                        .background(RoundedRectangle(cornerRadius: 16).fill(.background))
+                        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.background))
                 )
             }
             .padding()
@@ -95,7 +113,7 @@ struct SignUpView: View {
                 }
             }.buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .disabled(authViewModel.email.isEmpty || authViewModel.password.isEmpty || authViewModel.confirmPassword.isEmpty)
+                .disabled(authViewModel.email.isEmpty || authViewModel.password.isEmpty || authViewModel.confirmPassword.isEmpty || authViewModel.displayName.isEmpty || authViewModel.password != authViewModel.confirmPassword)
                 .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
                 .padding(.top, 8)
             HStack(alignment: .center, spacing: 16) {

@@ -22,8 +22,8 @@ enum AuthType {
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
     @Published var authState: AuthState = .signedOut
-    @Published var displayName: String = ""
     @Published var currentUser: User?
+    @Published var displayName: String = ""
     
     private let signInWithAppleHelper = SignInAppleHelper()
     private let signInWithEmailHelper = SignInEmailPasswordHelper()
@@ -89,7 +89,7 @@ final class AuthenticationViewModel: ObservableObject {
     func signUpWithEmailPassword() async {
         self.authState = .authenticating
         do {
-            let state = try await self.signInWithEmailHelper.signUpWithEmailPassword(email: self.email, password: self.password)
+            let state = try await self.signInWithEmailHelper.signUpWithEmailPassword(email: self.email, password: self.password, displayName: self.displayName)
             if case .signedIn(let user) = state {
                 self.currentUser = user
                 let currentUser = UserInfo(auth: user)
@@ -107,6 +107,7 @@ final class AuthenticationViewModel: ObservableObject {
     func signOut() throws {
         do {
             try Auth.auth().signOut()
+            self.authState = .signedOut
         } catch {
             print(error.localizedDescription)
         }
@@ -119,6 +120,16 @@ final class AuthenticationViewModel: ObservableObject {
         return user
     }
     
+    func resetValues() {
+        self.currentUser = nil
+        self.displayName = ""
+        self.email = ""
+        self.password = ""
+        self.confirmPassword = ""
+        self.isValid = false
+        self.errorMessage = ""
+    }
+    
     func registerAuthStateHandler() {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
@@ -127,9 +138,8 @@ final class AuthenticationViewModel: ObservableObject {
                     self.authState = .signedIn(user)
                     self.displayName = user.displayName ?? user.email ?? ""
                 } else {
-                    self.currentUser = nil
+                    self.resetValues()
                     self.authState = .signedOut
-                    self.displayName = ""
                 }
             }
         }

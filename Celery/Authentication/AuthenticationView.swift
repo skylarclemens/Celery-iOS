@@ -13,10 +13,8 @@ struct AuthenticationView: View {
         switch authViewModel.currentAuthType {
         case .login:
             LoginView()
-                .presentationDetents([.fraction(0.55)])
         case .signUp:
             SignUpView()
-                .presentationDetents([.fraction(0.65)])
         }
     }
 }

@@ -36,7 +36,6 @@ struct UserProfileView: View {
                 
                 Button("Sign out") {
                     try? authViewModel.signOut()
-                    dismiss()
                 }
             }
             .navigationTitle("Profile")
