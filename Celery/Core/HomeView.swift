@@ -35,6 +35,7 @@ struct HomeView: View {
                             )
                             .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
                         )
+                        .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
                         .shadow(radius: 24)
                         .ignoresSafeArea()
                     VStack {
@@ -60,7 +61,7 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
-                        UserProfileView()
+                        UserSettingsView()
                     } label: {
                         Image(systemName: "person.crop.circle")
                             .foregroundColor(.white)

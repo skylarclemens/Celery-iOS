@@ -15,6 +15,7 @@ class QueryUsersViewModel: ObservableObject {
     private var disposeBag = Set<AnyCancellable>()
     
     @Published var query: String = ""
+    @Published var debouncedQuery: String = ""
     @Published var queriedUsers: [UserInfo] = []
     
     init() {
@@ -27,14 +28,7 @@ class QueryUsersViewModel: ObservableObject {
             .debounce(for: 1, scheduler: RunLoop.main)
         // Called when user stops typing for 1 second
             .sink {
-                let queryText = $0
-                Task {
-                    if !queryText.isEmpty {
-                        self.queriedUsers = try await UserManager.shared.getUsers(matching: queryText)
-                    } else {
-                        self.queriedUsers = []
-                    }
-                }
+                self.debouncedQuery = $0
             }
             .store(in: &disposeBag)
     }
@@ -74,6 +68,15 @@ struct QueryUsersView: View {
                         .fill(Color(UIColor.tertiarySystemFill))
                 )
                 .animation(.spring(duration: 0.25), value: focusedInput)
+                .onReceive(viewModel.$debouncedQuery) { newValue in
+                    Task {
+                        if !newValue.isEmpty {
+                            viewModel.queriedUsers = try await UserManager.shared.getUsers(matching: newValue)
+                        } else {
+                            viewModel.queriedUsers = []
+                        }
+                    }
+                }
                 .onChange(of: focusedInput) { input in
                     withAnimation(.spring(duration: 0.25)) {
                         if input == .searchBar {
@@ -112,7 +115,12 @@ struct QueryUsersView: View {
             if !viewModel.queriedUsers.isEmpty {
                 List {
                     ForEach(viewModel.queriedUsers) { user in
-                        Text(user.displayName ?? "Unknown user")
+                        NavigationLink {
+                            ProfileView(user: user)
+                        } label: {
+                            Text(user.displayName ?? "Unknown user")
+                        }
+                        
                     }
                 }
                 .listStyle(.inset)
@@ -120,7 +128,6 @@ struct QueryUsersView: View {
                 Color.clear
             }
         }
-        .padding(.top)
         .onAppear {
             focusedInput = .searchBar
         }
@@ -128,5 +135,15 @@ struct QueryUsersView: View {
 }
 
 #Preview {
-    QueryUsersView()
+    NavigationStack {
+        QueryUsersView()
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Back") {
+                        
+                    }
+                }
+            }
+    }
+    
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserProfileView: View {
+struct UserSettingsView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var user: UserInfo? = nil
@@ -48,6 +48,6 @@ struct UserProfileView: View {
 }
 
 #Preview {
-    UserProfileView()
+    UserSettingsView()
         .environmentObject(AuthenticationViewModel())
 }

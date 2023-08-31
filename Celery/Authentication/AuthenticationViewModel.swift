@@ -21,8 +21,9 @@ enum AuthType {
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
-    @Published var authState: AuthState = .signedOut
+    @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
+    @Published var currentUserInfo: UserInfo?
     @Published var displayName: String = ""
     
     private let signInWithAppleHelper = SignInAppleHelper()
@@ -47,6 +48,7 @@ final class AuthenticationViewModel: ObservableObject {
                 let state = await self?.signInWithAppleHelper.restorePrevSignIn()
                 if case .signedIn(let user) = state {
                     self?.currentUser = user
+                    self?.currentUserInfo = UserInfo(auth: user)
                 }
                 self?.authState = state ?? .signedOut
             }
@@ -63,6 +65,7 @@ final class AuthenticationViewModel: ObservableObject {
             if case .signedIn(let user) = state {
                 self?.currentUser = user
                 let currentUser = UserInfo(auth: user)
+                self?.currentUserInfo = currentUser
                 try? await UserManager.shared.createNewUser(user: currentUser)
             }
             self?.authState = state ?? .signedOut
@@ -76,6 +79,7 @@ final class AuthenticationViewModel: ObservableObject {
             if case .signedIn(let user) = state {
                 self.currentUser = user
                 let currentUser = UserInfo(auth: user)
+                self.currentUserInfo = currentUser
                 try? await UserManager.shared.createNewUser(user: currentUser)
             }
             self.authState = state
@@ -93,6 +97,7 @@ final class AuthenticationViewModel: ObservableObject {
             if case .signedIn(let user) = state {
                 self.currentUser = user
                 let currentUser = UserInfo(auth: user)
+                self.currentUserInfo = currentUser
                 try? await UserManager.shared.createNewUser(user: currentUser)
             }
             self.authState = state
@@ -135,6 +140,7 @@ final class AuthenticationViewModel: ObservableObject {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 if let user = user {
                     self.currentUser = user
+                    self.currentUserInfo = UserInfo(auth: user)
                     self.authState = .signedIn(user)
                     self.displayName = user.displayName ?? user.email ?? ""
                 } else {

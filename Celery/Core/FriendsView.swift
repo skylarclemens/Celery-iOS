@@ -8,28 +8,44 @@
 import SwiftUI
 
 struct FriendsView: View {
-    @State var showFriendSearch: Bool = false
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State var friendsList: [Friendship]?
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    Text("Friends list")
+                    if let friendsList {
+                        ForEach(friendsList, id: \.self) { friendship in
+                            Text(friendship.userIdsString)
+                        }
+                    } else {
+                        Text("No friends")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .navigationTitle("Friends")
             .toolbar {
-                Button("Add friend", systemImage: "person.crop.circle.badge.plus") {
-                    showFriendSearch = true
+                NavigationLink {
+                    QueryUsersView()
+                        .navigationTitle("Find people")
+                        .navigationBarTitleDisplayMode(.inline)
+                } label: {
+                    Label("Search", systemImage: "magnifyingglass")
                 }
-                .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
             }
         }
-        .sheet(isPresented: $showFriendSearch) {
-            QueryUsersView()
+        .onAppear {
+            Task {
+                if let currentUser = authViewModel.currentUserInfo {
+                    friendsList = try await FriendManager.shared.getUsersFriendships(userId: currentUser.id)
+                }
+            }
         }
     }
 }
 
 #Preview {
     FriendsView()
+        .environmentObject(AuthenticationViewModel())
 }
