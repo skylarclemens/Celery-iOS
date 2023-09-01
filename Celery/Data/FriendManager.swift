@@ -17,6 +17,9 @@ struct Friendship: Codable, Hashable {
     var userIdsString: String {
         "\(user1)+\(user2)"
     }
+    var userIdsArray: [String] {
+        [user1, user2]
+    }
 }
 
 final class FriendManager {
@@ -44,7 +47,6 @@ final class FriendManager {
     }
     
     func getFriendship(userIds: [String]) async throws -> Friendship? {
-        //try await friendDocument(userIds).getDocument(as: Friendship.self, decoder: decoder)
         try await collection.whereFilter(Filter.andFilter([
             Filter.whereField("user1", in: userIds),
             Filter.whereField("user2", in: userIds)
@@ -56,6 +58,17 @@ final class FriendManager {
             Filter.whereField("user1", isEqualTo: userId),
             Filter.whereField("user2", isEqualTo: userId)
         ])).getDocuments(as: Friendship.self, decoder: decoder)
+    }
+    
+    func getFriendsIds(currentUser: UserInfo, friends: [Friendship]) -> [String] {
+        var friendIds: [String] = []
+        for friend in friends {
+            let friendId = friend.userIdsArray.first(where: { $0 != currentUser.id })
+            if let friendId {
+                friendIds.append(friendId)
+            }
+        }
+        return friendIds
     }
     
     func updateFriendship(friendship: Friendship) async throws {

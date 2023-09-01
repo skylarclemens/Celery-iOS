@@ -12,28 +12,6 @@ import FirebaseStorage
 class FirebaseStorageManager: ObservableObject {
     let storage = Storage.storage()
     
-    /*func uploadImage(image: UIImage, user: UserInfo) async throws -> URL? {
-        let storageRef = storage.reference()
-        
-        let metadata = StorageMetadata()
-        metadata.contentType = "image/jpg"
-        
-        let data = image.compressJpeg(size: 200, quality: 0.2)
-        var imageUrl: URL? = nil
-        
-        
-        let uploadTask = imageRef.putData(data, metadata: metadata) { metadata, error in
-            imageRef.downloadURL { url, error in
-                guard let url = url else { return }
-                imageUrl = url
-                print("download url \(url)")
-            }
-        }
-        
-        print("return url \(imageUrl)")
-        return imageUrl
-    }*/
-    
     func getImage(from storageURL: URL, completion: @escaping (UIImage?) -> Void) throws {
         let storageRef = try storage.reference(for: storageURL)
         storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in

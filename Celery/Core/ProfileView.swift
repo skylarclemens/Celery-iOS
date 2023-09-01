@@ -22,7 +22,6 @@ struct ProfileView: View {
     
     init(user: UserInfo) {
         self.user = user
-        UINavigationBar.appearance().isTranslucent = true
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
     
@@ -45,9 +44,12 @@ struct ProfileView: View {
                         .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
                     )
                     .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
-                    .shadow(radius: 24)
                     .ignoresSafeArea()
-                    .frame(maxHeight: 180)
+                    .frame(maxHeight: 140)
+                ZStack {
+                    UserPhotoView(size: 80, photoURL: user.photoURL ?? nil)
+                        .offset(y: -80)
+                        .zIndex(1)
                     VStack {
                         Text(user.displayName ?? "User unknown")
                             .font(.system(size: 36, weight: .semibold, design: .rounded))
@@ -76,7 +78,6 @@ struct ProfileView: View {
                                 Button {
                                     Task {
                                         if let currentUser = authViewModel.currentUserInfo {
-                                            print(currentUser)
                                             requestStatus = .requestSending
                                             try await handleAddFriend(user1: currentUser, user2: user)
                                         }
@@ -91,29 +92,38 @@ struct ProfileView: View {
                                             .font(.headline)
                                     }
                                 }.buttonStyle(.borderedProminent)
-                                .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
-                                .disabled(requestStatus == .requestSending)
+                                    .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
+                                    .disabled(requestStatus == .requestSending)
                             }
                             Spacer()
                         }
                     }
                     .padding()
+                    .padding(.top, 40)
                     .background(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
                             .fill(.background)
-                            .frame(maxHeight: 142)
                             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 4)
                             .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 0)
                     )
-                    .padding()
-            }
+                    .frame(maxHeight: 100)
+                }
+                .padding()
+                .offset(y: 60)
+            }.zIndex(2)
+            
             ScrollView {
+                VStack {
+                    Text("")
+                }
+                .padding(.top, 80)
                 Text("Balance")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .navigationTitle("Friend")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear {
             Task {
                 guard let currentUser = authViewModel.currentUserInfo else { return }

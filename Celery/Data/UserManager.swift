@@ -77,6 +77,18 @@ final class UserManager {
         try await userDocument(userId).getDocument(as: UserInfo.self, decoder: decoder)
     }
     
+    func getFriendsUserInfo(friendIds: [String], limit: Int, startAt: Int = 0) async throws -> [UserInfo]? {
+        guard friendIds.count > 0 else { return nil }
+        var friendsInfo: [UserInfo] = []
+        let setLimit = friendIds.count < limit ? friendIds.count : limit
+        for i in startAt..<setLimit {
+            let friendId = friendIds[i]
+            let friend = try await getUser(userId: friendId)
+            friendsInfo.append(friend)
+        }
+        return friendsInfo
+    }
+    
     func getUsers(matching keyword: String) async throws -> [UserInfo] {
         let users = try await collection
             .whereField("display_name_lowercase", isGreaterThanOrEqualTo: keyword.lowercased())

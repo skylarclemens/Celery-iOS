@@ -9,14 +9,18 @@ import SwiftUI
 
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var friendsList: [Friendship]?
+    @State var friendsList: [UserInfo]?
     var body: some View {
         NavigationStack {
             VStack {
                 List {
                     if let friendsList {
-                        ForEach(friendsList, id: \.self) { friendship in
-                            Text(friendship.userIdsString)
+                        ForEach(friendsList) { friend in
+                            NavigationLink {
+                                ProfileView(user: friend)
+                            } label: {
+                                Text(friend.displayName ?? "Unknown user")
+                            }
                         }
                     } else {
                         Text("No friends")
@@ -38,7 +42,11 @@ struct FriendsView: View {
         .onAppear {
             Task {
                 if let currentUser = authViewModel.currentUserInfo {
-                    friendsList = try await FriendManager.shared.getUsersFriendships(userId: currentUser.id)
+                    let friendsList = try await FriendManager.shared.getUsersFriendships(userId: currentUser.id)
+                    if let friendsList {
+                        let friendIds = FriendManager.shared.getFriendsIds(currentUser: currentUser, friends: friendsList)
+                        self.friendsList = try await UserManager.shared.getFriendsUserInfo(friendIds: friendIds, limit: 10)
+                    }
                 }
             }
         }

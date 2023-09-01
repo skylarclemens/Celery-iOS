@@ -9,22 +9,20 @@ import SwiftUI
 import PhotosUI
 import FirebaseStorage
 
-@MainActor
+enum ImageState: Equatable {
+    case empty
+    case loading
+    case success
+    case failure
+}
 
 struct AvatarUploadView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    private var storageManager = FirebaseStorageManager()
+    private let storageManager = FirebaseStorageManager()
     
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var avatarImage: UIImage? = nil
     @State private var imageState: ImageState = .empty
-    
-    private enum ImageState: Equatable {
-        case empty
-        case loading
-        case success
-        case failure
-    }
     
     var body: some View {
         ZStack {
@@ -37,8 +35,7 @@ struct AvatarUploadView: View {
                     .aspectRatio(contentMode: .fill)
                     .clipShape(Circle())
             } else if imageState == .loading {
-                ProgressView()
-                     .progressViewStyle(.circular)
+                
             }
             Circle()
                 .strokeBorder(.white, lineWidth: 3)
@@ -63,7 +60,7 @@ struct AvatarUploadView: View {
                        let uiImage = UIImage(data: data),
                        let currentUser = authViewModel.currentUserInfo {
                         self.avatarImage = uiImage
-                        uiImage.upload(to: "avatars/\(currentUser.id)") { url in
+                        uiImage.upload(to: "avatars/\(currentUser.id).jpg") { url in
                             authViewModel.updateCurrentUsersProfilePhoto(imageUrl: url)
                             self.imageState = .success
                         }
