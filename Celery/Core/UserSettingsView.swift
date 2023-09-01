@@ -21,6 +21,9 @@ struct UserSettingsView: View {
     
     var body: some View {
         NavigationStack {
+            VStack {
+                AvatarUploadView()
+            }
             List {
                 if let user = user {
                     Section {
@@ -29,8 +32,8 @@ struct UserSettingsView: View {
                         if let email = user.email {
                             Text("Email: \(email)")
                         }
-                        VStack {
-                            AvatarUploadView()
+                        if let photoURL = authViewModel.currentUser?.photoURL {
+                            Text("Photo URL: \(photoURL.absoluteString)")
                         }
                     } header: {
                         Text("User information")
@@ -41,7 +44,7 @@ struct UserSettingsView: View {
                 }
             }
             .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 try? await self.getCurrentUser()
             }

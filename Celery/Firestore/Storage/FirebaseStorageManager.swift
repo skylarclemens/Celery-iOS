@@ -12,36 +12,38 @@ import FirebaseStorage
 class FirebaseStorageManager: ObservableObject {
     let storage = Storage.storage()
     
-    func uploadImage(image: UIImage, user: UserInfo) async throws -> URL? {
+    /*func uploadImage(image: UIImage, user: UserInfo) async throws -> URL? {
         let storageRef = storage.reference()
-        let imageRef = storageRef.child("avatars/\(user.id).jpg")
+        
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
         
         let data = image.compressJpeg(size: 200, quality: 0.2)
         var imageUrl: URL? = nil
         
-        if let data {
-            _ = try await imageRef.putDataAsync(data)
+        
+        let uploadTask = imageRef.putData(data, metadata: metadata) { metadata, error in
             imageRef.downloadURL { url, error in
-                guard let url else { return }
+                guard let url = url else { return }
                 imageUrl = url
+                print("download url \(url)")
             }
         }
+        
+        print("return url \(imageUrl)")
         return imageUrl
-    }
+    }*/
     
-    func getImage(from storageURL: URL) throws -> UIImage? {
+    func getImage(from storageURL: URL, completion: @escaping (UIImage?) -> Void) throws {
         let storageRef = try storage.reference(for: storageURL)
-        var returnImage: UIImage? = nil
         storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
             if let data = data {
-                returnImage = UIImage(data: data)
+                completion(UIImage(data: data))
             } else if let error = error {
+                completion(nil)
                 print(error)
             }
         }
-        return returnImage
     }
 }
 
@@ -62,5 +64,35 @@ extension UIImage {
         let compressedImageData = imageToCompress.jpegData(compressionQuality: quality)
         
         return compressedImageData
+    }
+    
+    func upload(to folder: String, completion: @escaping (URL?) -> Void) {
+        let storageRef = Storage.storage().reference()
+        let imageRef = storageRef.child(folder)
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpg"
+
+        let data = self.compressJpeg(size: 200, quality: 0.2)
+        guard let data else {
+            completion(nil)
+            return
+        }
+        
+        imageRef.putData(data, metadata: metadata) { metadata, error in
+            if let error = error {
+                print(error)
+                completion(nil)
+                return
+            }
+
+            imageRef.downloadURL { url, error in
+                if let error = error {
+                    print(error)
+                    completion(nil)
+                } else {
+                    completion(url)
+                }
+            }
+        }
     }
 }

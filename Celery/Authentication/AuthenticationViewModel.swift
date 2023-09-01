@@ -151,11 +151,14 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    func updateCurrentUsersProfilePhoto(imageUrl: URL?) async throws {
-        guard let currentUser, let imageUrl else { return }
-        let changeRequest = currentUser.createProfileChangeRequest()
-        changeRequest.photoURL = imageUrl
-        try await changeRequest.commitChanges()
+    func updateCurrentUsersProfilePhoto(imageUrl: URL?) {
+        let changeRequest = currentUser?.createProfileChangeRequest()
+        changeRequest?.photoURL = imageUrl
+        changeRequest?.commitChanges { error in
+            if let error {
+                print(error)
+            }
+        }
     }
 }
 

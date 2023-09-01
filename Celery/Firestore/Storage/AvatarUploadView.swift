@@ -14,9 +14,9 @@ import FirebaseStorage
 struct AvatarUploadView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     private var storageManager = FirebaseStorageManager()
+    
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var avatarImage: UIImage? = nil
-    @State private var avatarUrl: URL? = nil
     @State private var imageState: ImageState = .empty
     
     private enum ImageState: Equatable {
@@ -58,23 +58,33 @@ struct AvatarUploadView: View {
             Task {
                 self.imageState = .loading
                 do {
-                    let data = try? await selectedImage?.loadTransferable(type: Data.self)
+                    let data = try await selectedImage?.loadTransferable(type: Data.self)
                     if let data,
                        let uiImage = UIImage(data: data),
                        let currentUser = authViewModel.currentUserInfo {
                         self.avatarImage = uiImage
-                        self.avatarUrl = try await storageManager.uploadImage(image: uiImage, user: currentUser)
-                        try await authViewModel.updateCurrentUsersProfilePhoto(imageUrl: avatarUrl)
-                        self.imageState = .success
+                        uiImage.upload(to: "avatars/\(currentUser.id)") { url in
+                            authViewModel.updateCurrentUsersProfilePhoto(imageUrl: url)
+                            self.imageState = .success
+                        }
+                    } else {
+                        self.imageState = .failure
                     }
                 } catch {
                     self.imageState = .failure
                 }
             }
         }.onAppear {
-            if let photoURL = authViewModel.currentUser?.photoURL,
-               let userAvatar = try? storageManager.getImage(from: photoURL) {
-                self.avatarImage = userAvatar
+            if let photoURL = authViewModel.currentUser?.photoURL {
+                self.imageState = .loading
+                try? storageManager.getImage(from: photoURL) { image in
+                    if let image {
+                        self.avatarImage = image
+                        self.imageState = .success
+                    } else {
+                        self.imageState = .empty
+                    }
+                }
             }
         }
     }
