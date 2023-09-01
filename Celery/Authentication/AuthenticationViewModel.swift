@@ -150,6 +150,13 @@ final class AuthenticationViewModel: ObservableObject {
             }
         }
     }
+    
+    func updateCurrentUsersProfilePhoto(imageUrl: URL?) async throws {
+        guard let currentUser, let imageUrl else { return }
+        let changeRequest = currentUser.createProfileChangeRequest()
+        changeRequest.photoURL = imageUrl
+        try await changeRequest.commitChanges()
+    }
 }
 
 extension ASAuthorizationAppleIDCredential {

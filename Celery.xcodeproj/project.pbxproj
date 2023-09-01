@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E02CEF72A992A4500B4A9B8 /* Model.swift */; };
 		7E02CEFC2A992FCE00B4A9B8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */; };
 		7E02CEFF2A9936C200B4A9B8 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7E02CEFE2A9936C200B4A9B8 /* FirebaseAnalytics */; };
 		7E02CF012A9936C200B4A9B8 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 7E02CF002A9936C200B4A9B8 /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -40,6 +39,9 @@
 		7E02CF392A99422600B4A9B8 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E02CF382A99422600B4A9B8 /* AuthenticationViewModel.swift */; };
 		7E4B2DEC2AA0FEAC00967E3E /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */; };
 		7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */; };
+		7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */; };
+		7E4B2DF22AA1417400967E3E /* FirebaseStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF12AA1417400967E3E /* FirebaseStorageManager.swift */; };
+		7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
 		7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserSettingsView.swift */; };
 		7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */; };
@@ -63,12 +65,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7E02CEF72A992A4500B4A9B8 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7E02CF362A993C1200B4A9B8 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		7E02CF382A99422600B4A9B8 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhotoView.swift; sourceTree = "<group>"; };
+		7E4B2DF12AA1417400967E3E /* FirebaseStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStorageManager.swift; sourceTree = "<group>"; };
+		7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadView.swift; sourceTree = "<group>"; };
 		7E6270A02A9D26AC006067CD /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
 		7E6270A42A9D529E006067CD /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
@@ -132,13 +136,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7E02CEF62A99282100B4A9B8 /* Model */ = {
+		7E02CEF62A99282100B4A9B8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				7E02CEF72A992A4500B4A9B8 /* Model.swift */,
+				7E6270AD2A9E55C7006067CD /* UserManager.swift */,
+				7E6270B22A9E807D006067CD /* ExpenseManager.swift */,
+				7E7A78CB2A9FDA9000A215FC /* FriendManager.swift */,
 				7E6270B02A9E788F006067CD /* Debt.swift */,
 			);
-			path = Model;
+			path = Data;
+			sourceTree = "<group>";
+		};
+		7E4B2DF32AA142F200967E3E /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				7E4B2DF12AA1417400967E3E /* FirebaseStorageManager.swift */,
+				7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		7E6270A22A9D3AFA006067CD /* Authentication */ = {
@@ -173,10 +188,8 @@
 		7E6270AC2A9E55BE006067CD /* Firestore */ = {
 			isa = PBXGroup;
 			children = (
+				7E4B2DF32AA142F200967E3E /* Storage */,
 				7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */,
-				7E6270AD2A9E55C7006067CD /* UserManager.swift */,
-				7E6270B22A9E807D006067CD /* ExpenseManager.swift */,
-				7E7A78CB2A9FDA9000A215FC /* FriendManager.swift */,
 			);
 			path = Firestore;
 			sourceTree = "<group>";
@@ -185,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */,
+				7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -214,7 +228,7 @@
 				7E6270AB2A9E5419006067CD /* Core */,
 				7E6270AC2A9E55BE006067CD /* Firestore */,
 				7E6270A22A9D3AFA006067CD /* Authentication */,
-				7E02CEF62A99282100B4A9B8 /* Model */,
+				7E02CEF62A99282100B4A9B8 /* Data */,
 				7E7A78C62A9FB9F600A215FC /* Components */,
 				7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */,
 				7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */,
@@ -336,11 +350,13 @@
 			files = (
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
+				7E4B2DF22AA1417400967E3E /* FirebaseStorageManager.swift in Sources */,
 				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */,
 				7E02CF392A99422600B4A9B8 /* AuthenticationViewModel.swift in Sources */,
+				7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */,
 				7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */,
 				7E6270B32A9E807D006067CD /* ExpenseManager.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
@@ -352,8 +368,8 @@
 				7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */,
 				7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */,
 				7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */,
+				7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */,
 				7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */,
-				7E02CEF82A992A4500B4A9B8 /* Model.swift in Sources */,
 				7E7A78CC2A9FDA9000A215FC /* FriendManager.swift in Sources */,
 				7E6270BF2A9EB1C7006067CD /* LoginView.swift in Sources */,
 				7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */,

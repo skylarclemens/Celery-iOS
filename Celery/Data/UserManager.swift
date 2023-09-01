@@ -16,7 +16,7 @@ struct UserInfo: Identifiable, Codable {
     let displayName: String?
     let displayNameLowercase: String?
     let username: String?
-    let photoUrl: URL?
+    let photoURL: URL?
     let createdAt: Date?
     
     init(auth authUser: User) {
@@ -25,7 +25,7 @@ struct UserInfo: Identifiable, Codable {
         self.displayName = authUser.displayName
         self.displayNameLowercase = authUser.displayName?.lowercased()
         self.username = nil
-        self.photoUrl = authUser.photoURL
+        self.photoURL = authUser.photoURL
         self.createdAt = Date()
     }
     
@@ -35,7 +35,7 @@ struct UserInfo: Identifiable, Codable {
         displayName: String? = nil,
         displayNameLowercase: String? = nil,
         username: String? = nil,
-        photoUrl: URL? = nil,
+        photoURL: URL? = nil,
         createdAt: Date
     ) {
         self.id = id
@@ -43,7 +43,7 @@ struct UserInfo: Identifiable, Codable {
         self.displayName = displayName
         self.displayNameLowercase = displayName?.lowercased()
         self.username = username
-        self.photoUrl = photoUrl
+        self.photoURL = photoURL
         self.createdAt = createdAt
     }
     

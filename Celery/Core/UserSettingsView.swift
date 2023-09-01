@@ -29,11 +29,13 @@ struct UserSettingsView: View {
                         if let email = user.email {
                             Text("Email: \(email)")
                         }
+                        VStack {
+                            AvatarUploadView()
+                        }
                     } header: {
                         Text("User information")
                     }
                 }
-                
                 Button("Sign out") {
                     try? authViewModel.signOut()
                 }
