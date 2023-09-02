@@ -22,7 +22,14 @@ struct ProfileView: View {
     
     init(user: UserInfo) {
         self.user = user
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        let attrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .shadow: NSShadow()
+        ]
+        
+        UINavigationBar.appearance().tintColor = UIColor.white
+        UINavigationBar.appearance().titleTextAttributes = attrs
     }
     
     var body: some View {
@@ -123,13 +130,13 @@ struct ProfileView: View {
         }
         .navigationTitle("Friend")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear {
             Task {
                 guard let currentUser = authViewModel.currentUserInfo else { return }
                 friendship = try await FriendManager.shared.getFriendship(userIds: [currentUser.id, user.id])
             }
         }
+        //.tint(.white)
     }
     
     func handleAddFriend(user1: UserInfo, user2: UserInfo) async throws {

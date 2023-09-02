@@ -20,7 +20,7 @@ struct HomeView: View {
         NavigationStack {
             VStack {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    Rectangle()
                         .fill(
                             LinearGradient(
                                 stops: [
