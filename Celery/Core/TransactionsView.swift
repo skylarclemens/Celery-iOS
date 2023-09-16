@@ -26,12 +26,27 @@ struct TransactionsView: View {
                 if let fetchedExpenses = viewModel.userExpenses,
                    !fetchedExpenses.isEmpty {
                     ForEach(fetchedExpenses) { expense in
-                        HStack {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color(hex: Category.categoryList[expense.category ?? "Category"]?.colorUInt ?? 0x6A9B5D)
+                                        .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
+                                        .shadow(.drop(color: .black.opacity(0.2), radius: 2, y: 1))
+                                    )
+                                    
+                                Image(expense.category ?? "Category")
+                                    .resizable()
+                                    .frame(maxWidth: 20, maxHeight: 20)
+                                Circle()
+                                    //.inset(by: -1)
+                                    .stroke(.background, lineWidth: 2)
+                            }
+                            .frame(width: 40, height: 40)
                             VStack(alignment: .leading) {
                                 Text(expense.name ?? "Unknown name")
-                                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                Text(expense.date ?? Date(), style: .date)
-                                    .font(.system(size: 14, weight: .medium, design: .rounded))
+                                    .font(.system(size: 16, weight: .semibold))
+                                Text(expense.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
+                                    .font(.system(size: 13, weight: .medium, design: .rounded))
                                     .foregroundStyle(.secondary)
                             }
                             Spacer()
@@ -40,7 +55,13 @@ struct TransactionsView: View {
                                 Text(expense.amount ?? 0, format: .currency(code: "USD"))
                             }
                             .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundStyle(Color(red: 0.42, green: 0.61, blue: 0.36))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [Color(red: 0.42, green: 0.61, blue: 0.36), Color(red: 0.37, green: 0.55, blue: 0.33)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
                         }
                         .padding(.vertical, 4)
                     }

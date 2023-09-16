@@ -85,12 +85,6 @@ struct CreateExpenseView: View {
                         }.frame(maxWidth: .infinity)
                             .zIndex(1)
                     }
-                    /*Section {
-                     Picker("Paid by", selection: $paidBy) {
-                     Text("None")
-                     Text("Me").tag(authViewModel.currentUser?.uid ?? "")
-                     }
-                     }*/
                     Spacer()
                     Section {
                         HStack {
@@ -161,7 +155,7 @@ struct CreateExpenseView: View {
     
     func createNewExpense() async throws {
         do {
-            let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: paidBy, groupID: nil, category: nil, date: date, createdAt: Date())
+            let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: category, date: date, createdAt: Date())
             try await ExpenseManager.shared.createNewExpense(expense: newExpense)
         } catch {
             print(error)
@@ -176,45 +170,44 @@ struct CategoryPicker: View {
     }
     
     var body: some View {
-        //ZStack {
-            VStack {
-                ZStack {
+        VStack {
+            ZStack {
+                Circle()
+                    .fill(Color(hex: Category.categoryList[category]?.colorUInt ?? 0x6A9B5D))
+                Image(category)
+                    .resizable()
+                    .frame(maxWidth: 60, maxHeight: 60)
+                Circle()
+                    .stroke(.background.opacity(0.35), lineWidth: 12)
+            }
+            .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
+            .frame(width: 120, height: 120)
+            .clipShape(Circle())
+            .background {
+                ForEach(0..<6) { i in
+                    let orbitalSize = 60 * Double(i) * 1.25 + 30 // Adjust this formula as needed
                     Circle()
-                        .fill(Color(hex: Category.categoryList[category]?.colorUInt ?? 0x6A9B5D))
-                    Image(category)
-                        .resizable()
-                        .frame(maxWidth: 60, maxHeight: 60)
-                    Circle()
-                        .stroke(.white, lineWidth: 12)
+                        .strokeBorder(.tertiary.opacity(0.33), lineWidth: 1, antialiased: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                        .frame(width: orbitalSize, height: orbitalSize)
                 }
-                .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
-                .frame(width: 120, height: 120)
-                .clipShape(Circle())
-                .background {
-                    ForEach(0..<6) { i in
-                        let orbitalSize = 60 * Double(i) * 1.25 + 30 // Adjust this formula as needed
-                        Circle()
-                            .strokeBorder(.tertiary.opacity(0.33), lineWidth: 1, antialiased: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                            .frame(width: orbitalSize, height: orbitalSize)
-                    }
+            }
+            .frame(maxWidth: .infinity)
+            Picker("Category", selection: $category) {
+                ForEach(categoryNames, id: \.self) { name in
+                    Text(name).tag(name)
                 }
-                .frame(maxWidth: .infinity)
-                Picker("Category", selection: $category) {
-                    ForEach(categoryNames, id: \.self) { name in
-                        Text(name).tag(name)
-                    }
-                }.labelsHidden()
-                    .background(.ultraThickMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(.tertiary.opacity(0.75), lineWidth: 1, antialiased: true)
-                    )
-                    .clipShape(
-                        RoundedRectangle(cornerRadius: 16)
-                    )
-                    .offset(y: -25)
-                    .tint(.secondary)
-            }.frame(maxWidth: .infinity, maxHeight: 240)
+            }.labelsHidden()
+                .background(.ultraThickMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(.tertiary.opacity(0.75), lineWidth: 1, antialiased: true)
+                )
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 16)
+                )
+                .offset(y: -25)
+                .tint(.secondary)
+        }.frame(maxWidth: .infinity, maxHeight: 240)
     }
 }
 
