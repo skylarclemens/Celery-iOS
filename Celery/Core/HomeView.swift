@@ -11,7 +11,6 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var amount = 0.00
-    @State var isLightMode: Bool = true
     
     init() {
         // Inline Navigation Title
@@ -29,24 +28,25 @@ struct HomeView: View {
                     if colorScheme != .dark {
                         Rectangle()
                             .fill(
-                                    LinearGradient(
-                                        stops: [
-                                            Gradient.Stop(color: Color(red: 0.32, green: 0.46, blue: 0.3), location: 0.00),
-                                            Gradient.Stop(color: Color(red: 0.35, green: 0.51, blue: 0.32), location: 0.32),
-                                            Gradient.Stop(color: Color(red: 0.41, green: 0.61, blue: 0.36), location: 0.62),
-                                            Gradient.Stop(color: Color(red: 0.51, green: 0.68, blue: 0.42), location: 0.78),
-                                            Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.52), location: 1.00),
-                                        ],
-                                        startPoint: UnitPoint(x: 0.5, y: 0),
-                                        endPoint: UnitPoint(x: 0.5, y: 1)
-                                    )
-                                    .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.32, green: 0.46, blue: 0.3), location: 0.21),
+                                        Gradient.Stop(color: Color(red: 0.3, green: 0.46, blue: 0.28), location: 0.38),
+                                        Gradient.Stop(color: Color(red: 0.29, green: 0.46, blue: 0.25), location: 0.45),
+                                        Gradient.Stop(color: Color(red: 0.34, green: 0.52, blue: 0.31), location: 0.57),
+                                        Gradient.Stop(color: Color(red: 0.41, green: 0.61, blue: 0.36), location: 0.70),
+                                        Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.52), location: 0.88)
+                                    ],
+                                    startPoint: UnitPoint(x: 0.5, y: -0.5),
+                                    endPoint: UnitPoint(x: 0.5, y: 1.29)
+                                )
+                                .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
                             )
                             .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
                             .ignoresSafeArea()
                     } else {
                         Rectangle()
-                            .fill(Color(uiColor: UIColor.tertiarySystemGroupedBackground))
+                            .fill(Color(uiColor: UIColor.secondarySystemBackground))
                             .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
                             .ignoresSafeArea()
                     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E01B2462AB653C7005D5F7B /* ExpenseView.swift */; };
 		7E02CEFC2A992FCE00B4A9B8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */; };
 		7E02CEFF2A9936C200B4A9B8 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 7E02CEFE2A9936C200B4A9B8 /* FirebaseAnalytics */; };
 		7E02CF012A9936C200B4A9B8 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 7E02CF002A9936C200B4A9B8 /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -42,6 +43,7 @@
 		7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */; };
 		7E4B2DF22AA1417400967E3E /* FirebaseStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF12AA1417400967E3E /* FirebaseStorageManager.swift */; };
 		7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */; };
+		7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
 		7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserSettingsView.swift */; };
 		7E6270A82A9D6A9D006067CD /* FirestoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A72A9D6A9D006067CD /* FirestoreManager.swift */; };
@@ -66,6 +68,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E01B2462AB653C7005D5F7B /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
 		7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7E02CF362A993C1200B4A9B8 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		7E02CF382A99422600B4A9B8 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
@@ -74,6 +77,7 @@
 		7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhotoView.swift; sourceTree = "<group>"; };
 		7E4B2DF12AA1417400967E3E /* FirebaseStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStorageManager.swift; sourceTree = "<group>"; };
 		7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadView.swift; sourceTree = "<group>"; };
+		7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarColorModifier.swift; sourceTree = "<group>"; };
 		7E6270A02A9D26AC006067CD /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
 		7E6270A42A9D529E006067CD /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
@@ -159,6 +163,14 @@
 			path = Storage;
 			sourceTree = "<group>";
 		};
+		7E4E7DB02AB643BD004D6617 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
 		7E6270A22A9D3AFA006067CD /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +196,7 @@
 				7E6270C02A9EC282006067CD /* FriendsView.swift */,
 				7E6270C42A9ED78B006067CD /* QueryUsersView.swift */,
 				7E7A78C42A9FB73800A215FC /* ProfileView.swift */,
+				7E01B2462AB653C7005D5F7B /* ExpenseView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -233,6 +246,7 @@
 				7E6270A22A9D3AFA006067CD /* Authentication */,
 				7E02CEF62A99282100B4A9B8 /* Data */,
 				7E7A78C62A9FB9F600A215FC /* Components */,
+				7E4E7DB02AB643BD004D6617 /* ViewModifiers */,
 				7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */,
 				7E02CEFB2A992FCE00B4A9B8 /* GoogleService-Info.plist */,
 				7EB7CFE42A5F75B4000B04FE /* Preview Content */,
@@ -352,6 +366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
+				7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
 				7E4B2DF22AA1417400967E3E /* FirebaseStorageManager.swift in Sources */,
 				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
@@ -376,6 +391,7 @@
 				7E6270AE2A9E55C7006067CD /* UserManager.swift in Sources */,
 				7E7A78CC2A9FDA9000A215FC /* FriendManager.swift in Sources */,
 				7E6270BF2A9EB1C7006067CD /* LoginView.swift in Sources */,
+				7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */,
 				7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

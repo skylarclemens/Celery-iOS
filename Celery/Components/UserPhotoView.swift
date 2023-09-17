@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct UserPhotoView: View {
+    @Environment(\.colorScheme) var colorScheme
     private let storageManager = FirebaseStorageManager()
     
     @State var imageState: ImageState = .empty
@@ -36,7 +37,7 @@ struct UserPhotoView: View {
                     .clipShape(Circle())
             }
             Circle()
-                .stroke(.white, lineWidth: 12)
+                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 10)
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: size, height: size)

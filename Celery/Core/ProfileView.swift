@@ -12,6 +12,7 @@ enum FriendRequestStatus {
 }
 
 struct ProfileView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var requestStatus: FriendRequestStatus? = nil
     @State var friendship: Friendship? = nil
@@ -35,24 +36,26 @@ struct ProfileView: View {
     var body: some View {
         VStack {
             ZStack {
-                Rectangle()
-                    .fill(
-                        LinearGradient(
-                            stops: [
-                                Gradient.Stop(color: Color(red: 0.32, green: 0.46, blue: 0.3), location: 0.00),
-                                Gradient.Stop(color: Color(red: 0.35, green: 0.51, blue: 0.32), location: 0.32),
-                                Gradient.Stop(color: Color(red: 0.41, green: 0.61, blue: 0.36), location: 0.62),
-                                Gradient.Stop(color: Color(red: 0.51, green: 0.68, blue: 0.42), location: 0.78),
-                                Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.52), location: 1.00),
-                            ],
-                            startPoint: UnitPoint(x: 0.5, y: 0),
-                            endPoint: UnitPoint(x: 0.5, y: 1)
+                if colorScheme != .dark {
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(red: 0.42, green: 0.61, blue: 0.36), Color(red: 0.36, green: 0.53, blue: 0.32)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .shadow(.inner(color: .black.opacity(0.25), radius: 0, x: 0, y: -3))
                         )
-                        .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
-                    )
-                    .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
-                    .ignoresSafeArea()
-                    .frame(maxHeight: 140)
+                        .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
+                        .ignoresSafeArea()
+                        .frame(maxHeight: 140)
+                } else {
+                    Rectangle()
+                        .fill(Color.clear)
+                        .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
+                        .ignoresSafeArea()
+                        .frame(maxHeight: 140)
+                }
                 ZStack {
                     UserPhotoView(size: 80, photoURL: user.photoURL ?? nil)
                         .offset(y: -80)
@@ -109,7 +112,7 @@ struct ProfileView: View {
                     .padding(.top, 40)
                     .background(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(.background)
+                            .fill(Color(uiColor: UIColor.secondarySystemGroupedBackground))
                             .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 4)
                             .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 0)
                     )
@@ -124,7 +127,6 @@ struct ProfileView: View {
                     Text("")
                 }
                 .padding(.top, 80)
-                Text("Balance")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
