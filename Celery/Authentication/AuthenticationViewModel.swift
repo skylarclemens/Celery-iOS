@@ -10,18 +10,33 @@ import FirebaseAuth
 import AuthenticationServices
 
 enum AuthState: Equatable {
+    case authenticating
     case signedIn(User)
     case signedOut
 }
 
+enum AuthType {
+    case login, signUp
+}
+
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
-    @Published var authState: AuthState = .signedOut
-    @Published var displayName: String = ""
+    @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
+    @Published var currentUserInfo: UserInfo?
+    @Published var displayName: String = ""
     
     private let signInWithAppleHelper = SignInAppleHelper()
+    private let signInWithEmailHelper = SignInEmailPasswordHelper()
     private var authStateHandler: AuthStateDidChangeListenerHandle?
+    
+    @Published var email = ""
+    @Published var password = ""
+    @Published var confirmPassword = ""
+    @Published var isValid = false
+    @Published var errorMessage = ""
+    
+    @Published var currentAuthType: AuthType = .login
     
     init() {
         registerAuthStateHandler()
@@ -33,6 +48,7 @@ final class AuthenticationViewModel: ObservableObject {
                 let state = await self?.signInWithAppleHelper.restorePrevSignIn()
                 if case .signedIn(let user) = state {
                     self?.currentUser = user
+                    self?.currentUserInfo = UserInfo(auth: user)
                 }
                 self?.authState = state ?? .signedOut
             }
@@ -48,40 +64,75 @@ final class AuthenticationViewModel: ObservableObject {
             let state = await self?.signInWithAppleHelper.signInWithApple(result)
             if case .signedIn(let user) = state {
                 self?.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                self?.currentUserInfo = currentUser
+                try? await UserManager.shared.createNewUser(user: currentUser)
             }
             self?.authState = state ?? .signedOut
         }
     }
     
-    func updateDisplayName(for user: User, with appleIDCredential: ASAuthorizationAppleIDCredential) async {
-        if let currentDisplayName = Auth.auth().currentUser?.displayName,
-           !currentDisplayName.isEmpty {
-            
-        } else {
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = appleIDCredential.displayName()
-            do {
-                try await changeRequest.commitChanges()
-                self.displayName = Auth.auth().currentUser?.displayName ?? ""
-            } catch {
-                print("Unable to update current user's display name: \(error.localizedDescription)")
+    func signInWithEmailPassword() async {
+        self.authState = .authenticating
+        do {
+            let state = try await self.signInWithEmailHelper.signInWithEmailPassword(email: self.email, password: self.password)
+            if case .signedIn(let user) = state {
+                self.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                self.currentUserInfo = currentUser
+                try? await UserManager.shared.createNewUser(user: currentUser)
             }
+            self.authState = state
+        } catch {
+            print(error)
+            self.errorMessage = error.localizedDescription
+            self.authState = .signedOut
         }
     }
+    
+    func signUpWithEmailPassword() async {
+        self.authState = .authenticating
+        do {
+            let state = try await self.signInWithEmailHelper.signUpWithEmailPassword(email: self.email, password: self.password, displayName: self.displayName)
+            if case .signedIn(let user) = state {
+                self.currentUser = user
+                let currentUser = UserInfo(auth: user)
+                self.currentUserInfo = currentUser
+                try? await UserManager.shared.createNewUser(user: currentUser)
+            }
+            self.authState = state
+        } catch {
+            print(error)
+            self.errorMessage = error.localizedDescription
+            self.authState = .signedOut
+        }
+    }
+
     
     func signOut() throws {
         do {
             try Auth.auth().signOut()
+            self.authState = .signedOut
         } catch {
             print(error.localizedDescription)
         }
     }
     
-    func getUser() -> User? {
+    func getUser() throws -> User? {
         guard case .signedIn(let user) = authState else {
             return nil
         }
         return user
+    }
+    
+    func resetValues() {
+        self.currentUser = nil
+        self.displayName = ""
+        self.email = ""
+        self.password = ""
+        self.confirmPassword = ""
+        self.isValid = false
+        self.errorMessage = ""
     }
     
     func registerAuthStateHandler() {
@@ -89,13 +140,23 @@ final class AuthenticationViewModel: ObservableObject {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 if let user = user {
                     self.currentUser = user
+                    self.currentUserInfo = UserInfo(auth: user)
                     self.authState = .signedIn(user)
                     self.displayName = user.displayName ?? user.email ?? ""
                 } else {
-                    self.currentUser = nil
+                    self.resetValues()
                     self.authState = .signedOut
-                    self.displayName = ""
                 }
+            }
+        }
+    }
+    
+    func updateCurrentUsersProfilePhoto(imageUrl: URL?) {
+        let changeRequest = currentUser?.createProfileChangeRequest()
+        changeRequest?.photoURL = imageUrl
+        changeRequest?.commitChanges { error in
+            if let error {
+                print(error)
             }
         }
     }

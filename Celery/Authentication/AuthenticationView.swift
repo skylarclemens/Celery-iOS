@@ -6,20 +6,15 @@
 //
 
 import SwiftUI
-import AuthenticationServices
 
 struct AuthenticationView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     var body: some View {
-        VStack {
-            SignInWithAppleButton(.signIn) { request in
-                authViewModel.handleSignInWithAppleRequest(request)
-            } onCompletion: { result in
-                authViewModel.signInWithApple(result)
-            }
-            .frame(height: 50)
-            .padding()
-            Spacer()
+        switch authViewModel.currentAuthType {
+        case .login:
+            LoginView()
+        case .signUp:
+            SignUpView()
         }
     }
 }
