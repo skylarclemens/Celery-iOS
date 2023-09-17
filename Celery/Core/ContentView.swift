@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var openAuthView: Bool = false
     
@@ -30,21 +31,12 @@ struct ContentView: View {
                                     Image(systemName: "plus")
                                         .foregroundStyle(.white)
                                 }
-                                .padding(0)
-                                .frame(width: 52, height: 52, alignment: .center)
-                                .background(Color(red: 0.42, green: 0.61, blue: 0.36))
-                                .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(.white, lineWidth: 2)
-                                )
                             }.tag(1)
                         FriendsView()
                             .tabItem {
                                 Image(systemName: "person.2")
                             }.tag(2)
                     }
-                    .tint(.primary.opacity(0.66))
                     .onChange(of: selectedTab) { index in
                         if index == 1 {
                             self.openCreateExpense = true
@@ -63,11 +55,11 @@ struct ContentView: View {
                                 .shadow(radius: 10)
                         }
                     }.frame(width: 52, height: 52, alignment: .center)
-                    .background(Color(red: 0.42, green: 0.61, blue: 0.36))
+                    .background(Color.primaryAction)
                     .clipShape(Circle())
                     .overlay(
                         Circle()
-                            .stroke(.white, lineWidth: 2)
+                            .stroke(colorScheme != .dark ? .white : .layoutGreen, lineWidth: 2)
                     )
                     .padding(.bottom, 5)
                 }

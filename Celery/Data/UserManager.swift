@@ -47,7 +47,7 @@ struct UserInfo: Identifiable, Codable {
         self.createdAt = createdAt
     }
     
-    static var example = UserInfo(id: UUID().uuidString, email: "example@email.com", displayName: "Tracy", username: "moonshinetrace", createdAt: Date())
+    static var example = UserInfo(id: UUID().uuidString, email: "example@email.com", displayName: "Test", username: "usernametest", createdAt: Date())
 }
 
 final class UserManager {

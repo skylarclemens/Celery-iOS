@@ -29,6 +29,8 @@ struct FriendsView: View {
                 }
             }
             .navigationTitle("Friends")
+            .navigationBarTitleDisplayMode(.inline)
+            .statusBarColorScheme(.dark, showBackground: true, backgroundColor: Color.primaryAction)
             .toolbar {
                 NavigationLink {
                     QueryUsersView()

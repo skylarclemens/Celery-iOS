@@ -24,13 +24,35 @@ struct ProfileView: View {
     init(user: UserInfo) {
         self.user = user
         
-        let attrs: [NSAttributedString.Key: Any] = [
+        /*let attrs: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.white,
             .shadow: NSShadow()
         ]
         
         UINavigationBar.appearance().tintColor = UIColor.white
-        UINavigationBar.appearance().titleTextAttributes = attrs
+        
+        UINavigationBar.appearance().titleTextAttributes = attrs*/
+        
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        let proxy = UINavigationBar.appearance()
+        proxy.tintColor = .white
+        proxy.standardAppearance = appearance
+        proxy.scrollEdgeAppearance = appearance
+        
+        /*let coloredAppearance = UINavigationBarAppearance()
+        coloredAppearance.configureWithTransparentBackground()
+        coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        UINavigationBar.appearance().standardAppearance = coloredAppearance
+        UINavigationBar.appearance().compactAppearance = coloredAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
+        
+        UINavigationBar.appearance().tintColor = .white*/
     }
     
     var body: some View {
@@ -82,7 +104,7 @@ struct ProfileView: View {
                                     }
                                 }
                                 .buttonStyle(.borderedProminent)
-                                .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
+                                .tint(.primaryAction)
                                 .disabled((friendship.status == 0 && !isFriendUser1) || friendship.status == 1)
                             } else {
                                 Button {
@@ -100,10 +122,18 @@ struct ProfileView: View {
                                     } else {
                                         Text("Add friend")
                                             .font(.headline)
+                                            .foregroundStyle(.white)
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 12)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 16)
+                                                    .stroke(Color.layoutGreen, lineWidth: 1)
+                                            )
                                     }
-                                }.buttonStyle(.borderedProminent)
-                                    .tint(Color(red: 0.42, green: 0.61, blue: 0.36))
-                                    .disabled(requestStatus == .requestSending)
+                                }
+                                .background(Color.primaryAction)
+                                .cornerRadius(16)
+                                .disabled(requestStatus == .requestSending)
                             }
                             Spacer()
                         }
@@ -130,15 +160,12 @@ struct ProfileView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationTitle("Friend")
-        .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             Task {
                 guard let currentUser = authViewModel.currentUserInfo else { return }
                 friendship = try await FriendManager.shared.getFriendship(userIds: [currentUser.id, user.id])
             }
         }
-        //.tint(.white)
     }
     
     func handleAddFriend(user1: UserInfo, user2: UserInfo) async throws {
@@ -167,13 +194,6 @@ struct ProfileView: View {
 #Preview {
     NavigationStack {
         ProfileView(user: UserInfo.example)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Back") {
-                        
-                    }
-                }
-            }
             .environmentObject(AuthenticationViewModel())
     }
 }

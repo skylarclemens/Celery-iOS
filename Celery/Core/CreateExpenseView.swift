@@ -10,6 +10,7 @@ import SwiftUI
 struct CreateExpenseView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) var colorScheme
     
     @State private var name: String = ""
     @State private var amount: Double = 0.0
@@ -114,8 +115,10 @@ struct CreateExpenseView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
                         .padding(.top, 8)
-                    }.tint(Color(hex: 0x6A9B5D))
+                        .tint(.primaryAction)
+                    }
                 }
                 .padding()
             }

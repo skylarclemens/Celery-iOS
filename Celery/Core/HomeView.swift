@@ -63,7 +63,7 @@ struct HomeView: View {
                     .cornerRadius(16)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color(red: 0.57, green: 0.82, blue: 0.5).opacity(colorScheme != .dark ? 0 : 0.65), lineWidth: 1)
+                            .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.65), lineWidth: 1)
                     )
                 }
                 .frame(maxHeight: 140)
@@ -86,6 +86,7 @@ struct HomeView: View {
                 }
             }
         }
+        .tint(.white)
     }
 }
 
