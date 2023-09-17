@@ -56,14 +56,8 @@ struct TransactionsView: View {
                                     Text("+")
                                     Text(expense.amount ?? 0, format: .currency(code: "USD"))
                                 }
+                                .foregroundStyle(Color.layoutGreen)
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                .foregroundStyle(
-                                    LinearGradient(
-                                        colors: [Color(red: 0.42, green: 0.61, blue: 0.36), Color(red: 0.37, green: 0.55, blue: 0.33)],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
                             }
                         }
                         .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
