@@ -46,7 +46,19 @@ struct HomeView: View {
                             .ignoresSafeArea()
                     } else {
                         Rectangle()
-                            .fill(Color(uiColor: UIColor.secondarySystemBackground))
+                            .fill(
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.11, green: 0.11, blue: 0.12), location: 0.00),
+                                        Gradient.Stop(color: Color(red: 0.14, green: 0.15, blue: 0.14), location: 0.43),
+                                        Gradient.Stop(color: Color(red: 0.14, green: 0.21, blue: 0.13), location: 0.86),
+                                        Gradient.Stop(color: Color(red: 0.19, green: 0.28, blue: 0.17), location: 1.00),
+                                    ],
+                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                )
+                                .shadow(.inner(color: .white.opacity(0.1), radius: 0, x: 0, y: -2))
+                            )
                             .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
                             .ignoresSafeArea()
                     }
@@ -63,7 +75,7 @@ struct HomeView: View {
                     .cornerRadius(16)
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.65), lineWidth: 1)
+                            .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.3), lineWidth: 1)
                     )
                 }
                 .frame(maxHeight: 140)

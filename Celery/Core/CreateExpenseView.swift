@@ -87,6 +87,9 @@ struct CreateExpenseView: View {
                             .zIndex(1)
                     }
                     Spacer()
+                    NavigationLink("Add users") {
+                        SelectUsersView()
+                    }
                     Section {
                         HStack {
                             Image(systemName: "calendar")

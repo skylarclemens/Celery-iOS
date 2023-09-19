@@ -137,13 +137,6 @@ struct QueryUsersView: View {
 #Preview {
     NavigationStack {
         QueryUsersView()
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Back") {
-                        
-                    }
-                }
-            }
     }
     
 }

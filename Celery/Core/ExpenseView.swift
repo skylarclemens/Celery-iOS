@@ -62,7 +62,7 @@ struct ExpenseView: View {
                                 Text(expense.name ?? "Unknown name")
                                     .font(.system(size: 36, weight: .semibold, design: .rounded))
                                 Text(expense.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
-                                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
                                     .foregroundStyle(.secondary.opacity(0.75))
                             }
                             .padding(.top, 24)
@@ -92,7 +92,7 @@ struct ExpenseView: View {
                         )
                     }
                     .padding()
-                    .offset(y: 60)
+                    .offset(y: 30)
                 }.zIndex(2)
                 List {
                     Section {
@@ -102,6 +102,7 @@ struct ExpenseView: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.primary.opacity(0.9))
                             .textCase(nil)
+                            .padding(.top, 16)
                     }
                     Section {
                         Text("Split")
@@ -112,7 +113,6 @@ struct ExpenseView: View {
                             .textCase(nil)
                     }
                 }
-                .padding(.top, 44)
             }
         }
     }
@@ -121,5 +121,15 @@ struct ExpenseView: View {
 #Preview {
     NavigationStack{
         ExpenseView(expense: Expense(id: UUID().uuidString, name: "Test", description: nil, amount: 10.00, payerID: "Test-UUID", groupID: nil, category: "Entertainment", date: Date(), createdAt: Date()))
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        
+                    } label: {
+                        Text("Back")
+                    }
+                }
+            }
+            
     }
 }
