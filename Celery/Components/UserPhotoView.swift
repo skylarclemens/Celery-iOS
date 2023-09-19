@@ -9,13 +9,17 @@ import SwiftUI
 
 struct UserPhotoView: View {
     @Environment(\.colorScheme) var colorScheme
-    private let storageManager = FirebaseStorageManager()
+    //private let storageManager = FirebaseStorageManager()
     
     @State var imageState: ImageState = .empty
     @State var userPhoto: UIImage? = nil
     
     let size: CGFloat
+    
+    // Remove photoURL variable
     @State var photoURL: URL? = nil
+    
+    @State var imagePath: String? = nil
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -37,20 +41,22 @@ struct UserPhotoView: View {
                     .clipShape(Circle())
             }
             Circle()
-                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 10)
+                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 4)
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: size, height: size)
         .clipShape(Circle())
         .onAppear {
-            if let photoURL {
-                self.imageState = .loading
-                try? storageManager.getImage(from: photoURL) { image in
-                    if let image {
-                        self.userPhoto = image
-                        self.imageState = .success
-                    } else {
-                        self.imageState = .empty
+            Task {
+                if let imagePath {
+                    self.imageState = .loading
+                    try? await SupabaseManager.shared.getAvatarImage(imagePath: imagePath) { image in
+                        if let image {
+                            self.userPhoto = image
+                            self.imageState = .success
+                        } else {
+                            self.imageState = .empty
+                        }
                     }
                 }
             }
@@ -59,5 +65,9 @@ struct UserPhotoView: View {
 }
 
 #Preview {
-    UserPhotoView(size: 80)
+    ZStack {
+        Rectangle()
+            .fill(.gray)
+        UserPhotoView(size: 40, imagePath: "f2472553-7554-4dcd-8a61-a597af06cc43/1a9c7546-c521-42fa-837f-ac0c156ad553.jpg")
+    }
 }

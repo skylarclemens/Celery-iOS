@@ -6,9 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-import FirebaseFirestore
-import FirebaseFirestoreSwift
 import Combine
 
 class QueryUsersViewModel: ObservableObject {
@@ -16,7 +13,7 @@ class QueryUsersViewModel: ObservableObject {
     
     @Published var query: String = ""
     @Published var debouncedQuery: String = ""
-    @Published var queriedUsers: [UserInfo] = []
+    //@Published var queriedUsers: [UserInfo] = []
     
     init() {
         self.debounceTextChanges()
@@ -70,11 +67,11 @@ struct QueryUsersView: View {
                 .animation(.spring(duration: 0.25), value: focusedInput)
                 .onReceive(viewModel.$debouncedQuery) { newValue in
                     Task {
-                        if !newValue.isEmpty {
+                        /*if !newValue.isEmpty {
                             viewModel.queriedUsers = try await UserManager.shared.getUsers(matching: newValue)
                         } else {
                             viewModel.queriedUsers = []
-                        }
+                        }*/
                     }
                 }
                 .onChange(of: focusedInput) { input in
@@ -112,7 +109,7 @@ struct QueryUsersView: View {
                 }
             }
             .padding(.horizontal)
-            if !viewModel.queriedUsers.isEmpty {
+            /*if !viewModel.queriedUsers.isEmpty {
                 List {
                     ForEach(viewModel.queriedUsers) { user in
                         NavigationLink {
@@ -126,7 +123,7 @@ struct QueryUsersView: View {
                 .listStyle(.inset)
             } else {
                 Color.clear
-            }
+            }*/
         }
         .onAppear {
             focusedInput = .searchBar

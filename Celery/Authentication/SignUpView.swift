@@ -17,6 +17,7 @@ private enum FocusableField: Hashable {
 
 struct SignUpView: View {
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var supabaseManager: SupabaseManager
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @FocusState private var focusedInput: FocusableField?
     
@@ -128,14 +129,14 @@ struct SignUpView: View {
                     .frame(maxWidth: .infinity, maxHeight: 1)
             }
             .padding(.vertical, 8)
-            SignInWithAppleButton(.signUp) { request in
+            /*SignInWithAppleButton(.signUp) { request in
                 authViewModel.handleSignInWithAppleRequest(request)
             } onCompletion: { result in
                 authViewModel.signInWithApple(result)
             }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             .frame(height: 50)
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))*/
             HStack {
                 Text("Already have an account?")
                 Button {
@@ -153,7 +154,7 @@ struct SignUpView: View {
     
     private func signUpWithEmailPassword() {
         Task {
-            await authViewModel.signUpWithEmailPassword()
+            //await authViewModel.signUpWithEmailPassword()
         }
     }
 }

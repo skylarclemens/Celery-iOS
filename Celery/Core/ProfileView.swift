@@ -15,14 +15,14 @@ struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var requestStatus: FriendRequestStatus? = nil
-    @State var friendship: Friendship? = nil
-    private var user: UserInfo
+    //@State var friendship: Friendship? = nil
+    /*private var user: UserInfo
     var isFriendUser1: Bool {
         friendship?.user1 == user.id
-    }
+    }*/
     
-    init(user: UserInfo) {
-        self.user = user
+    init() {
+        //self.user = user
         
         /*let attrs: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.white,
@@ -78,7 +78,7 @@ struct ProfileView: View {
                         .ignoresSafeArea()
                         .frame(maxHeight: 140)
                 }
-                ZStack {
+                /*ZStack {
                     UserPhotoView(size: 80, photoURL: user.photoURL ?? nil)
                         .offset(y: -80)
                         .zIndex(1)
@@ -109,10 +109,10 @@ struct ProfileView: View {
                             } else {
                                 Button {
                                     Task {
-                                        if let currentUser = authViewModel.currentUserInfo {
+                                        /*if let currentUser = authViewModel.currentUserInfo {
                                             requestStatus = .requestSending
                                             try await handleAddFriend(user1: currentUser, user2: user)
-                                        }
+                                        }*/
                                     }
                                 } label: {
                                     if requestStatus == .requestSending {
@@ -149,7 +149,7 @@ struct ProfileView: View {
                     .frame(maxHeight: 100)
                 }
                 .padding()
-                .offset(y: 60)
+                .offset(y: 60)*/
             }.zIndex(2)
             
             ScrollView {
@@ -162,38 +162,16 @@ struct ProfileView: View {
         }
         .onAppear {
             Task {
-                guard let currentUser = authViewModel.currentUserInfo else { return }
-                friendship = try await FriendManager.shared.getFriendship(userIds: [currentUser.id, user.id])
+                //guard let currentUser = authViewModel.currentUserInfo else { return }
+                //friendship = try await FriendManager.shared.getFriendship(userIds: [currentUser.id, user.id])
             }
-        }
-    }
-    
-    func handleAddFriend(user1: UserInfo, user2: UserInfo) async throws {
-        let newFriendship = Friendship(user1: user1.id, user2: user2.id, status: 0)
-        do {
-            try await FriendManager.shared.createNewFriendship(friendship: newFriendship)
-            self.friendship = newFriendship
-            requestStatus = .requestSent
-        } catch {
-            print(error)
-            requestStatus = .requestError
-        }
-    }
-    
-    func acceptRequest(friendship: Friendship) async throws {
-        let newFriendship = Friendship(user1: friendship.user1, user2: friendship.user2, status: 1)
-        do {
-            try await FriendManager.shared.updateFriendship(friendship: newFriendship)
-            self.friendship = newFriendship
-        } catch {
-            print(error)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        ProfileView(user: UserInfo.example)
+        ProfileView()
             .environmentObject(AuthenticationViewModel())
     }
 }

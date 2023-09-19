@@ -87,9 +87,6 @@ struct CreateExpenseView: View {
                             .zIndex(1)
                     }
                     Spacer()
-                    NavigationLink("Add users") {
-                        SelectUsersView()
-                    }
                     Section {
                         HStack {
                             Image(systemName: "calendar")
@@ -161,8 +158,8 @@ struct CreateExpenseView: View {
     
     func createNewExpense() async throws {
         do {
-            let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: category, date: date, createdAt: Date())
-            try await ExpenseManager.shared.createNewExpense(expense: newExpense)
+            /*let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: category, date: date, createdAt: Date())
+            try await ExpenseManager.shared.createNewExpense(expense: newExpense)*/
         } catch {
             print(error)
         }

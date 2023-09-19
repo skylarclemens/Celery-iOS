@@ -7,23 +7,6 @@
 
 import Foundation
 import SwiftUI
-import FirebaseStorage
-
-class FirebaseStorageManager: ObservableObject {
-    let storage = Storage.storage()
-    
-    func getImage(from storageURL: URL, completion: @escaping (UIImage?) -> Void) throws {
-        let storageRef = try storage.reference(for: storageURL)
-        storageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
-            if let data = data {
-                completion(UIImage(data: data))
-            } else if let error = error {
-                completion(nil)
-                print(error)
-            }
-        }
-    }
-}
 
 extension UIImage {
     func resizeByHeight(_ height: CGFloat) -> UIImage {
@@ -45,7 +28,7 @@ extension UIImage {
     }
     
     func upload(to folder: String, completion: @escaping (URL?) -> Void) {
-        let storageRef = Storage.storage().reference()
+        /*let storageRef = Storage.storage().reference()
         let imageRef = storageRef.child(folder)
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
@@ -71,6 +54,6 @@ extension UIImage {
                     completion(url)
                 }
             }
-        }
+        }*/
     }
 }

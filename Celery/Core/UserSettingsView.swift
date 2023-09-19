@@ -10,14 +10,14 @@ import SwiftUI
 struct UserSettingsView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State private var user: UserInfo? = nil
+    //@State private var user: UserInfo? = nil
     
-    func getCurrentUser() async throws {
+    /*func getCurrentUser() async throws {
         let authUser = try authViewModel.getUser()
         if let currentUser = authUser {
             self.user = try await UserManager.shared.getUser(userId: currentUser.uid)
         }
-    }
+    }*/
     
     var body: some View {
         NavigationStack {
@@ -25,29 +25,29 @@ struct UserSettingsView: View {
                 AvatarUploadView()
             }
             List {
-                if let user = user {
+                /*if let user = user {
                     Section {
                         Text("User id: \(user.id)")
                         Text("Display name: \(user.displayName ?? "")")
                         if let email = user.email {
                             Text("Email: \(email)")
                         }
-                        if let photoURL = authViewModel.currentUser?.photoURL {
+                        /*if let photoURL = authViewModel.currentUser?.photoURL {
                             Text("Photo URL: \(photoURL.absoluteString)")
-                        }
+                        }*/
                     } header: {
                         Text("User information")
                     }
                 }
                 Button("Sign out") {
-                    try? authViewModel.signOut()
-                }
+                    //try? authViewModel.signOut()
+                }*/
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
-            .task {
+            /*.task {
                 try? await self.getCurrentUser()
-            }
+            }*/
         }
     }
 }
