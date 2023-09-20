@@ -9,7 +9,6 @@ import SwiftUI
 
 struct UserPhotoView: View {
     @Environment(\.colorScheme) var colorScheme
-    //private let storageManager = FirebaseStorageManager()
     
     @State var imageState: ImageState = .empty
     @State var userPhoto: UIImage? = nil

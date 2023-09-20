@@ -99,11 +99,6 @@ struct HomeView: View {
             }
         }
         .tint(.white)
-        .onAppear {
-            //print("here")
-            print(SupabaseManager.shared.client)
-            
-        }
     }
 }
 

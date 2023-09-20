@@ -16,8 +16,6 @@ class SupabaseManager: ObservableObject {
     init() {
         let SUPABASE_URL = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String ?? ""
         let SUPABASE_API_KEY = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_API_KEY") as? String ?? ""
-        print(SUPABASE_URL)
-        print(SUPABASE_API_KEY)
         
         self.client = SupabaseClient(supabaseURL: URL(fileURLWithPath: SUPABASE_URL), supabaseKey: SUPABASE_API_KEY)
     }

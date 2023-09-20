@@ -158,7 +158,8 @@ struct CreateExpenseView: View {
     
     func createNewExpense() async throws {
         do {
-            /*let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: category, date: date, createdAt: Date())
+            let selectedCategory = category == "Category" ? "General" : category
+            /*let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: selectedCategory, date: date, createdAt: Date())
             try await ExpenseManager.shared.createNewExpense(expense: newExpense)*/
         } catch {
             print(error)
@@ -177,7 +178,7 @@ struct CategoryPicker: View {
             ZStack {
                 Circle()
                     .fill(Color(hex: Category.categoryList[category]?.colorUInt ?? 0x6A9B5D))
-                Image(category)
+                Image(category == "Category" ? "General" : category)
                     .resizable()
                     .frame(maxWidth: 60, maxHeight: 60)
                 Circle()
@@ -196,6 +197,7 @@ struct CategoryPicker: View {
             }
             .frame(maxWidth: .infinity)
             Picker("Category", selection: $category) {
+                Text("Category").tag("Category")
                 ForEach(categoryNames, id: \.self) { name in
                     Text(name).tag(name)
                 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct UserFriendModel: Codable, Identifiable {
     let id = UUID()
     let user_id: UUID?
-    let friend: UserModel?
+    let friend: UserInfo?
     let status: Int?
     let status_change: Date?
 }

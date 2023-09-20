@@ -16,7 +16,7 @@ struct Category: Codable, Hashable {
     }
     
     static let categoryList: [String: Category] = [
-        "Category": Category(name: "Category", color: 0x6A9B5D),
+        "General": Category(name: "General", color: 0x6A9B5D),
         "Transportation": Category(name: "Transportation", color: 0x5088D1),
         "Travel": Category(name: "Travel", color: 0x5088D1),
         "Food": Category(name: "Food", color: 0x5088D1),

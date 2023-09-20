@@ -10,7 +10,7 @@ import Supabase
 
 enum AuthState: Equatable {
     case authenticating
-    case signedIn(User)
+    case signedIn
     case signedOut
 }
 
@@ -25,10 +25,10 @@ enum AuthType {
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
-    @Published var authState: AuthState = .signedOut
+    @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
-    @Published var session: Session?
-    @Published var displayName: String = ""
+    @Published var currentUserInfo: UserInfo?
+    @Published var session: Session? = nil
     
     //private let signInWithAppleHelper = SignInAppleHelper()
     //private let signInWithEmailHelper = SignInEmailPasswordHelper()
@@ -36,20 +36,13 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
     @Published var confirmPassword = ""
+    @Published var displayName: String = ""
     @Published var isValid = false
     @Published var errorMessage = ""
     
     @Published var currentAuthType: AuthType = .login
-    private let supabase = SupabaseManager.shared.client
     
-    /*func restorePrevSignIn() {
-        Task { [weak self] in
-            if self?.authState == .signedOut {
-                self?.currentUser = supabase.auth.session.user
-                self?.authState = state ?? .signedOut
-            }
-        }
-    }*/
+    private let supabase = SupabaseManager.shared.client
     
     func getCurrentSession() async throws {
         let session = try await supabase.auth.session
@@ -69,13 +62,38 @@ final class AuthenticationViewModel: ObservableObject {
             self.authState = state*/
             let session = try await supabase.auth.signIn(email: email, password: password)
             print("### Session Info: \(session)")
-            self.session = session
             self.currentUser = session.user
-            self.authState = .signedIn(session.user)
+            self.authState = .signedIn
         } catch {
             print("### Sign in error: \(error)")
             self.errorMessage = error.localizedDescription
             self.authState = .signedOut
         }
+    }
+    
+    func initializeSessionListener() async throws {
+        self.authState = .authenticating
+        for await event in supabase.auth.authEventChange {
+            let event = event
+            self.session = try? await supabase.auth.session
+            if let user = self.session?.user {
+                self.currentUser = user
+                self.authState = .signedIn
+            } else {
+                self.resetValues()
+                self.authState = .signedOut
+            }
+        }
+    }
+    
+    func resetValues() {
+        self.currentUser = nil
+        self.currentUserInfo = nil
+        self.email = ""
+        self.password = ""
+        self.confirmPassword = ""
+        self.displayName = ""
+        self.isValid = false
+        self.errorMessage = ""
     }
 }

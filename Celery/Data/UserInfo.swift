@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  UserInfo.swift
 //  Celery
 //
 //  Created by Skylar Clemens on 9/19/23.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserModel: Codable {
+struct UserInfo: Codable {
     let id: UUID?
     let email: String?
     let name: String?

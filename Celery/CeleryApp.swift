@@ -15,6 +15,9 @@ struct CeleryApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(authViewModel)
+                .task {
+                    try? await self.authViewModel.initializeSessionListener()
+                }
         }
     }
 }
