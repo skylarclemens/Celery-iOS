@@ -54,10 +54,10 @@ class SupabaseManager: ObservableObject {
     }
     
     // Get current user's list of friends
-    func getUsersFriends() async throws -> [UserFriendModel]? {
+    func getUsersFriends() async throws -> [UserFriend]? {
         do {
             let currentUserId = try await self.client.auth.session.user.id
-            let friendsList: [UserFriendModel] = try await self.client.database.from("user_friend")
+            let friendsList: [UserFriend] = try await self.client.database.from("user_friend")
                 .select(columns: """
                 *,
                 friend: friend_id(*)
@@ -95,6 +95,27 @@ class SupabaseManager: ObservableObject {
             return debts
         } catch {
             print("Error fetching debts by expense: \(error)")
+            return nil
+        }
+    }
+    
+    // Get friendship between current user and friendId
+    func getFriendship(friendId: UUID) async throws -> UserFriend? {
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            let friend: [UserFriend] = try await self.client.database.from("user_friend")
+                .select(columns: """
+                *,
+                friend: friend_id(*)
+                """)
+                .eq(column: "user_id", value: currentUserId)
+                .eq(column: "friend_id", value: friendId)
+                .eq(column: "status", value: 1)
+                .execute()
+                .value
+            return friend.first
+        } catch {
+            print("Error fetching friend: \(error)")
             return nil
         }
     }
@@ -145,6 +166,45 @@ class SupabaseManager: ObservableObject {
             let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
             //print(String(data: response.underlyingResponse.data, encoding: .utf8))
             //print("=========\n \(data)")
+            return data
+        } catch {
+            print("Error fetching debts: \(error)")
+            return nil
+        }
+    }
+    
+    // Get related debts between current user and another user
+    func getSharedDebtsWithExpenses(friendId: UUID) async throws -> [Debt]? {
+        let currentUserId = try await self.client.auth.session.user.id
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
+        do {
+            let response = try await self.client.database.from("debt")
+                .select(columns: """
+                *,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
+                expense: expense_id!inner(*)
+                """)
+                .eq(column: "paid", value: false)
+                .or(filters: "and(creditor_id.eq.\(currentUserId),debtor_id.eq.\(friendId)),and(creditor_id.eq.\(friendId),debtor_id.eq.\(currentUserId))")
+                .order(column: "created_at", ascending: false)
+                .execute()
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
             return data
         } catch {
             print("Error fetching debts: \(error)")

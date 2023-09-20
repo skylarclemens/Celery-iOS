@@ -19,8 +19,7 @@ final class TransactionsViewModel: ObservableObject {
 struct TransactionsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var viewModel = TransactionsViewModel()
-    @State var transactionsList: [Debt]?
-    @State var userId: String = ""
+    @Binding var transactionsList: [Debt]?
     
     var body: some View {
         List {
@@ -28,7 +27,6 @@ struct TransactionsView: View {
                 if let transactionsList,
                    !transactionsList.isEmpty{
                     ForEach(transactionsList) { debt in
-                        let userOwed = debt.creditor?.id.uuidString.uppercased() == userId.uppercased()
                         NavigationLink {
                             if let expense = debt.expense {
                                 ExpenseView(expense: expense)
@@ -57,12 +55,15 @@ struct TransactionsView: View {
                                         .foregroundStyle(.tertiary)
                                 }
                                 Spacer()
-                                HStack(spacing: 0) {
-                                    Text(userOwed ? "+" : "-")
-                                    Text(debt.amount ?? 0, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                if let currentUser = authViewModel.currentUserInfo {
+                                    let userOwed = debt.creditor?.id == currentUser.id
+                                    HStack(spacing: 0) {
+                                        Text(userOwed ? "+" : "-")
+                                        Text(debt.amount ?? 0, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                    }
+                                    .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
+                                    .font(.system(size: 17, weight: .semibold, design: .rounded))
                                 }
-                                .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
-                                .font(.system(size: 17, weight: .semibold, design: .rounded))
                             }
                         }
                         .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
@@ -78,14 +79,7 @@ struct TransactionsView: View {
                     .foregroundStyle(.primary.opacity(0.9))
                     .textCase(nil)
                     .padding(.bottom, 8)
-            }
-        }
-        .onAppear {
-            Task {
-                self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
-                if let id = authViewModel.currentUserInfo?.id.uuidString {
-                    self.userId = id
-                }
+                    .padding(.top, 5)
             }
         }
     }
@@ -93,7 +87,7 @@ struct TransactionsView: View {
 
 #Preview {
     NavigationStack {
-        TransactionsView()
+        TransactionsView(transactionsList: .constant([]))
             .environmentObject(AuthenticationViewModel())
     }
 }

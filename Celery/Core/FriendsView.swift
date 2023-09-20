@@ -7,17 +7,11 @@
 
 import SwiftUI
 
-struct UserFriendModel: Codable, Identifiable {
-    let id = UUID()
-    let user_id: UUID?
-    let friend: UserInfo?
-    let status: Int?
-    let status_change: Date?
-}
+
 
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var friendsList: [UserFriendModel]?
+    @State var friendsList: [UserFriend]?
     
     var body: some View {
         NavigationStack {
@@ -26,7 +20,9 @@ struct FriendsView: View {
                     if let friendsList {
                         ForEach(friendsList) { friend in
                             NavigationLink {
-                                //ProfileView(user: friend)
+                                if let currentFriend = friend.friend {
+                                    ProfileView(user: currentFriend)
+                                }
                             } label: {
                                 HStack {
                                     UserPhotoView(size: 40, imagePath: friend.friend?.avatar_url)

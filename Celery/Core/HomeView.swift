@@ -11,6 +11,7 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var amount = 0.00
+    @State var transactionsList: [Debt]? = nil
     
     init() {
         // Inline Navigation Title
@@ -79,7 +80,7 @@ struct HomeView: View {
                     )
                 }
                 .frame(maxHeight: 140)
-                TransactionsView()
+                TransactionsView(transactionsList: $transactionsList)
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
@@ -99,6 +100,9 @@ struct HomeView: View {
             }
         }
         .tint(.white)
+        .task {
+            self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
+        }
     }
 }
 

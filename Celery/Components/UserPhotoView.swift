@@ -40,7 +40,7 @@ struct UserPhotoView: View {
                     .clipShape(Circle())
             }
             Circle()
-                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 4)
+                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: size/10)
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: size, height: size)
