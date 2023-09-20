@@ -50,6 +50,7 @@ struct FriendsView: View {
                 }
             }
         }
+        .tint(.white)
         .onAppear {
             Task {
                 self.friendsList = try await SupabaseManager.shared.getUsersFriends()

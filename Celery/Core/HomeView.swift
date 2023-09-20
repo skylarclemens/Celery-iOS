@@ -10,8 +10,12 @@ import SwiftUI
 struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var amount = 0.00
     @State var transactionsList: [Debt]? = nil
+    @State var currentUser: UserInfo?
+    
+    @State var totalBalance = 0.00
+    @State var balanceOwed = 0.00
+    @State var balanceOwe = 0.00
     
     init() {
         // Inline Navigation Title
@@ -64,7 +68,7 @@ struct HomeView: View {
                             .ignoresSafeArea()
                     }
                     VStack {
-                        Text(amount, format: .currency(code: "USD"))
+                        Text(totalBalance, format: .currency(code: "USD"))
                             .font(.system(size: 48, weight: .bold, design: .rounded))
                             .kerning(0.96)
                             .foregroundStyle(.white
@@ -79,7 +83,7 @@ struct HomeView: View {
                             .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.3), lineWidth: 1)
                     )
                 }
-                .frame(maxHeight: 140)
+                .frame(maxHeight: 120)
                 TransactionsView(transactionsList: $transactionsList)
             }
             .navigationTitle("Dashboard")
@@ -102,6 +106,29 @@ struct HomeView: View {
         .tint(.white)
         .task {
             self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
+            if let user = authViewModel.currentUserInfo {
+                self.currentUser = user
+            }
+            balanceCalc()
+        }
+    }
+    
+    func balanceCalc() {
+        if let transactionsList,
+           let currentUser {
+            for debt in transactionsList {
+                let amount = debt.amount ?? 0.00
+                if debt.paid ?? true {
+                    continue
+                }
+                if debt.creditor?.id == currentUser.id {
+                    totalBalance += amount
+                    balanceOwed += amount
+                } else {
+                    totalBalance -= amount
+                    balanceOwe += amount
+                }
+            }
         }
     }
 }
