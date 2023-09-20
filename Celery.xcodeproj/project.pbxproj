@@ -21,8 +21,8 @@
 		7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
 		7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserSettingsView.swift */; };
-		7E6270B12A9E788F006067CD /* DebtModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B02A9E788F006067CD /* DebtModel.swift */; };
-		7E6270B32A9E807D006067CD /* ExpenseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B22A9E807D006067CD /* ExpenseModel.swift */; };
+		7E6270B12A9E788F006067CD /* Debt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B02A9E788F006067CD /* Debt.swift */; };
+		7E6270B32A9E807D006067CD /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B22A9E807D006067CD /* Expense.swift */; };
 		7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B42A9E8883006067CD /* CreateExpenseView.swift */; };
 		7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B62A9E8DE6006067CD /* TransactionsView.swift */; };
 		7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270BC2A9EA58A006067CD /* SignUpView.swift */; };
@@ -56,8 +56,8 @@
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
 		7E6270A42A9D529E006067CD /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		7E6270AF2A9E57BB006067CD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		7E6270B02A9E788F006067CD /* DebtModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtModel.swift; sourceTree = "<group>"; };
-		7E6270B22A9E807D006067CD /* ExpenseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseModel.swift; sourceTree = "<group>"; };
+		7E6270B02A9E788F006067CD /* Debt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debt.swift; sourceTree = "<group>"; };
+		7E6270B22A9E807D006067CD /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		7E6270B42A9E8883006067CD /* CreateExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpenseView.swift; sourceTree = "<group>"; };
 		7E6270B62A9E8DE6006067CD /* TransactionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsView.swift; sourceTree = "<group>"; };
 		7E6270BC2A9EA58A006067CD /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -90,8 +90,8 @@
 		7E02CEF62A99282100B4A9B8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				7E6270B22A9E807D006067CD /* ExpenseModel.swift */,
-				7E6270B02A9E788F006067CD /* DebtModel.swift */,
+				7E6270B22A9E807D006067CD /* Expense.swift */,
+				7E6270B02A9E788F006067CD /* Debt.swift */,
 				7E0E98472ABA1E5700AA974D /* UserInfo.swift */,
 				7EBB04642AA2948500057123 /* Category.swift */,
 			);
@@ -290,7 +290,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E6270B12A9E788F006067CD /* DebtModel.swift in Sources */,
+				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
 				7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
 				7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */,
@@ -301,7 +301,7 @@
 				7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */,
 				7EBB04652AA2948500057123 /* Category.swift in Sources */,
 				7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */,
-				7E6270B32A9E807D006067CD /* ExpenseModel.swift in Sources */,
+				7E6270B32A9E807D006067CD /* Expense.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
 				7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */,
 				7E0E98422ABA111100AA974D /* SupabaseManager.swift in Sources */,

@@ -29,10 +29,10 @@ class SupabaseManager: ObservableObject {
                 .execute()
                 .value
             /*let response = try await client.database.from("users")
-                .select()
-                .eq(column: "id", value: userId)
-                .execute()
-            print(String(data: response.underlyingResponse.data, encoding: .utf8))*/
+             .select()
+             .eq(column: "id", value: userId)
+             .execute()
+             print(String(data: response.underlyingResponse.data, encoding: .utf8))*/
             return user.first
         } catch {
             print(error)
@@ -69,6 +69,85 @@ class SupabaseManager: ObservableObject {
             return friendsList
         } catch {
             print("Error fetching friends: \(error)")
+            return nil
+        }
+    }
+    
+    func getDebtsByExpense(expenseId: UUID?) async throws -> [Debt]? {
+        guard let expenseId else { return nil }
+        do {
+            let debts: [Debt] = try await self.client.database.from("debt")
+                .select(columns: """
+                id,
+                amount,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
+                paid,
+                group_id,
+                created_at
+                """)
+                .eq(column: "expense_id", value: expenseId)
+                .eq(column: "paid", value: false)
+                //.or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
+                .order(column: "created_at", ascending: false)
+                .execute()
+                .value
+            return debts
+        } catch {
+            print("Error fetching debts by expense: \(error)")
+            return nil
+        }
+    }
+    
+    // Get user's current debts with associated expense
+    func getDebtsWithExpense() async throws -> [Debt]? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            //print(currentUserId)
+            /*let transactionsList: [Debt] = try await self.client.database.from("debt")
+                .select(columns: """
+                *,
+                expense: expense_id!inner(*)
+                """)
+                .eq(column: "paid", value: false)
+                .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
+                .order(column: "created_at", ascending: false)
+                .execute()
+                .value
+            return transactionsList*/
+            let response = try await self.client.database.from("debt")
+                .select(columns: """
+                *,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
+                expense: expense_id!inner(*)
+                """)
+                .eq(column: "paid", value: false)
+                .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
+                .order(column: "created_at", ascending: false)
+                .execute()
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            //print(String(data: response.underlyingResponse.data, encoding: .utf8))
+            //print("=========\n \(data)")
+            return data
+        } catch {
+            print("Error fetching debts: \(error)")
             return nil
         }
     }

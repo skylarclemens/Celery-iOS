@@ -19,47 +19,50 @@ final class TransactionsViewModel: ObservableObject {
 struct TransactionsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject var viewModel = TransactionsViewModel()
-    @State var transactionsList: [DebtModel] = []
+    @State var transactionsList: [Debt]?
     @State var userId: String = ""
     
     var body: some View {
         List {
             Section {
-                if !transactionsList.isEmpty {
+                if let transactionsList,
+                   !transactionsList.isEmpty{
                     ForEach(transactionsList) { debt in
-                        let userOwed = debt.creditor_id?.uppercased() == userId.uppercased()
+                        let userOwed = debt.creditor?.id.uuidString.uppercased() == userId.uppercased()
                         NavigationLink {
-                            //ExpenseView(expense: expense)
+                            if let expense = debt.expense {
+                                ExpenseView(expense: expense)
+                            }
                         } label: {
                             HStack(spacing: 12) {
                                 ZStack {
                                     Circle()
-                                        .fill(Color(hex: Category.categoryList[debt.expense?.category?.capitalized ?? "Category"]?.colorUInt ?? 0x6A9B5D)
+                                        .fill(Color(hex: Category.categoryList[debt.expense?.category?.capitalized ?? "General"]?.colorUInt ?? 0x6A9B5D)
                                             .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
                                             .shadow(.drop(color: .black.opacity(0.2), radius: 2, y: 1))
                                         )
                                         
-                                    Image(debt.expense?.category?.capitalized ?? "Category")
+                                    Image(debt.expense?.category?.capitalized ?? "General")
                                         .resizable()
                                         .frame(maxWidth: 20, maxHeight: 20)
                                     Circle()
                                         .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 2)
                                 }
                                 .frame(width: 40, height: 40)
-                                VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: 4) {
                                     Text(debt.expense?.description ?? "Unknown name")
                                         .font(.system(size: 16, weight: .semibold))
-                                    /*Text(expense.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
+                                    Text(debt.expense?.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
                                         .font(.system(size: 13, weight: .medium, design: .rounded))
-                                        .foregroundStyle(.secondary)*/
+                                        .foregroundStyle(.tertiary)
                                 }
                                 Spacer()
                                 HStack(spacing: 0) {
                                     Text(userOwed ? "+" : "-")
-                                    Text(debt.amount ?? 0, format: .currency(code: "USD"))
+                                    Text(debt.amount ?? 0, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                                 }
                                 .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
-                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                .font(.system(size: 17, weight: .semibold, design: .rounded))
                             }
                         }
                         .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
@@ -79,56 +82,13 @@ struct TransactionsView: View {
         }
         .onAppear {
             Task {
-                try await getDebtsExpenses()
+                self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
+                if let id = authViewModel.currentUserInfo?.id.uuidString {
+                    self.userId = id
+                }
             }
         }
     }
-    
-    func getDebtsExpenses() async throws {
-        do {
-            let currentUserId = try await SupabaseManager.shared.client.auth.session.user.id
-            self.userId = currentUserId.uuidString
-            //print(currentUserId)
-            self.transactionsList = try await SupabaseManager.shared.client.database.from("debt")
-                .select(columns: """
-                *,
-                expense: expense_id!inner(id, paid, description, amount, category)
-                """)
-                .eq(column: "paid", value: false)
-                .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
-                .order(column: "created_at", ascending: false)
-                .execute()
-                .value
-            //print(transactionsList)
-            /*let response = try await SupabaseManager.shared.client.database.from("user_friend")
-                .select(columns: "friend_id!inner(*)")
-                .eq(column: "user_id", value: currentUserId)
-                .eq(column: "status", value: 1)
-                .execute()
-            print(response.status)
-            print(response.underlyingResponse.response)
-            print(response.underlyingResponse.data)
-            print(String(data: response.underlyingResponse.data, encoding: .utf8))*/
-        } catch {
-            print("Error fetching debts: \(error)")
-        }
-    }
-    
-    /*getDebtsWithExpenses: builder.query({
-     queryFn: async (userId) => {
-       const { data, error } = await supabase
-         .from('debt')
-         .select('*, expense: expense_id(*)')
-         .or(`debtor_id.eq.${userId},creditor_id.eq.${userId}`)
-         .order('created_at', { ascending: false });
-       return { data, error };
-     },
-     providesTags: (result = [], error, arg) => [
-       { type: 'Debt', id: 'LIST' },
-       ...result.map(({ id }) => ({ type: 'Debt', id: id }))
-     ]
-   }),
-     */
 }
 
 #Preview {

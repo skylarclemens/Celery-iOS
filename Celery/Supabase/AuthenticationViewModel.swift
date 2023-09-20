@@ -29,7 +29,6 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
     @Published var currentUserInfo: UserInfo?
-    @Published var currentUserAvatar: Image?
     @Published var session: Session? = nil
     
     @Published var email = ""
@@ -72,24 +71,31 @@ final class AuthenticationViewModel: ObservableObject {
         self.authState = .authenticating
         for await event in supabase.auth.authEventChange {
             let event = event
-            print(event)
             self.session = try? await supabase.auth.session
             if let user = self.session?.user {
                 self.currentUser = user
                 self.currentUserInfo = try await SupabaseManager.shared.getUser(userId: user.id)
                 self.authState = .signedIn
-                if let currentUserInfo = self.currentUserInfo,
-                   let currentUserAvatarPath = self.currentUserInfo?.avatar_url {
-                    try await SupabaseManager.shared.getAvatarImage(imagePath: currentUserAvatarPath) { avatarImage in
-                        if let avatarImage {
-                            self.currentUserAvatar = Image(uiImage: avatarImage)
-                        }
-                    }
-                }
             } else {
                 self.resetValues()
                 self.authState = .signedOut
             }
+        }
+    }
+    
+    func isCurrentUser(userId: UUID) -> Bool {
+        if let currentUserInfo = self.currentUserInfo {
+            return currentUserInfo.id == userId
+        } else {
+            return false
+        }
+    }
+    
+    func isCurrentUser(userId: String) -> Bool {
+        if let currentUserInfo = self.currentUserInfo {
+            return currentUserInfo.id.uuidString.uppercased() == userId.uppercased()
+        } else {
+            return false
         }
     }
     

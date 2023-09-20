@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct DebtModel: Codable, Identifiable {
+struct Debt: Codable, Identifiable {
     let id: UUID?
     let amount: Double?
-    let creditor_id: String?
-    let debtor_id: String?
-    let expense: ExpenseModel?
+    let creditor: UserInfo?
+    let debtor: UserInfo?
+    let expense: Expense?
     let paid: Bool?
     let group_id: String?
     let created_at: Date?
