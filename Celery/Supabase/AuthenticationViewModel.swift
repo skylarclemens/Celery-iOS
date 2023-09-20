@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import Supabase
 
 enum AuthState: Equatable {
@@ -28,10 +29,8 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
     @Published var currentUserInfo: UserInfo?
+    @Published var currentUserAvatar: Image?
     @Published var session: Session? = nil
-    
-    //private let signInWithAppleHelper = SignInAppleHelper()
-    //private let signInWithEmailHelper = SignInEmailPasswordHelper()
     
     @Published var email = ""
     @Published var password = ""
@@ -49,17 +48,15 @@ final class AuthenticationViewModel: ObservableObject {
         print(session)
     }
     
+    init() {
+        Task {
+            try? await initializeSessionListener()
+        }
+    }
+    
     func signInWithEmailPassword() async {
         self.authState = .authenticating
         do {
-            /*let state = try await self.signInWithEmailHelper.signInWithEmailPassword(email: self.email, password: self.password)
-            if case .signedIn(let user) = state {
-                self.currentUser = user
-                let currentUser = UserInfo(auth: user)
-                self.currentUserInfo = currentUser
-                try? await UserManager.shared.createNewUser(user: currentUser)
-            }
-            self.authState = state*/
             let session = try await supabase.auth.signIn(email: email, password: password)
             print("### Session Info: \(session)")
             self.currentUser = session.user
@@ -75,10 +72,20 @@ final class AuthenticationViewModel: ObservableObject {
         self.authState = .authenticating
         for await event in supabase.auth.authEventChange {
             let event = event
+            print(event)
             self.session = try? await supabase.auth.session
             if let user = self.session?.user {
                 self.currentUser = user
+                self.currentUserInfo = try await SupabaseManager.shared.getUser(userId: user.id)
                 self.authState = .signedIn
+                if let currentUserInfo = self.currentUserInfo,
+                   let currentUserAvatarPath = self.currentUserInfo?.avatar_url {
+                    try await SupabaseManager.shared.getAvatarImage(imagePath: currentUserAvatarPath) { avatarImage in
+                        if let avatarImage {
+                            self.currentUserAvatar = Image(uiImage: avatarImage)
+                        }
+                    }
+                }
             } else {
                 self.resetValues()
                 self.authState = .signedOut

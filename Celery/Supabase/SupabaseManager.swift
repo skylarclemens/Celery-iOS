@@ -20,15 +20,56 @@ class SupabaseManager: ObservableObject {
         self.client = SupabaseClient(supabaseURL: URL(fileURLWithPath: SUPABASE_URL), supabaseKey: SUPABASE_API_KEY)
     }
     
+    func getUser(userId: UUID) async throws -> UserInfo? {
+        do {
+            let user: [UserInfo] = try await client.database.from("users")
+                .select()
+                .eq(column: "id", value: userId)
+                .limit(count: 1)
+                .execute()
+                .value
+            /*let response = try await client.database.from("users")
+                .select()
+                .eq(column: "id", value: userId)
+                .execute()
+            print(String(data: response.underlyingResponse.data, encoding: .utf8))*/
+            return user.first
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    // Retrieve user's avatar image from Supabase storage
     func getAvatarImage(imagePath: String, completion: @escaping (UIImage?) -> Void) async throws {
         do {
-            let storageRef = try await SupabaseManager.shared.client.storage
+            let storageRef = try await self.client.storage
                 .from(id: "avatars")
                 .download(path: imagePath)
             completion(UIImage(data: storageRef))
         } catch {
             completion(nil)
             print(error)
+        }
+    }
+    
+    // Get current user's list of friends
+    func getUsersFriends() async throws -> [UserFriendModel]? {
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            let friendsList: [UserFriendModel] = try await self.client.database.from("user_friend")
+                .select(columns: """
+                *,
+                friend: friend_id(*)
+                """)
+                .eq(column: "user_id", value: currentUserId)
+                .eq(column: "status", value: 1)
+                .execute()
+                .value
+            return friendsList
+        } catch {
+            print("Error fetching friends: \(error)")
+            return nil
         }
     }
 }
