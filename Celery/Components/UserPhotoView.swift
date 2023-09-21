@@ -15,13 +15,10 @@ struct UserPhotoView: View {
     
     let size: CGFloat
     
-    // Remove photoURL variable
-    @State var photoURL: URL? = nil
-    
     @State var imagePath: String? = nil
     
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack(alignment: .center) {
             Circle()
                 .fill(Color(red: 0.87, green: 0.88, blue: 0.89))
             if imageState == .success,

@@ -105,11 +105,13 @@ struct HomeView: View {
         }
         .tint(.white)
         .task {
-            self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
             if let user = authViewModel.currentUserInfo {
                 self.currentUser = user
             }
-            balanceCalc()
+            if self.transactionsList == nil {
+                self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
+                balanceCalc()
+            }
         }
     }
     
