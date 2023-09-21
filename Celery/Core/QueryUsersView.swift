@@ -13,7 +13,7 @@ class QueryUsersViewModel: ObservableObject {
     
     @Published var query: String = ""
     @Published var debouncedQuery: String = ""
-    //@Published var queriedUsers: [UserInfo] = []
+    @Published var queriedUsers: [UserInfo]?
     
     init() {
         self.debounceTextChanges()
@@ -21,9 +21,7 @@ class QueryUsersViewModel: ObservableObject {
     
     private func debounceTextChanges() {
         $query
-        // 1 second debounce
-            .debounce(for: 1, scheduler: RunLoop.main)
-        // Called when user stops typing for 1 second
+            .debounce(for: 0.5, scheduler: RunLoop.main)
             .sink {
                 self.debouncedQuery = $0
             }
@@ -67,11 +65,11 @@ struct QueryUsersView: View {
                 .animation(.spring(duration: 0.25), value: focusedInput)
                 .onReceive(viewModel.$debouncedQuery) { newValue in
                     Task {
-                        /*if !newValue.isEmpty {
-                            viewModel.queriedUsers = try await UserManager.shared.getUsers(matching: newValue)
+                        if !newValue.isEmpty {
+                            viewModel.queriedUsers = try await SupabaseManager.shared.getUsersByQuery(value: newValue)
                         } else {
                             viewModel.queriedUsers = []
-                        }*/
+                        }
                     }
                 }
                 .onChange(of: focusedInput) { input in
@@ -103,19 +101,22 @@ struct QueryUsersView: View {
                     } label: {
                         Text("Cancel")
                             .font(.system(size: 17))
-                            .tint(.secondary)
                     }
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                 }
             }
             .padding(.horizontal)
-            /*if !viewModel.queriedUsers.isEmpty {
+            if let queriedUsers = viewModel.queriedUsers,
+               !queriedUsers.isEmpty {
                 List {
-                    ForEach(viewModel.queriedUsers) { user in
+                    ForEach(queriedUsers) { user in
                         NavigationLink {
                             ProfileView(user: user)
                         } label: {
-                            Text(user.displayName ?? "Unknown user")
+                            HStack {
+                                UserPhotoView(size: 40, imagePath: user.avatar_url)
+                                Text(user.name ?? "Unknown user")
+                            }
                         }
                         
                     }
@@ -123,8 +124,9 @@ struct QueryUsersView: View {
                 .listStyle(.inset)
             } else {
                 Color.clear
-            }*/
+            }
         }
+        .tint(.secondary)
         .onAppear {
             focusedInput = .searchBar
         }

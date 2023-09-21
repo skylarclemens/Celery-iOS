@@ -211,4 +211,21 @@ class SupabaseManager: ObservableObject {
             return nil
         }
     }
+    
+    // Get all users by query
+    func getUsersByQuery(value: String) async throws -> [UserInfo]? {
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            let queriedUsers: [UserInfo] = try await self.client.database.from("users")
+                .select()
+                .neq(column: "id", value: currentUserId)
+                .or(filters: "email.ilike.%\(value)%,name.ilike.%\(value)%,username.ilike.%\(value)")
+                .execute()
+                .value
+            return queriedUsers
+        } catch {
+            print("Error fetching users: \(error)")
+            return nil
+        }
+    }
 }

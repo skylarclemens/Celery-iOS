@@ -43,7 +43,7 @@ struct FriendsView: View {
             .toolbar {
                 NavigationLink {
                     QueryUsersView()
-                        .navigationTitle("Find people")
+                        .navigationTitle("Search")
                         .navigationBarTitleDisplayMode(.inline)
                 } label: {
                     Label("Search", systemImage: "magnifyingglass")
