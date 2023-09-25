@@ -18,7 +18,7 @@ struct UserPhotoView: View {
     @State var imagePath: String? = nil
     
     var body: some View {
-        ZStack(alignment: .center) {
+        ZStack(alignment: imageState == .empty ? .bottom : .center) {
             Circle()
                 .fill(Color(red: 0.87, green: 0.88, blue: 0.89))
             if imageState == .success,
@@ -33,8 +33,6 @@ struct UserPhotoView: View {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.75))
                     .foregroundStyle(.black.opacity(0.25))
-                    .offset(y: 2)
-                    .clipShape(Circle())
             }
             Circle()
                 .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: size/10)
@@ -64,6 +62,6 @@ struct UserPhotoView: View {
     ZStack {
         Rectangle()
             .fill(.gray)
-        UserPhotoView(size: 40, imagePath: "f2472553-7554-4dcd-8a61-a597af06cc43/1a9c7546-c521-42fa-837f-ac0c156ad553.jpg")
+        UserPhotoView(size: 40)
     }
 }

@@ -228,4 +228,17 @@ class SupabaseManager: ObservableObject {
             return nil
         }
     }
+    
+    // Create new expense
+    func addNewExpense(expense: Expense) async throws {
+        do {
+            let response = try await self.client.database.from("expense")
+                .insert(values: expense)
+                .execute()
+            print(response.underlyingResponse)
+            print(String(data: response.underlyingResponse.data, encoding: .utf8))
+        } catch {
+            print("Error creating new expense: \(error)")
+        }
+    }
 }

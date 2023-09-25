@@ -8,10 +8,6 @@
 import Foundation
 import SwiftUI
 
-enum DisplayMode: Int {
-    case system, light, dark
-}
-
 struct StatusBarSchemeModifier: ViewModifier {
     let colorScheme: ColorScheme
     let showBackground: Bool

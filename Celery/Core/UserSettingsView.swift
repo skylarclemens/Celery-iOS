@@ -22,7 +22,7 @@ struct UserSettingsView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                AvatarUploadView()
+                //AvatarUploadView()
             }
             List {
                 /*if let user = user {
@@ -45,6 +45,7 @@ struct UserSettingsView: View {
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .statusBarColorScheme(.dark, showBackground: true, backgroundColor: Color.primaryAction)
             /*.task {
                 try? await self.getCurrentUser()
             }*/
