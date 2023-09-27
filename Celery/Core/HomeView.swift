@@ -124,11 +124,11 @@ struct HomeView: View {
                     continue
                 }
                 if debt.creditor?.id == currentUser.id {
-                    totalBalance += amount
-                    balanceOwed += amount
+                    self.totalBalance += amount
+                    self.balanceOwed += amount
                 } else {
-                    totalBalance -= amount
-                    balanceOwe += amount
+                    self.totalBalance -= amount
+                    self.balanceOwe += amount
                 }
             }
         }

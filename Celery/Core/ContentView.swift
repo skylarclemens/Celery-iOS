@@ -138,10 +138,10 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct VisualEffect: UIViewRepresentable {
-    @State var style : UIBlurEffect.Style // 1
+    @State var style : UIBlurEffect.Style
     func makeUIView(context: Context) -> UIVisualEffectView {
-        return UIVisualEffectView(effect: UIBlurEffect(style: style)) // 2
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
     }
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
-    } // 3
+    }
 }

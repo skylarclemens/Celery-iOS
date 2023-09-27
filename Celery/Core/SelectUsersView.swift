@@ -32,10 +32,16 @@ class SelectUsersViewModel: ObservableObject {
 struct SelectUsersView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel = SelectUsersViewModel()
+    private var initialSelectedUsers: [UserInfo]
     @Binding var selectedUsers: [UserInfo]
     @FocusState private var focusedInput: FocusableField?
     private enum FocusableField: Hashable {
         case searchBar
+    }
+    
+    init(selectedUsers: Binding<[UserInfo]>) {
+        self._selectedUsers = selectedUsers
+        self.initialSelectedUsers = selectedUsers.wrappedValue
     }
     
     var body: some View {
@@ -133,7 +139,7 @@ struct SelectUsersView: View {
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
-                        selectedUsers.removeAll()
+                        selectedUsers = initialSelectedUsers
                         dismiss()
                     }
                 }

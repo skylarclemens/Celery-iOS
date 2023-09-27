@@ -11,43 +11,61 @@ class NewExpense: ObservableObject {
     @Published var name: String = ""
     @Published var amount: Double = 0.0
     @Published var date: Date = Date()
-    @Published var paidBy: String = "None"
+    @Published var paidBy: String = "You"
     @Published var category: String = "Category"
-    @Published var splitWith: [UserInfo] = []
+    @Published var selectedSplit: SplitOption = .equal
+    @Published var splitWith: [UserInfo] = [] {
+        didSet {
+            splitWith.forEach { user in
+                if userAmounts[user.id] == nil {
+                    userAmounts[user.id] = 0.0
+                }
+            }
+            calcSplit()
+        }
+    }
     
-    @Published var currentTabIndex: Int = 0
+    @Published var userAmounts: [UUID:Double] = [:]
+    
+    func calcSplit() {
+        splitWith.forEach { user in
+            if userAmounts[user.id] != nil {
+                switch selectedSplit {
+                case .equal:
+                    userAmounts[user.id] = amount / Double(splitWith.count)
+                case .exact: return
+                }
+            }
+        }
+    }
+}
+
+struct UserSplit: Identifiable {
+    var user: UserInfo
+    var id: UUID {
+        return user.id
+    }
+    var amount: Double = 0.0
+    var percent: Double = 0.0
+    
+    static func == (lhs: UserSplit, rhs: UserSplit) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 struct CreateExpenseView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.colorScheme) var colorScheme
     
     @StateObject var newExpense = NewExpense()
     
-    /*@State private var name: String = ""
-    @State private var amount: Double = 0.0
-    let currencyFormatter: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
-    @State private var date = Date()
-    @State private var paidBy: String = "None"
-    @State private var category: String = "Category"
-    @State private var splitWith: [UserInfo] = []*/
-    
     var body: some View {
         NavigationStack {
-            ZStack {
-                Rectangle()
-                    .fill(Color(UIColor.systemGroupedBackground))
-                    .ignoresSafeArea()
-                TabView(selection: $newExpense.currentTabIndex) {
-                    CreateExpenseDetailsView(newExpense: newExpense)
-                        .tag(0)
-                    CreateExpenseSplitView(newExpense: newExpense)
-                        .tag(1)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeOut, value: newExpense.currentTabIndex)
-                .transition(.slide)
+            CreateExpenseDetailsView(newExpense: newExpense)
+        }
+        .onAppear {
+            if newExpense.splitWith.isEmpty,
+               let currentUserInfo = authViewModel.currentUserInfo {
+                    newExpense.splitWith.append(currentUserInfo)
             }
         }
     }

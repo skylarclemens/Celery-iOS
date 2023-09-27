@@ -38,6 +38,7 @@
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
 		7EB7CFE62A5F75B4000B04FE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE52A5F75B4000B04FE /* Preview Assets.xcassets */; };
 		7EBB04652AA2948500057123 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB04642AA2948500057123 /* Category.swift */; };
+		7ED4938A2AC36D4A003F5B2C /* UserSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED493892AC36D4A003F5B2C /* UserSplitView.swift */; };
 		7EECB8042AC21A8A0026A9B8 /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */; };
 		7EECB8072AC21B030026A9B8 /* CreateExpenseDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECB8062AC21B030026A9B8 /* CreateExpenseDetailsView.swift */; };
 		7EECB8092AC21DCE0026A9B8 /* CreateExpenseSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECB8082AC21DCE0026A9B8 /* CreateExpenseSplitView.swift */; };
@@ -81,6 +82,7 @@
 		7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7EB7CFE52A5F75B4000B04FE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7EBB04642AA2948500057123 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		7ED493892AC36D4A003F5B2C /* UserSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSplitView.swift; sourceTree = "<group>"; };
 		7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
 		7EECB8062AC21B030026A9B8 /* CreateExpenseDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpenseDetailsView.swift; sourceTree = "<group>"; };
 		7EECB8082AC21DCE0026A9B8 /* CreateExpenseSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpenseSplitView.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 				7E6270B42A9E8883006067CD /* CreateExpenseView.swift */,
 				7EECB8062AC21B030026A9B8 /* CreateExpenseDetailsView.swift */,
 				7EECB8082AC21DCE0026A9B8 /* CreateExpenseSplitView.swift */,
+				7ED493892AC36D4A003F5B2C /* UserSplitView.swift */,
 			);
 			path = CreateExpense;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */,
 				7E20F4222AB7754B009DAB58 /* Color.swift in Sources */,
 				7E0E98442ABA141400AA974D /* AuthenticationViewModel.swift in Sources */,
+				7ED4938A2AC36D4A003F5B2C /* UserSplitView.swift in Sources */,
 				7EF7B2462AC0C26700BB1CFA /* ColorSchemeViewModifier.swift in Sources */,
 				7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */,
 				7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */,

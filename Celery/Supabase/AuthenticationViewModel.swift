@@ -47,11 +47,11 @@ final class AuthenticationViewModel: ObservableObject {
         print(session)
     }
     
-    /*init() {
+    init() {
         Task {
             try? await initializeSessionListener()
         }
-    }*/
+    }
     
     func signInWithEmailPassword() async {
         self.authState = .authenticating
