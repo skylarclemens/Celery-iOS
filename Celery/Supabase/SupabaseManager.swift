@@ -192,6 +192,18 @@ class SupabaseManager: ObservableObject {
         }
     }
     
+    //Delete expense from database
+    func deleteExpense(expenseId: UUID) async throws {
+        do {
+            try await self.client.database.from("expense")
+                .delete()
+                .eq(column: "id", value: expenseId)
+                .execute()
+        } catch {
+            print("Error deleting expense: \(error)")
+        }
+    }
+    
     // Add new debts to database
     func addNewDebts(debts: [DebtModel]) async throws -> [DebtModel]? {
         do {

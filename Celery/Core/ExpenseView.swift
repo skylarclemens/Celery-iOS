@@ -9,11 +9,14 @@ import SwiftUI
 
 struct ExpenseView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     let expense: Expense
     @State var debts: [Debt]? = nil
     @State var activities: [Activity]?
     let currencyFormatter: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
+    
+    @State private var showDeleteAlert = false
     
     var body: some View {
         ZStack {
@@ -157,10 +160,39 @@ struct ExpenseView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(role: .destructive) {
+                        showDeleteAlert = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+        }
+        .alert("Delete \(expense.description ?? "expense")", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    await deleteExpense()
+                    dismiss()
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to permanently delete this expense?")
+        }
         .task {
             self.debts = try? await SupabaseManager.shared.getDebtsByExpense(expenseId: expense.id)
             self.activities = try? await SupabaseManager.shared.getRelatedActivities(for: expense.id)
-            //print(self.activities)
+        }
+    }
+    
+    func deleteExpense() async {
+        if let expenseId = expense.id {
+            try? await SupabaseManager.shared.deleteExpense(expenseId: expenseId)
         }
     }
 }
