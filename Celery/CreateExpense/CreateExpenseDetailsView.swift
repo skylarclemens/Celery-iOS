@@ -119,14 +119,14 @@ struct CreateExpenseDetailsView: View {
                     Image(systemName: "chevron.up")
                         .font(.system(size: 17))
                 }.disabled(focusedInput == .name)
-                    .tint(Color(hex: 0x6A9B5D))
+                    .tint(.layoutGreen)
                 Button {
                     focusedInput = .amount
                 } label: {
                     Image(systemName: "chevron.down")
                         .font(.system(size: 17))
                 }.disabled(focusedInput == .amount)
-                    .tint(Color(hex: 0x6A9B5D))
+                    .tint(.layoutGreen)
                 Spacer()
                 Button {
                     focusedInput = nil
@@ -134,7 +134,7 @@ struct CreateExpenseDetailsView: View {
                     Text("Done")
                         .font(.system(size: 15, weight: .semibold))
                 }
-                .tint(Color(hex: 0x6A9B5D))
+                .tint(.layoutGreen)
             }
         }
     }

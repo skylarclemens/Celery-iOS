@@ -10,22 +10,27 @@ import SwiftUI
 struct AtomView<Content: View>: View {
     private let atom: () -> Content?
     @State var atomColor: Color
+    var showAtomColor: Bool
     
-    init(atomColor: Color = .layoutGreen) where Content == EmptyView {
+    init(atomColor: Color = .layoutGreen, showAtomColor: Bool = true) where Content == EmptyView {
         self.atomColor = atomColor
+        self.showAtomColor = showAtomColor
         self.atom = { EmptyView() }
     }
     
-    init(atomColor: Color = .layoutGreen, @ViewBuilder atom: @escaping () -> Content? = {nil}) {
+    init(atomColor: Color = .layoutGreen, showAtomColor: Bool = true, @ViewBuilder atom: @escaping () -> Content? = {nil}) {
         self.atomColor = atomColor
+        self.showAtomColor = showAtomColor
         self.atom = atom
     }
     
     var body: some View {
         ZStack {
-            Circle()
-                .fill(atomColor
-                    .shadow(.inner(color: .black.opacity(0.05), radius: 0, y: 3)))
+            if showAtomColor {
+                Circle()
+                    .fill(atomColor
+                        .shadow(.inner(color: .black.opacity(0.05), radius: 0, y: 3)))
+            }
             if let atom = atom() {
                 atom
             }
