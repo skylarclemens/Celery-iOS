@@ -82,6 +82,7 @@ struct TransactionsView: View {
                     .padding(.top, 5)
             }
         }
+        .animation(.default, value: transactionsList)
     }
 }
 

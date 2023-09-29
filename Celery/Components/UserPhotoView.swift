@@ -40,17 +40,15 @@ struct UserPhotoView: View {
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: size, height: size)
         .clipShape(Circle())
-        .onAppear {
-            Task {
-                if let imagePath {
-                    self.imageState = .loading
-                    try? await SupabaseManager.shared.getAvatarImage(imagePath: imagePath) { image in
-                        if let image {
-                            self.userPhoto = image
-                            self.imageState = .success
-                        } else {
-                            self.imageState = .empty
-                        }
+        .task {
+            if let imagePath {
+                self.imageState = .loading
+                try? await SupabaseManager.shared.getAvatarImage(imagePath: imagePath) { image in
+                    if let image {
+                        self.userPhoto = image
+                        self.imageState = .success
+                    } else {
+                        self.imageState = .empty
                     }
                 }
             }

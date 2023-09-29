@@ -35,6 +35,7 @@
 		7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C42A9FB73800A215FC /* ProfileView.swift */; };
 		7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */; };
 		7E8025902AC653F1005D284D /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E80258F2AC653F1005D284D /* Activity.swift */; };
+		7E8025922AC65E8D005D284D /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E8025912AC65E8D005D284D /* ActivityView.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -79,6 +80,7 @@
 		7E7A78C42A9FB73800A215FC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusShape.swift; sourceTree = "<group>"; };
 		7E80258F2AC653F1005D284D /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		7E8025912AC65E8D005D284D /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -171,7 +173,6 @@
 		7E6270AB2A9E5419006067CD /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				7EECB8052AC21AD60026A9B8 /* CreateExpense */,
 				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
 				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
 				7E6270A42A9D529E006067CD /* UserSettingsView.swift */,
@@ -192,6 +193,7 @@
 				7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */,
 				7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */,
 				7EECB80A2AC222820026A9B8 /* AtomView.swift */,
+				7E8025912AC65E8D005D284D /* ActivityView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -220,6 +222,7 @@
 				7E6270A32A9D438C006067CD /* Celery.entitlements */,
 				7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */,
 				7E6270AB2A9E5419006067CD /* Core */,
+				7EECB8052AC21AD60026A9B8 /* CreateExpense */,
 				7E0E98402ABA10FB00AA974D /* Supabase */,
 				7E6270A22A9D3AFA006067CD /* Authentication */,
 				7E02CEF62A99282100B4A9B8 /* Data */,
@@ -341,6 +344,7 @@
 				7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */,
 				7EBB04652AA2948500057123 /* Category.swift in Sources */,
 				7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */,
+				7E8025922AC65E8D005D284D /* ActivityView.swift in Sources */,
 				7EF7B2482AC0D05400BB1CFA /* SelectUsersView.swift in Sources */,
 				7E6270B32A9E807D006067CD /* Expense.swift in Sources */,
 				7EECB8092AC21DCE0026A9B8 /* CreateExpenseSplitView.swift in Sources */,

@@ -42,10 +42,6 @@ final class AuthenticationViewModel: ObservableObject {
     
     private let supabase = SupabaseManager.shared.client
     
-    func getCurrentSession() async throws {
-        let session = try await supabase.auth.session
-    }
-    
     init() {
         Task {
             try? await initializeSessionListener()

@@ -190,7 +190,7 @@ struct CreateExpenseSplitView: View {
                                 do {
                                     if let _ =
                                         createdDebts {
-                                        let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: "EXPENSE", action: "CREATE")
+                                        let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
                                         try await SupabaseManager.shared.addNewActivity(activity: createActivity)
                                         dismiss()
                                     }
@@ -240,6 +240,10 @@ struct CreateExpenseSplitView: View {
         }
         .navigationTitle("Split details")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    func onSubmit() async throws {
+        
     }
     
     func isCurrentUser(userId: UUID) -> Bool {

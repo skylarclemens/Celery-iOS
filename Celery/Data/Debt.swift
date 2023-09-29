@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct Debt: Codable, Identifiable {
+struct Debt: Codable, Identifiable, Equatable {
+    static func == (lhs: Debt, rhs: Debt) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     let id: UUID?
     let amount: Double?
     let creditor: UserInfo?

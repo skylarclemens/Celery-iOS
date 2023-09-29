@@ -7,17 +7,28 @@
 
 import SwiftUI
 
-
+private class FriendsViewModel: ObservableObject {
+    @Published var friendsList: [UserFriend]?
+    @Published var loading = false
+    
+    @MainActor
+    func fetchData() async throws {
+        loading = true
+        self.friendsList = try? await SupabaseManager.shared.getUsersFriends()
+        loading = false
+    }
+}
 
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var friendsList: [UserFriend]?
+    @StateObject fileprivate var viewModel = FriendsViewModel()
+    //@State var friendsList: [UserFriend]?
     
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    if let friendsList {
+                    if let friendsList = viewModel.friendsList {
                         ForEach(friendsList) { friend in
                             NavigationLink {
                                 if let currentFriend = friend.friend {
@@ -36,6 +47,7 @@ struct FriendsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .animation(.default, value: viewModel.friendsList)
             }
             .navigationTitle("Friends")
             .navigationBarTitleDisplayMode(.inline)
@@ -51,10 +63,8 @@ struct FriendsView: View {
             }
         }
         .tint(.white)
-        .onAppear {
-            Task {
-                self.friendsList = try await SupabaseManager.shared.getUsersFriends()
-            }
+        .task {
+            try? await viewModel.fetchData()
         }
     }
 }

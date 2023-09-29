@@ -12,6 +12,7 @@ struct ExpenseView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     let expense: Expense
     @State var debts: [Debt]? = nil
+    @State var activities: [Activity]?
     let currencyFormatter: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
     
     var body: some View {
@@ -140,18 +141,33 @@ struct ExpenseView: View {
                             .textCase(nil)
                     }
                     .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                    Section {
+                        if let activities {
+                            ForEach(activities) { activity in
+                                ActivityView(activity: activity)
+                            }
+                        }
+                    } header: {
+                        Text("Activity")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.primary.opacity(0.9))
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
                 }
             }
         }
         .task {
             self.debts = try? await SupabaseManager.shared.getDebtsByExpense(expenseId: expense.id)
+            self.activities = try? await SupabaseManager.shared.getRelatedActivities(for: expense.id)
+            //print(self.activities)
         }
     }
 }
 
 #Preview {
     NavigationStack{
-        ExpenseView(expense: Expense(id: UUID(), paid: false, description: "Test", amount: 10.00, payer_id: "Test-UUID", group_id: nil, category: "ENTERTAINMENT", date: Date(), created_at: Date()))
+        ExpenseView(expense: Expense(id: UUID(uuidString: "e86df7ff-cc24-4ca0-8167-bca0d1db42d4"), paid: false, description: "Test activity 2", amount: 10.00, payer_id: "Test-UUID", group_id: nil, category: "Entertainment", date: Date(), created_at: Date()))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

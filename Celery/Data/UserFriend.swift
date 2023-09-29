@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserFriend: Codable, Identifiable {
+struct UserFriend: Codable, Identifiable, Equatable {
     let id = UUID()
     let user_id: UUID?
     let friend: UserInfo?

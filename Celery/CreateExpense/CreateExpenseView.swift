@@ -40,19 +40,6 @@ class NewExpense: ObservableObject {
     }
 }
 
-struct UserSplit: Identifiable {
-    var user: UserInfo
-    var id: UUID {
-        return user.id
-    }
-    var amount: Double = 0.0
-    var percent: Double = 0.0
-    
-    static func == (lhs: UserSplit, rhs: UserSplit) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
 struct CreateExpenseView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     
@@ -77,16 +64,6 @@ struct CreateExpenseView: View {
             UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
-    
-    /*func createNewExpense() async throws {
-        do {
-            let selectedCategory = category == "Category" ? "General" : category
-            /*let newExpense = Expense(id: UUID().uuidString, name: name, description: nil, amount: amount, payerID: authViewModel.currentUser?.uid ?? nil, groupID: nil, category: selectedCategory, date: date, createdAt: Date())
-            try await ExpenseManager.shared.createNewExpense(expense: newExpense)*/
-        } catch {
-            print(error)
-        }
-    }*/
 }
 
 #Preview {
