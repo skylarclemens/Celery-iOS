@@ -44,7 +44,6 @@ final class AuthenticationViewModel: ObservableObject {
     
     func getCurrentSession() async throws {
         let session = try await supabase.auth.session
-        print(session)
     }
     
     init() {
@@ -57,7 +56,6 @@ final class AuthenticationViewModel: ObservableObject {
         self.authState = .authenticating
         do {
             let session = try await supabase.auth.signIn(email: email, password: password)
-            print("### Session Info: \(session)")
             self.currentUser = session.user
             self.authState = .signedIn
         } catch {
@@ -69,8 +67,7 @@ final class AuthenticationViewModel: ObservableObject {
     
     func initializeSessionListener() async throws {
         self.authState = .authenticating
-        for await event in supabase.auth.authEventChange {
-            let event = event
+        for await _ in supabase.auth.authEventChange {
             self.session = try? await supabase.auth.session
             if let user = self.session?.user {
                 self.currentUser = user

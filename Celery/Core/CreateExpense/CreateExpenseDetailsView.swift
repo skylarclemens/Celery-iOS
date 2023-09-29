@@ -12,6 +12,7 @@ struct CreateExpenseDetailsView: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var newExpense: NewExpense
+    var currentUser: UserInfo?
     
     @FocusState private var focusedInput: FocusedField?
     private enum FocusedField: Hashable {
@@ -92,7 +93,7 @@ struct CreateExpenseDetailsView: View {
                 }
                 Section {
                     NavigationLink {
-                        CreateExpenseSplitView(newExpense: newExpense)
+                        CreateExpenseSplitView(newExpense: newExpense, currentUser: currentUser)
                     } label: {
                         Text("Continue")
                             .frame(maxWidth: .infinity)

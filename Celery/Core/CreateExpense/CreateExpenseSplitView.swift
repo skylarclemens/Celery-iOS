@@ -30,7 +30,7 @@ struct CreateExpenseSplitView: View {
     @State private var openUserSelection: Bool = false
     private let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
     
-    @State private var currentUser: UserInfo? = nil
+    var currentUser: UserInfo?
     
     var body: some View {
         ZStack {
@@ -103,9 +103,9 @@ struct CreateExpenseSplitView: View {
                     Section {
                         HStack {
                             Picker("Paid by", selection: $newExpense.paidBy) {
-                                Text("You").tag("You")
-                                ForEach(newExpense.splitWith.dropFirst()) { user in
-                                    Text(user.name ?? "Unknown user").tag(user.id.uuidString)
+                                Text("Select a user").tag(nil as UserInfo?)
+                                ForEach(newExpense.splitWith) { user in
+                                    Text(isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name").tag(user as UserInfo?)
                                 }
                             }
                             .tint(.primary)
@@ -129,43 +129,6 @@ struct CreateExpenseSplitView: View {
                     }
                     Section {
                         VStack {
-                            /*HStack {
-                                Button {
-                                    newExpense.selectedSplit = .equal
-                                } label: {
-                                    Image(systemName: "equal")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(Color.primary)
-                                        .frame(maxWidth: 40, maxHeight: 30)
-                                        .background(
-                                            Capsule()
-                                                .strokeBorder(newExpense.selectedSplit == .equal ? .blue : Color.secondary.opacity(0.5), lineWidth: newExpense.selectedSplit == .equal ? 2 : 1, antialiased: true)
-                                                .background(
-                                                    Capsule()
-                                                        .fill(Color(uiColor: UIColor.tertiarySystemGroupedBackground))
-                                                )
-                                        )
-                                }
-                                Spacer()
-                                Button {
-                                    newExpense.selectedSplit = .exact
-                                } label: {
-                                    Image(systemName: "dollarsign")
-                                        .font(.system(size: 12))
-                                        .foregroundStyle(Color.primary)
-                                        .padding(12)
-                                        .frame(maxWidth: 40, maxHeight: 30)
-                                        .background(
-                                            Capsule()
-                                                .strokeBorder(newExpense.selectedSplit == .exact ? .blue : Color.secondary.opacity(0.5), lineWidth: newExpense.selectedSplit == .exact ? 2 : 1, antialiased: true)
-                                                .background(
-                                                    Capsule()
-                                                        .fill(Color(uiColor: UIColor.tertiarySystemGroupedBackground))
-                                                )
-                                        )
-                                }
-                            }
-                            .padding(.bottom, 8)*/
                             Picker("Split options", selection: $newExpense.selectedSplit) {
                                 ForEach(SplitOption.allCases) { option in
                                     Text(String(describing: option))
@@ -201,15 +164,40 @@ struct CreateExpenseSplitView: View {
                     Spacer()
                     Section {
                         Button {
-                            //dismiss()
-                            print("Name: \(newExpense.name)")
-                            print("Paid by: \(newExpense.paidBy == "You" ? currentUser?.id.uuidString : newExpense.paidBy)")
-                            print("Amount: \(newExpense.amount)")
-                            
-                            print("======== User Split With =========")
-                            print(newExpense.splitWith)
-                            print("======== User Amounts =========")
-                            print(newExpense.userAmounts)
+                            let newCategory = newExpense.category == "Category" ? "General" : newExpense.category
+                            Task {
+                                var createdExpense: Expense?
+                                var createdDebts: [DebtModel]?
+                                do {
+                                    let createExpense: Expense = Expense(description: newExpense.name, amount: newExpense.amount, payer_id: newExpense.paidBy?.id.uuidString, category: newCategory, date: newExpense.date)
+                                    createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
+                                } catch {
+                                    print("Error creating expense: \(error)")
+                                }
+                                
+                                do {
+                                    if let createdExpense {
+                                        let createDebts: [DebtModel] = newExpense.splitWith.compactMap { user in
+                                            if newExpense.paidBy?.id == user.id { return nil }
+                                            return DebtModel(amount: newExpense.userAmounts[user.id], creditor_id: newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
+                                        }
+                                        createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
+                                    }
+                                } catch {
+                                    print("Error creating debts: \(error)")
+                                }
+                                
+                                do {
+                                    if let _ =
+                                        createdDebts {
+                                        let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: "EXPENSE", action: "CREATE")
+                                        try await SupabaseManager.shared.addNewActivity(activity: createActivity)
+                                        dismiss()
+                                    }
+                                } catch {
+                                    print("Error creating activity: \(error)")
+                                }
+                            }
                         } label: {
                             Text("Send")
                                 .frame(maxWidth: .infinity)
@@ -231,7 +219,6 @@ struct CreateExpenseSplitView: View {
             SelectUsersView(selectedUsers: $newExpense.splitWith)
         }
         .onReceive(newExpense.$splitWith) { newValue in
-            print(newValue)
             userDebts = newValue.map { user in
                 Binding(
                     get: { newExpense.userAmounts[user.id] ?? 0.0 },
@@ -240,12 +227,8 @@ struct CreateExpenseSplitView: View {
                     }
                 )
             }
-            print(newExpense.userAmounts)
         }
         .onAppear {
-            if let currentUserInfo = authViewModel.currentUserInfo {
-                self.currentUser = currentUserInfo
-            }
             userDebts = newExpense.splitWith.map { user in
                 Binding(
                     get: { newExpense.userAmounts[user.id] ?? 0.0 },

@@ -113,6 +113,14 @@ struct HomeView: View {
                 balanceCalc()
             }
         }
+        .onAppear {
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor.white
+            ]
+        }
+        .onDisappear {
+            UINavigationBar.appearance().titleTextAttributes = nil
+        }
     }
     
     func balanceCalc() {

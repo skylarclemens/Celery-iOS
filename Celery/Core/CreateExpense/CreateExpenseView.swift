@@ -11,7 +11,7 @@ class NewExpense: ObservableObject {
     @Published var name: String = ""
     @Published var amount: Double = 0.0
     @Published var date: Date = Date()
-    @Published var paidBy: String = "You"
+    @Published var paidBy: UserInfo?
     @Published var category: String = "Category"
     @Published var selectedSplit: SplitOption = .equal
     @Published var splitWith: [UserInfo] = [] {
@@ -57,16 +57,24 @@ struct CreateExpenseView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     
     @StateObject var newExpense = NewExpense()
+    @State var currentUser: UserInfo?
     
     var body: some View {
         NavigationStack {
-            CreateExpenseDetailsView(newExpense: newExpense)
+            CreateExpenseDetailsView(newExpense: newExpense, currentUser: currentUser)
         }
         .onAppear {
             if newExpense.splitWith.isEmpty,
                let currentUserInfo = authViewModel.currentUserInfo {
-                    newExpense.splitWith.append(currentUserInfo)
+                self.currentUser = currentUserInfo
+                newExpense.splitWith.append(currentUserInfo)
             }
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor.label
+            ]
+        }
+        .onDisappear {
+            UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
     

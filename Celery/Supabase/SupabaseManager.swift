@@ -28,11 +28,6 @@ class SupabaseManager: ObservableObject {
                 .limit(count: 1)
                 .execute()
                 .value
-            /*let response = try await client.database.from("users")
-             .select()
-             .eq(column: "id", value: userId)
-             .execute()
-             print(String(data: response.underlyingResponse.data, encoding: .utf8))*/
             return user.first
         } catch {
             print(error)
@@ -122,26 +117,10 @@ class SupabaseManager: ObservableObject {
     
     // Get user's current debts with associated expense
     func getDebtsWithExpense() async throws -> [Debt]? {
-        let decoder = JSONDecoder()
-        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
-        decoder.dateDecodingStrategy = .custom { decoder -> Date in
-            let container = try decoder.singleValueContainer()
-            let dateString = try container.decode(String.self)
-            let dateFormatter = DateFormatter()
-            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-            } else {
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-                dateFormatter.calendar = Calendar(identifier: .iso8601)
-            }
-            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
-            return date
-        }
-        
         do {
             let currentUserId = try await self.client.auth.session.user.id
-            //print(currentUserId)
-            /*let transactionsList: [Debt] = try await self.client.database.from("debt")
+            
+            let transactionsList: [Debt] = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
                 expense: expense_id!inner(*)
@@ -151,22 +130,7 @@ class SupabaseManager: ObservableObject {
                 .order(column: "created_at", ascending: false)
                 .execute()
                 .value
-            return transactionsList*/
-            let response = try await self.client.database.from("debt")
-                .select(columns: """
-                *,
-                creditor: creditor_id!inner(*),
-                debtor: debtor_id!inner(*),
-                expense: expense_id!inner(*)
-                """)
-                .eq(column: "paid", value: false)
-                .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
-                .order(column: "created_at", ascending: false)
-                .execute()
-            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
-            //print(String(data: response.underlyingResponse.data, encoding: .utf8))
-            //print("=========\n \(data)")
-            return data
+            return transactionsList
         } catch {
             print("Error fetching debts: \(error)")
             return nil
@@ -175,25 +139,9 @@ class SupabaseManager: ObservableObject {
     
     // Get related debts between current user and another user
     func getSharedDebtsWithExpenses(friendId: UUID) async throws -> [Debt]? {
-        let currentUserId = try await self.client.auth.session.user.id
-        let decoder = JSONDecoder()
-        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
-        decoder.dateDecodingStrategy = .custom { decoder -> Date in
-            let container = try decoder.singleValueContainer()
-            let dateString = try container.decode(String.self)
-            let dateFormatter = DateFormatter()
-            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-            } else {
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-                dateFormatter.calendar = Calendar(identifier: .iso8601)
-            }
-            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
-            return date
-        }
-        
         do {
-            let response = try await self.client.database.from("debt")
+            let currentUserId = try await self.client.auth.session.user.id
+            let transactionsList: [Debt] = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
                 creditor: creditor_id!inner(*),
@@ -204,8 +152,8 @@ class SupabaseManager: ObservableObject {
                 .or(filters: "and(creditor_id.eq.\(currentUserId),debtor_id.eq.\(friendId)),and(creditor_id.eq.\(friendId),debtor_id.eq.\(currentUserId))")
                 .order(column: "created_at", ascending: false)
                 .execute()
-            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
-            return data
+                .value
+            return transactionsList
         } catch {
             print("Error fetching debts: \(error)")
             return nil
@@ -229,16 +177,44 @@ class SupabaseManager: ObservableObject {
         }
     }
     
-    // Create new expense
-    func addNewExpense(expense: Expense) async throws {
+    // Add new expenses to database
+    func addNewExpense(expense: Expense) async throws -> Expense? {
         do {
-            let response = try await self.client.database.from("expense")
-                .insert(values: expense)
+            let newExpense: [Expense] = try await self.client.database.from("expense")
+                .insert(values: expense, returning: .representation)
+                .select()
                 .execute()
-            print(response.underlyingResponse)
-            print(String(data: response.underlyingResponse.data, encoding: .utf8))
+                .value
+            return newExpense.first
         } catch {
             print("Error creating new expense: \(error)")
+            return nil
+        }
+    }
+    
+    // Add new debts to database
+    func addNewDebts(debts: [DebtModel]) async throws -> [DebtModel]? {
+        do {
+            let newDebts: [DebtModel] = try await self.client.database.from("debt")
+                .insert(values: debts, returning: .representation)
+                .select()
+                .execute()
+                .value
+            return newDebts
+        } catch {
+            print("Error creating new debts: \(error)")
+            return nil
+        }
+    }
+    
+    // Add new activity to database
+    func addNewActivity(activity: Activity) async throws {
+        do {
+            let response = try await self.client.database.from("activity")
+                .insert(values: activity)
+                .execute()
+        } catch {
+            print("Error creating new activity: \(error)")
         }
     }
 }

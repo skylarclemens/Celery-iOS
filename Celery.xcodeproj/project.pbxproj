@@ -14,6 +14,7 @@
 		7E0E98482ABA1E5700AA974D /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98472ABA1E5700AA974D /* UserInfo.swift */; };
 		7E0E98512ABBA27E00AA974D /* UserFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98502ABBA27E00AA974D /* UserFriend.swift */; };
 		7E20F4222AB7754B009DAB58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20F4212AB7754B009DAB58 /* Color.swift */; };
+		7E24D1492AC5FB5E003D9E51 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7E24D1482AC5FB5E003D9E51 /* Supabase */; };
 		7E4B2DEC2AA0FEAC00967E3E /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */; };
 		7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */; };
 		7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */; };
@@ -33,6 +34,7 @@
 		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
 		7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C42A9FB73800A215FC /* ProfileView.swift */; };
 		7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */; };
+		7E8025902AC653F1005D284D /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E80258F2AC653F1005D284D /* Activity.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -76,6 +78,7 @@
 		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7E7A78C42A9FB73800A215FC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusShape.swift; sourceTree = "<group>"; };
+		7E80258F2AC653F1005D284D /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E24D1492AC5FB5E003D9E51 /* Supabase in Frameworks */,
 				7E0E983F2ABA109400AA974D /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,6 +115,7 @@
 				7E0E98472ABA1E5700AA974D /* UserInfo.swift */,
 				7EBB04642AA2948500057123 /* Category.swift */,
 				7E0E98502ABBA27E00AA974D /* UserFriend.swift */,
+				7E80258F2AC653F1005D284D /* Activity.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -264,6 +269,7 @@
 			name = Celery;
 			packageProductDependencies = (
 				7E0E983E2ABA109400AA974D /* Supabase */,
+				7E24D1482AC5FB5E003D9E51 /* Supabase */,
 			);
 			productName = Celery;
 			productReference = 7EB7CFDB2A5F75B3000B04FE /* Celery.app */;
@@ -328,6 +334,7 @@
 				7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */,
 				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
+				7E8025902AC653F1005D284D /* Activity.swift in Sources */,
 				7EECB8072AC21B030026A9B8 /* CreateExpenseDetailsView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */,
@@ -575,6 +582,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		7E0E983E2ABA109400AA974D /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7E0E983D2ABA109400AA974D /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		7E24D1482AC5FB5E003D9E51 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7E0E983D2ABA109400AA974D /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
