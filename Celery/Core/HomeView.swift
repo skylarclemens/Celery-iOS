@@ -94,7 +94,6 @@ struct HomeView: View {
         self.transactionsState = .loading
         if self.transactionsList == nil {
             try? await loadTransactions()
-            balanceCalc()
         } else {
             self.transactionsState = .success
         }
@@ -105,12 +104,16 @@ struct HomeView: View {
             self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
             self.filteredTransactionList = self.transactionsList
             self.transactionsState = .success
+            balanceCalc()
         } catch {
             self.transactionsState = .error
         }
     }
     
     func balanceCalc() {
+        var totalBalance = 0.00
+        var balanceOwed = 0.00
+        var balanceOwe = 0.00
         if let transactionsList = self.transactionsList,
            let currentUser = self.currentUser {
             for debt in transactionsList {
@@ -119,13 +122,16 @@ struct HomeView: View {
                     continue
                 }
                 if debt.creditor?.id == currentUser.id {
-                    self.totalBalance += amount
-                    self.balanceOwed += amount
+                    totalBalance += amount
+                    balanceOwed += amount
                 } else {
-                    self.totalBalance -= amount
-                    self.balanceOwe += amount
+                    totalBalance -= amount
+                    balanceOwe += amount
                 }
             }
+            self.totalBalance = totalBalance
+            self.balanceOwed = balanceOwed
+            self.balanceOwe = balanceOwe
         }
     }
 }
