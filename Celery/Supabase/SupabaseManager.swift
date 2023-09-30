@@ -70,8 +70,25 @@ class SupabaseManager: ObservableObject {
     
     func getDebtsByExpense(expenseId: UUID?) async throws -> [Debt]? {
         guard let expenseId else { return nil }
+        
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
         do {
-            let debts: [Debt] = try await self.client.database.from("debt")
+            let response = try await self.client.database.from("debt")
                 .select(columns: """
                 id,
                 amount,
@@ -86,8 +103,8 @@ class SupabaseManager: ObservableObject {
                 //.or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
                 .order(column: "created_at", ascending: false)
                 .execute()
-                .value
-            return debts
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            return data
         } catch {
             print("Error fetching debts by expense: \(error)")
             return nil
@@ -117,10 +134,26 @@ class SupabaseManager: ObservableObject {
     
     // Get user's current debts with associated expense
     func getDebtsWithExpense() async throws -> [Debt]? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
         do {
             let currentUserId = try await self.client.auth.session.user.id
             
-            let transactionsList: [Debt] = try await self.client.database.from("debt")
+            let response = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
                 creditor: creditor_id!inner(*),
@@ -131,8 +164,8 @@ class SupabaseManager: ObservableObject {
                 .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
                 .order(column: "created_at", ascending: false)
                 .execute()
-                .value
-            return transactionsList
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            return data
         } catch {
             print("Error fetching debts: \(error)")
             return nil
@@ -141,9 +174,25 @@ class SupabaseManager: ObservableObject {
     
     // Get related debts between current user and another user
     func getSharedDebtsWithExpenses(friendId: UUID) async throws -> [Debt]? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
         do {
             let currentUserId = try await self.client.auth.session.user.id
-            let transactionsList: [Debt] = try await self.client.database.from("debt")
+            let response = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
                 creditor: creditor_id!inner(*),
@@ -154,8 +203,8 @@ class SupabaseManager: ObservableObject {
                 .or(filters: "and(creditor_id.eq.\(currentUserId),debtor_id.eq.\(friendId)),and(creditor_id.eq.\(friendId),debtor_id.eq.\(currentUserId))")
                 .order(column: "created_at", ascending: false)
                 .execute()
-                .value
-            return transactionsList
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            return data
         } catch {
             print("Error fetching debts: \(error)")
             return nil
@@ -181,13 +230,29 @@ class SupabaseManager: ObservableObject {
     
     // Add new expenses to database
     func addNewExpense(expense: Expense) async throws -> Expense? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
         do {
-            let newExpense: [Expense] = try await self.client.database.from("expense")
+            let response = try await self.client.database.from("expense")
                 .insert(values: expense, returning: .representation)
                 .select()
                 .execute()
-                .value
-            return newExpense.first
+            let data = try decoder.decode([Expense].self, from: response.underlyingResponse.data)
+            return data.first
         } catch {
             print("Error creating new expense: \(error)")
             return nil

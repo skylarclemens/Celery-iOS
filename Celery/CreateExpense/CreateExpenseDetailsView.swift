@@ -19,7 +19,15 @@ struct CreateExpenseDetailsView: View {
         case name, amount
     }
     private let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
+    var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
     
+    @Binding var isOpen: Bool
+
     var body: some View {
         ZStack {
             Rectangle()
@@ -57,7 +65,7 @@ struct CreateExpenseDetailsView: View {
                 }
                 Section {
                     HStack {
-                        TextField("$0.00", value: $newExpense.amount, format: currencyFormat)
+                        TextField("$0.00", value: $newExpense.amount, formatter: numberFormatter)
                             .font(.system(size: 32, weight: .semibold, design: .rounded))
                             .multilineTextAlignment(.center)
                             .keyboardType(.decimalPad)
@@ -93,7 +101,7 @@ struct CreateExpenseDetailsView: View {
                 }
                 Section {
                     NavigationLink {
-                        CreateExpenseSplitView(newExpense: newExpense, currentUser: currentUser)
+                        CreateExpenseSplitView(newExpense: newExpense, currentUser: currentUser, isOpen: $isOpen)
                     } label: {
                         Text("Continue")
                             .frame(maxWidth: .infinity)
@@ -109,9 +117,15 @@ struct CreateExpenseDetailsView: View {
             }
             .padding()
         }
-        .navigationTitle("Add new expense")
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                }
+            }
             ToolbarItemGroup(placement: .keyboard) {
                 Button {
                     focusedInput = .name
@@ -142,7 +156,7 @@ struct CreateExpenseDetailsView: View {
 
 #Preview {
     NavigationStack {
-        CreateExpenseDetailsView(newExpense: NewExpense())
+        CreateExpenseDetailsView(newExpense: NewExpense(), isOpen: .constant(true))
             .environmentObject(AuthenticationViewModel())
     }
 }

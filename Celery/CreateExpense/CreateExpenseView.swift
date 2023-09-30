@@ -45,28 +45,25 @@ struct CreateExpenseView: View {
     
     @StateObject var newExpense = NewExpense()
     @State var currentUser: UserInfo?
+    @Binding var isOpen: Bool
     
     var body: some View {
         NavigationStack {
-            CreateExpenseDetailsView(newExpense: newExpense, currentUser: currentUser)
+            CreateExpenseDetailsView(newExpense: newExpense, currentUser: currentUser, isOpen: $isOpen)
         }
+        .tint(.primary)
         .onAppear {
             if newExpense.splitWith.isEmpty,
                let currentUserInfo = authViewModel.currentUserInfo {
                 self.currentUser = currentUserInfo
                 newExpense.splitWith.append(currentUserInfo)
             }
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor.label
-            ]
-        }
-        .onDisappear {
-            UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
 }
 
 #Preview {
-    CreateExpenseView()
+    
+    CreateExpenseView(isOpen: .constant(true))
         .environmentObject(AuthenticationViewModel())
 }

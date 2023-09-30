@@ -29,4 +29,6 @@ struct Expense: Codable, Identifiable {
         self.date = date
         self.created_at = created_at
     }
+    
+    static let example = Expense(id: UUID(), paid: false, description: "Example", amount: 10.00, payer_id: UserInfo.example.id.uuidString, category: "Entertainment", date: Date(), created_at: Date())
 }

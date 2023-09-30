@@ -115,7 +115,7 @@ struct ContentView: View {
                     .ignoresSafeArea(.keyboard, edges: .bottom)
                 }
                 .sheet(isPresented: $openCreateExpense) {
-                    CreateExpenseView()
+                    CreateExpenseView(isOpen: $openCreateExpense)
                 }
             case .signedOut:
                 WelcomeView(openAuthView: $openAuthView)

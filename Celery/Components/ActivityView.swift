@@ -20,7 +20,7 @@ struct ActivityView: View {
         VStack(alignment: .leading) {
             HStack {
                 if let user {
-                    UserPhotoView(size: 35, imagePath: user.avatar_url)
+                    UserPhotoView(size: 30, borderSize: 2, imagePath: user.avatar_url)
                     Text(user.name ?? "Unknown user")
                         .fontWeight(.semibold) +
                     Text(" \(activity?.action?.getAssociatedString() ?? "unknown activity")") +
@@ -29,6 +29,7 @@ struct ActivityView: View {
             }
             .font(.system(size: 14))
             .padding(2)
+            .padding(.leading, 4)
             .padding(.trailing, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .frame(minHeight: 40)

@@ -190,6 +190,14 @@ struct ExpenseView: View {
             self.debts = try? await SupabaseManager.shared.getDebtsByExpense(expenseId: expense.id)
             self.activities = try? await SupabaseManager.shared.getRelatedActivities(for: expense.id)
         }
+        .onAppear {
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor.white
+            ]
+        }
+        .onDisappear {
+            UINavigationBar.appearance().titleTextAttributes = nil
+        }
     }
     
     func deleteExpense() async {
@@ -201,7 +209,7 @@ struct ExpenseView: View {
 
 #Preview {
     NavigationStack{
-        ExpenseView(expense: Expense(id: UUID(uuidString: "e86df7ff-cc24-4ca0-8167-bca0d1db42d4"), paid: false, description: "Test activity 2", amount: 10.00, payer_id: "Test-UUID", group_id: nil, category: "Entertainment", date: Date(), created_at: Date()))
+        ExpenseView(expense: Expense.example)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

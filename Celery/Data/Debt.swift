@@ -31,6 +31,8 @@ struct Debt: Codable, Identifiable, Equatable {
         self.group_id = group_id
         self.created_at = created_at
     }
+    
+    static let example = Debt(id: UUID(), amount: 10.00, creditor: UserInfo.example, debtor: nil, expense: Expense.example, paid: false, group_id: nil, created_at: Date())
 }
 
 struct DebtModel: Codable, Identifiable {

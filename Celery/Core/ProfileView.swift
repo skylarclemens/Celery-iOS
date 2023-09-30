@@ -18,6 +18,7 @@ struct ProfileView: View {
     @State var requestStatus: FriendRequestStatus? = nil
     private var user: UserInfo
     @State var sharedDebts: [Debt]? = nil
+    @State var transactionsState: LoadingState = .loading
     //@State var friendship: Friendship? = nil
     
     /*var isFriendUser1: Bool {
@@ -156,13 +157,19 @@ struct ProfileView: View {
                     .padding()
                     .offset(y: 60)
                 }.zIndex(2)
-                TransactionsView(transactionsList: $sharedDebts)
+                TransactionsView(transactionsList: $sharedDebts, state: $transactionsState)
                     .padding(.top, 65)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .task {
-            self.sharedDebts = try? await SupabaseManager.shared.getSharedDebtsWithExpenses(friendId: user.id)
+            self.transactionsState = .loading
+            do {
+                self.sharedDebts = try await SupabaseManager.shared.getSharedDebtsWithExpenses(friendId: user.id)
+                self.transactionsState = .success
+            } catch {
+                self.transactionsState = .error
+            }
             if self.friendship == nil {
                 self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
             }

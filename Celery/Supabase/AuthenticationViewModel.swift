@@ -86,9 +86,32 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func getCurrentUserInfo() async throws -> UserInfo? {
+        do {
+            if let user = self.session?.user {
+                let userInfo = try await SupabaseManager.shared.getUser(userId: user.id)
+                return userInfo
+            }
+        } catch {
+            print("Error getting current user info: \(error)")
+        }
+        return nil
+    }
+    
+    func signOut() async throws {
+        do {
+            try await supabase.auth.signOut()
+            self.authState = .signedOut
+            resetValues()
+        } catch {
+            print("Error signing user out: \(error)")
+        }
+    }
+    
     func resetValues() {
         self.currentUser = nil
         self.currentUserInfo = nil
+        self.session = nil
         self.email = ""
         self.password = ""
         self.confirmPassword = ""

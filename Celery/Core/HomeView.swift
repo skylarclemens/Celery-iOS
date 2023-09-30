@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+enum LoadingState {
+    case loading, success, error
+}
+
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var transactionsList: [Debt]?
@@ -18,6 +22,9 @@ struct HomeView: View {
     @State var balanceOwe = 0.00
     
     @State var transactionType: TransactionType = .all
+    
+    @State var openSettings: Bool = false
+    @State var transactionsState: LoadingState = .loading
     
     var body: some View {
         NavigationStack {
@@ -37,34 +44,49 @@ struct HomeView: View {
                             }
                         }
                     }
-                TransactionsView(transactionsList: $filteredTransactionList)
+                TransactionsView(transactionsList: $filteredTransactionList, state: $transactionsState)
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        UserSettingsView()
+                    Button {
+                        openSettings = true
                     } label: {
-                        Image(systemName: "person.crop.circle")
-                            .foregroundColor(.white)
-                            .accessibilityLabel("Open user settings")
+                        if let currentUser {
+                            UserPhotoView(size: 28, imagePath: currentUser.avatar_url)
+                        } else {
+                            Image(systemName: "person.crop.circle")
+                                .foregroundColor(.white)
+                        }
                     }
+                    .accessibilityLabel("Open user settings")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     
                 }
             }
+            .sheet(isPresented: $openSettings) {
+                UserSettingsView()
+            }
         }
         .tint(.white)
         .task {
-            if let user = authViewModel.currentUserInfo {
-                self.currentUser = user
+            if self.currentUser == nil {
+                self.currentUser = try? await authViewModel.getCurrentUserInfo()
             }
+            self.transactionsState = .loading
             if self.transactionsList == nil {
-                self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
-                self.filteredTransactionList = self.transactionsList
-                balanceCalc()
+                do {
+                    self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
+                    self.filteredTransactionList = self.transactionsList
+                    self.transactionsState = .success
+                    balanceCalc()
+                } catch {
+                    self.transactionsState = .error
+                }
+            } else {
+                self.transactionsState = .success
             }
         }
         .onAppear {
@@ -186,7 +208,7 @@ struct HomeBalanceView: View {
                 .pickerStyle(.segmented)
                 .frame(maxWidth: 200)
                 .onAppear {
-                    UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.systemBackground], for: .normal)
+                    UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
                     UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.label], for: .selected)
                 }
                 VStack {

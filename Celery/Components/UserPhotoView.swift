@@ -14,6 +14,7 @@ struct UserPhotoView: View {
     @State var userPhoto: UIImage? = nil
     
     let size: CGFloat
+    var borderSize: CGFloat = 3
     
     @State var imagePath: String? = nil
     
@@ -33,13 +34,17 @@ struct UserPhotoView: View {
                 Image(systemName: "person.fill")
                     .font(.system(size: size * 0.75))
                     .foregroundStyle(.black.opacity(0.25))
+                    .offset(y: size/16)
             }
-            Circle()
-                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: size/10)
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: size, height: size)
         .clipShape(Circle())
+        .overlay(
+            Circle()
+                .inset(by: -borderSize+(borderSize/2))
+                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: borderSize)
+        )
         .task {
             if let imagePath {
                 self.imageState = .loading
@@ -60,6 +65,9 @@ struct UserPhotoView: View {
     ZStack {
         Rectangle()
             .fill(.gray)
-        UserPhotoView(size: 40)
+        VStack {
+            UserPhotoView(size: 40)
+            UserPhotoView(size: 50)
+        }
     }
 }

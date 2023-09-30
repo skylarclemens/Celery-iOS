@@ -31,13 +31,14 @@ struct CreateExpenseSplitView: View {
     private let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
     
     var currentUser: UserInfo?
+    @Binding var isOpen: Bool
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             Rectangle()
                 .fill(Color(UIColor.systemGroupedBackground))
                 .ignoresSafeArea()
-            VStack {
+            ScrollView {
                 AtomView() {
                     Text(newExpense.amount, format: currencyFormat)
                         .font(.system(size: 24, weight: .bold, design: .rounded))
@@ -162,58 +163,61 @@ struct CreateExpenseSplitView: View {
                             .padding(.leading, 8)
                     }
                     Spacer()
-                    Section {
-                        Button {
-                            let newCategory = newExpense.category == "Category" ? "General" : newExpense.category
-                            Task {
-                                var createdExpense: Expense?
-                                var createdDebts: [DebtModel]?
-                                do {
-                                    let createExpense: Expense = Expense(description: newExpense.name, amount: newExpense.amount, payer_id: newExpense.paidBy?.id.uuidString, category: newCategory, date: newExpense.date)
-                                    createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
-                                } catch {
-                                    print("Error creating expense: \(error)")
-                                }
-                                
-                                do {
-                                    if let createdExpense {
-                                        let createDebts: [DebtModel] = newExpense.splitWith.compactMap { user in
-                                            if newExpense.paidBy?.id == user.id { return nil }
-                                            return DebtModel(amount: newExpense.userAmounts[user.id], creditor_id: newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
-                                        }
-                                        createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
-                                    }
-                                } catch {
-                                    print("Error creating debts: \(error)")
-                                }
-                                
-                                do {
-                                    if let _ =
-                                        createdDebts {
-                                        let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
-                                        try await SupabaseManager.shared.addNewActivity(activity: createActivity)
-                                        dismiss()
-                                    }
-                                } catch {
-                                    print("Error creating activity: \(error)")
-                                }
-                            }
-                        } label: {
-                            Text("Send")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .font(.headline)
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
-                        .padding(.top, 8)
-                        .tint(.primaryAction)
-                    }
                 }
-                Spacer()
+                .padding(.horizontal)
             }
-            .padding()
+            VStack {
+                Spacer()
+                Button {
+                    let newCategory = newExpense.category == "Category" ? "General" : newExpense.category
+                    Task {
+                        var createdExpense: Expense?
+                        var createdDebts: [DebtModel]?
+                        do {
+                            let createExpense: Expense = Expense(description: newExpense.name, amount: newExpense.amount, payer_id: newExpense.paidBy?.id.uuidString, category: newCategory, date: newExpense.date)
+                            createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
+                        } catch {
+                            print("Error creating expense: \(error)")
+                        }
+                        
+                        do {
+                            if let createdExpense {
+                                let createDebts: [DebtModel] = newExpense.splitWith.compactMap { user in
+                                    if newExpense.paidBy?.id == user.id { return nil }
+                                    return DebtModel(amount: newExpense.userAmounts[user.id], creditor_id: newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
+                                }
+                                createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
+                            }
+                        } catch {
+                            print("Error creating debts: \(error)")
+                        }
+                        
+                        do {
+                            if let _ =
+                                createdDebts {
+                                let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
+                                try await SupabaseManager.shared.addNewActivity(activity: createActivity)
+                                dismiss()
+                            }
+                        } catch {
+                            print("Error creating activity: \(error)")
+                        }
+                    }
+                } label: {
+                    Text("Send")
+                        .frame(maxWidth: .infinity)
+                }
+                .font(.headline)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
+                .padding(.top, 8)
+                .padding(.horizontal)
+                .tint(.primaryAction)
+            }
+            .zIndex(1)
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         }
         .sheet(isPresented: $openUserSelection) {
             SelectUsersView(selectedUsers: $newExpense.splitWith)
@@ -228,6 +232,16 @@ struct CreateExpenseSplitView: View {
                 )
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isOpen = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                }
+            }
+        }
         .onAppear {
             userDebts = newExpense.splitWith.map { user in
                 Binding(
@@ -238,8 +252,6 @@ struct CreateExpenseSplitView: View {
                 )
             }
         }
-        .navigationTitle("Split details")
-        .navigationBarTitleDisplayMode(.inline)
     }
     
     func onSubmit() async throws {
@@ -256,7 +268,7 @@ struct CreateExpenseSplitView: View {
 
 #Preview {
     NavigationStack {
-        CreateExpenseSplitView(newExpense: NewExpense())
+        CreateExpenseSplitView(newExpense: NewExpense(), isOpen: .constant(true))
             .environmentObject(AuthenticationViewModel())
     }
 }
