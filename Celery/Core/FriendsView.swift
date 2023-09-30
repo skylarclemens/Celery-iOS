@@ -7,26 +7,66 @@
 
 import SwiftUI
 
+private class FriendsViewModel: ObservableObject {
+    @Published var friendsList: [UserFriend]?
+    @Published var loading: LoadingState = .loading
+    
+    @MainActor
+    func fetchData() async throws {
+        self.loading = .loading
+        do {
+            self.friendsList = try await SupabaseManager.shared.getUsersFriends()
+            self.loading = .success
+        } catch {
+            self.loading = .error
+        }
+    }
+}
+
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var friendsList: [UserInfo]?
+    @StateObject fileprivate var viewModel = FriendsViewModel()
+    
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    if let friendsList {
-                        ForEach(friendsList) { friend in
-                            NavigationLink {
-                                ProfileView(user: friend)
-                            } label: {
-                                Text(friend.displayName ?? "Unknown user")
+                    if viewModel.loading == .success {
+                        if let friendsList = viewModel.friendsList {
+                            ForEach(friendsList) { friend in
+                                NavigationLink {
+                                    if let currentFriend = friend.friend {
+                                        ProfileView(user: currentFriend)
+                                    }
+                                } label: {
+                                    HStack {
+                                        UserPhotoView(size: 40, imagePath: friend.friend?.avatar_url)
+                                        Text(friend.friend?.name ?? "Unknown user")
+                                    }
+                                }
+                                .listRowInsets(EdgeInsets(.init(top: 8, leading: 8, bottom: 8, trailing: 12)))
                             }
+                        } else {
+                            Text("No friends")
+                                .foregroundStyle(.secondary)
                         }
-                    } else {
-                        Text("No friends")
-                            .foregroundStyle(.secondary)
+                    } else if viewModel.loading == .loading {
+                        VStack {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else if viewModel.loading == .error {
+                        VStack {
+                            Text("Something went wrong!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
+                .animation(.default, value: viewModel.friendsList)
             }
             .navigationTitle("Friends")
             .navigationBarTitleDisplayMode(.inline)
@@ -34,23 +74,16 @@ struct FriendsView: View {
             .toolbar {
                 NavigationLink {
                     QueryUsersView()
-                        .navigationTitle("Find people")
+                        .navigationTitle("Search")
                         .navigationBarTitleDisplayMode(.inline)
                 } label: {
                     Label("Search", systemImage: "magnifyingglass")
                 }
             }
         }
-        .onAppear {
-            Task {
-                if let currentUser = authViewModel.currentUserInfo {
-                    let friendsList = try await FriendManager.shared.getUsersFriendships(userId: currentUser.id)
-                    if let friendsList {
-                        let friendIds = FriendManager.shared.getFriendsIds(currentUser: currentUser, friends: friendsList)
-                        self.friendsList = try await UserManager.shared.getFriendsUserInfo(friendIds: friendIds, limit: 10)
-                    }
-                }
-            }
+        .tint(.white)
+        .task {
+            try? await viewModel.fetchData()
         }
     }
 }

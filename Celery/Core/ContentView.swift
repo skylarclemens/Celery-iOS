@@ -25,6 +25,7 @@ struct ContentView: View {
                             .tabItem {
                                 Image(systemName: "house")
                             }.tag(0)
+                            .toolbar(.hidden, for: .tabBar)
                         Text("")
                             .tabItem {
                                 HStack(alignment: .center, spacing: 0) {
@@ -36,6 +37,7 @@ struct ContentView: View {
                             .tabItem {
                                 Image(systemName: "person.2")
                             }.tag(2)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     .onChange(of: selectedTab) { index in
                         if index == 1 {
@@ -45,26 +47,75 @@ struct ContentView: View {
                             self.prevSelectedTab = index
                         }
                     }
-                    Button {
-                        selectedTab = 1
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .shadow(radius: 10)
+                    VStack {
+                        Spacer()
+                        ZStack {
+                            Button {
+                                selectedTab = 1
+                            } label: {
+                                HStack {
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(.white)
+                                        .shadow(radius: 10)
+                                }
+                            }.frame(width: 52, height: 52, alignment: .center)
+                                .background(
+                                    Circle()
+                                        .fill(
+                                            .shadow(.inner(color: .black.opacity(0.25), radius: 0, y: -3))
+                                        )
+                                        .foregroundColor(.primaryAction)
+                                )
+                                .clipShape(Circle())
+                                .overlay(
+                                    Circle()
+                                        .stroke(colorScheme != .dark ? .white : .layoutGreen.opacity(0.75), lineWidth: 2)
+                                )
+                                .offset(y: -10)
+                                .zIndex(2)
+                            HStack {
+                                Button {
+                                    selectedTab = 0
+                                } label: {
+                                    Image(systemName: "house")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(selectedTab == 0 ? .secondary : .quaternary)
+                                }
+                                .tint(.secondary)
+                                .padding(.horizontal, 40)
+                                Spacer()
+                                Button {
+                                    selectedTab = 2
+                                } label: {
+                                    Image(systemName: "person.2.fill")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(selectedTab == 2 ? .secondary : .quaternary)
+                                }
+                                .tint(.secondary)
+                                .padding(.horizontal, 40)
+                            }
+                            .frame(maxWidth: 373, maxHeight: 52)
+                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+                            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 2)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .inset(by: -1)
+                                    .stroke(colorScheme != .dark ? Color(red: 0.87, green: 0.88, blue: 0.89) : Color(red: 0.22, green: 0.22, blue: 0.23), lineWidth: 2)
+                            )
+                            .zIndex(1)
+                            VisualEffect(style: .systemChromeMaterial)
+                                .offset(y: 45)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 60)
+                                .blur(radius: 8)
+                                .opacity(0.99)
                         }
-                    }.frame(width: 52, height: 52, alignment: .center)
-                    .background(Color.primaryAction)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(colorScheme != .dark ? .white : .layoutGreen, lineWidth: 2)
-                    )
-                    .padding(.bottom, 5)
+                    }
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
                 }
                 .sheet(isPresented: $openCreateExpense) {
-                    CreateExpenseView()
+                    CreateExpenseView(isOpen: $openCreateExpense)
                 }
             case .signedOut:
                 WelcomeView(openAuthView: $openAuthView)
@@ -82,5 +133,14 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .environmentObject(AuthenticationViewModel())
+    }
+}
+
+struct VisualEffect: UIViewRepresentable {
+    @State var style : UIBlurEffect.Style
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
     }
 }

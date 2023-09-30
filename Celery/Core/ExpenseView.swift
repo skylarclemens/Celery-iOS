@@ -9,12 +9,14 @@ import SwiftUI
 
 struct ExpenseView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     let expense: Expense
+    @State var debts: [Debt]? = nil
+    @State var activities: [Activity]?
+    let currencyFormatter: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
     
-    init(expense: Expense) {
-        self.expense = expense
-    }
+    @State private var showDeleteAlert = false
     
     var body: some View {
         ZStack {
@@ -44,11 +46,12 @@ struct ExpenseView: View {
                     ZStack(alignment: .top) {
                         ZStack {
                             Circle()
-                                .fill(Color(hex: Category.categoryList[expense.category ?? "Category"]?.colorUInt ?? 0x6A9B5D)
+                                .fill(Color(hex: Category.categoryList.first(where: {
+                                    $0.name == expense.category?.capitalized
+                                })?.colorUInt ?? 0x6A9B5D)
                                     .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
                                 )
-                            
-                            Image(expense.category ?? "Category")
+                            Image(expense.category?.capitalized ?? "General")
                                 .resizable()
                                 .frame(maxWidth: 40, maxHeight: 40)
                             Circle()
@@ -59,14 +62,14 @@ struct ExpenseView: View {
                         .zIndex(1)
                         VStack(spacing: 16) {
                             VStack(spacing: 4) {
-                                Text(expense.name ?? "Unknown name")
+                                Text(expense.description ?? "Unknown name")
                                     .font(.system(size: 36, weight: .semibold, design: .rounded))
                                 Text(expense.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
-                                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
                                     .foregroundStyle(.secondary.opacity(0.75))
                             }
                             .padding(.top, 24)
-                            Button {
+                            /*Button {
                                 
                             } label: {
                                 Text("Pay")
@@ -80,7 +83,7 @@ struct ExpenseView: View {
                                     )
                             }
                             .background(Color.primaryAction)
-                            .cornerRadius(16)
+                            .cornerRadius(16)*/
                         }
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -92,34 +95,130 @@ struct ExpenseView: View {
                         )
                     }
                     .padding()
-                    .offset(y: 60)
+                    .offset(y: 20)
                 }.zIndex(2)
                 List {
                     Section {
-                        Text(expense.payerID ?? "Payer")
+                        if let firstDebt = debts?.first,
+                           let creditor = firstDebt.creditor {
+                            HStack {
+                                HStack {
+                                    UserPhotoView(size: 50, imagePath: creditor.avatar_url)
+                                    Text(creditor.name ?? "Unknown user")
+                                        .font(.system(size: 14, weight: .medium))
+                                }
+                                Spacer()
+                                Text(expense.amount ?? 0.00, format: currencyFormatter)
+                                    .foregroundStyle(Color.layoutGreen)
+                                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                            }
+                        }
                     } header: {
                         Text("Paid by")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.primary.opacity(0.9))
                             .textCase(nil)
+                            .padding(.top, 16)
                     }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
                     Section {
-                        Text("Split")
+                        if let debts {
+                            ForEach(debts) { debt in
+                                if let debtor = debt.debtor {
+                                    HStack {
+                                        HStack {
+                                            UserPhotoView(size: 50, imagePath: debtor.avatar_url)
+                                            Text(debtor.name ?? "Unknown user")
+                                                .font(.system(size: 14, weight: .medium))
+                                        }
+                                        Spacer()
+                                        Text(debt.amount ?? 0.00, format: currencyFormatter)
+                                            .foregroundStyle(Color.layoutRed)
+                                            .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                    }
+                                }
+                            }
+                        }
                     } header: {
                         Text("Split with")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.primary.opacity(0.9))
                             .textCase(nil)
                     }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
+                    Section {
+                        if let activities {
+                            ForEach(activities) { activity in
+                                ActivityView(activity: activity)
+                            }
+                        }
+                    } header: {
+                        Text("Activity")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.primary.opacity(0.9))
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12))
                 }
-                .padding(.top, 44)
             }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(role: .destructive) {
+                        showDeleteAlert = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+        }
+        .alert("Delete \(expense.description ?? "expense")", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                Task {
+                    await deleteExpense()
+                    dismiss()
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to permanently delete this expense?")
+        }
+        .task {
+            self.debts = try? await SupabaseManager.shared.getDebtsByExpense(expenseId: expense.id)
+            self.activities = try? await SupabaseManager.shared.getRelatedActivities(for: expense.id)
+        }
+        .onAppear {
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor.white
+            ]
+        }
+        .onDisappear {
+            UINavigationBar.appearance().titleTextAttributes = nil
+        }
+    }
+    
+    func deleteExpense() async {
+        if let expenseId = expense.id {
+            try? await SupabaseManager.shared.deleteExpense(expenseId: expenseId)
         }
     }
 }
 
 #Preview {
     NavigationStack{
-        ExpenseView(expense: Expense(id: UUID().uuidString, name: "Test", description: nil, amount: 10.00, payerID: "Test-UUID", groupID: nil, category: "Entertainment", date: Date(), createdAt: Date()))
+        ExpenseView(expense: Expense.example)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        
+                    } label: {
+                        Text("Back")
+                    }
+                }
+            }
+            
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import PhotosUI
-import FirebaseStorage
 
 enum ImageState: Equatable {
     case empty
@@ -18,7 +17,6 @@ enum ImageState: Equatable {
 
 struct AvatarUploadView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    private let storageManager = FirebaseStorageManager()
     
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var avatarImage: UIImage? = nil
@@ -53,7 +51,7 @@ struct AvatarUploadView: View {
             }
         }.onChange(of: selectedImage) { _ in
             Task {
-                self.imageState = .loading
+                /*self.imageState = .loading
                 do {
                     let data = try await selectedImage?.loadTransferable(type: Data.self)
                     if let data,
@@ -69,10 +67,10 @@ struct AvatarUploadView: View {
                     }
                 } catch {
                     self.imageState = .failure
-                }
+                }*/
             }
         }.onAppear {
-            if let photoURL = authViewModel.currentUser?.photoURL {
+            /*if let photoURL = authViewModel.currentUser?.photoURL {
                 self.imageState = .loading
                 try? storageManager.getImage(from: photoURL) { image in
                     if let image {
@@ -82,7 +80,7 @@ struct AvatarUploadView: View {
                         self.imageState = .empty
                     }
                 }
-            }
+            }*/
         }
     }
 }

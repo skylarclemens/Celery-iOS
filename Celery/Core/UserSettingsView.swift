@@ -10,44 +10,55 @@ import SwiftUI
 struct UserSettingsView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State private var user: UserInfo? = nil
-    
-    func getCurrentUser() async throws {
-        let authUser = try authViewModel.getUser()
-        if let currentUser = authUser {
-            self.user = try await UserManager.shared.getUser(userId: currentUser.uid)
-        }
-    }
     
     var body: some View {
         NavigationStack {
-            VStack {
-                AvatarUploadView()
-            }
+            //AvatarUploadView()
             List {
-                if let user = user {
-                    Section {
-                        Text("User id: \(user.id)")
-                        Text("Display name: \(user.displayName ?? "")")
-                        if let email = user.email {
-                            Text("Email: \(email)")
-                        }
-                        if let photoURL = authViewModel.currentUser?.photoURL {
-                            Text("Photo URL: \(photoURL.absoluteString)")
-                        }
-                    } header: {
-                        Text("User information")
+                /*if let user = user {
+                 Section {
+                 Text("User id: \(user.id)")
+                 Text("Display name: \(user.displayName ?? "")")
+                 if let email = user.email {
+                 Text("Email: \(email)")
+                 }
+                 /*if let photoURL = authViewModel.currentUser?.photoURL {
+                  Text("Photo URL: \(photoURL.absoluteString)")
+                  }*/
+                 } header: {
+                 Text("User information")
+                 }
+                 }*/
+                Button("Sign out") {
+                    Task {
+                        try? await authViewModel.signOut()
+                        dismiss()
                     }
                 }
-                Button("Sign out") {
-                    try? authViewModel.signOut()
+            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                    }
                 }
             }
-            .navigationTitle("Profile")
-            .navigationBarTitleDisplayMode(.inline)
-            .task {
-                try? await self.getCurrentUser()
-            }
+            /*.task {
+             try? await self.getCurrentUser()
+             }*/
+        }
+        .onAppear {
+            UINavigationBar.appearance().titleTextAttributes = [
+                .foregroundColor: UIColor.label
+            ]
+        }
+        .onDisappear {
+            UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
 }
