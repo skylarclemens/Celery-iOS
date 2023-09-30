@@ -35,11 +35,14 @@ struct AtomView<Content: View>: View {
                 atom
             }
             Circle()
-                .stroke(.background.opacity(0.35), lineWidth: 8)
+                .inset(by: -1)
+                .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 2)
+            /*Circle()
+                .stroke(.background.opacity(0.35), lineWidth: 8)*/
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
         .frame(width: 120, height: 120)
-        .clipShape(Circle())
+        //.clipShape(Circle())
         .background {
             ForEach(0..<6) { i in
                 let orbitalSize = 60 * Double(i) * 1.25 + 30 // Adjust this formula as needed
