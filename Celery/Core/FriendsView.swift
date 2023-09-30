@@ -9,13 +9,17 @@ import SwiftUI
 
 private class FriendsViewModel: ObservableObject {
     @Published var friendsList: [UserFriend]?
-    @Published var loading = false
+    @Published var loading: LoadingState = .loading
     
     @MainActor
     func fetchData() async throws {
-        loading = true
-        self.friendsList = try? await SupabaseManager.shared.getUsersFriends()
-        loading = false
+        self.loading = .loading
+        do {
+            self.friendsList = try await SupabaseManager.shared.getUsersFriends()
+            self.loading = .success
+        } catch {
+            self.loading = .error
+        }
     }
 }
 
@@ -27,23 +31,39 @@ struct FriendsView: View {
         NavigationStack {
             VStack {
                 List {
-                    if let friendsList = viewModel.friendsList {
-                        ForEach(friendsList) { friend in
-                            NavigationLink {
-                                if let currentFriend = friend.friend {
-                                    ProfileView(user: currentFriend)
+                    if viewModel.loading == .success {
+                        if let friendsList = viewModel.friendsList {
+                            ForEach(friendsList) { friend in
+                                NavigationLink {
+                                    if let currentFriend = friend.friend {
+                                        ProfileView(user: currentFriend)
+                                    }
+                                } label: {
+                                    HStack {
+                                        UserPhotoView(size: 40, imagePath: friend.friend?.avatar_url)
+                                        Text(friend.friend?.name ?? "Unknown user")
+                                    }
                                 }
-                            } label: {
-                                HStack {
-                                    UserPhotoView(size: 40, imagePath: friend.friend?.avatar_url)
-                                    Text(friend.friend?.name ?? "Unknown user")
-                                }
+                                .listRowInsets(EdgeInsets(.init(top: 8, leading: 8, bottom: 8, trailing: 12)))
                             }
-                            .listRowInsets(EdgeInsets(.init(top: 8, leading: 8, bottom: 8, trailing: 12)))
+                        } else {
+                            Text("No friends")
+                                .foregroundStyle(.secondary)
                         }
-                    } else {
-                        Text("No friends")
-                            .foregroundStyle(.secondary)
+                    } else if viewModel.loading == .loading {
+                        VStack {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else if viewModel.loading == .error {
+                        VStack {
+                            Text("Something went wrong!")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
                 .animation(.default, value: viewModel.friendsList)

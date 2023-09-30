@@ -45,6 +45,9 @@ struct HomeView: View {
                         }
                     }
                 TransactionsView(transactionsList: $filteredTransactionList, state: $transactionsState)
+                    .refreshable {
+                        try? await loadTransactions()
+                    }
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
@@ -72,22 +75,7 @@ struct HomeView: View {
         }
         .tint(.white)
         .task {
-            if self.currentUser == nil {
-                self.currentUser = try? await authViewModel.getCurrentUserInfo()
-            }
-            self.transactionsState = .loading
-            if self.transactionsList == nil {
-                do {
-                    self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
-                    self.filteredTransactionList = self.transactionsList
-                    self.transactionsState = .success
-                    balanceCalc()
-                } catch {
-                    self.transactionsState = .error
-                }
-            } else {
-                self.transactionsState = .success
-            }
+            try? await loadData()
         }
         .onAppear {
             UINavigationBar.appearance().titleTextAttributes = [
@@ -96,6 +84,29 @@ struct HomeView: View {
         }
         .onDisappear {
             UINavigationBar.appearance().titleTextAttributes = nil
+        }
+    }
+    
+    func loadData() async throws {
+        if self.currentUser == nil {
+            self.currentUser = try? await authViewModel.getCurrentUserInfo()
+        }
+        self.transactionsState = .loading
+        if self.transactionsList == nil {
+            try? await loadTransactions()
+            balanceCalc()
+        } else {
+            self.transactionsState = .success
+        }
+    }
+    
+    func loadTransactions() async throws {
+        do {
+            self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
+            self.filteredTransactionList = self.transactionsList
+            self.transactionsState = .success
+        } catch {
+            self.transactionsState = .error
         }
     }
     

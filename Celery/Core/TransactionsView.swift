@@ -68,12 +68,19 @@ struct TransactionsView: View {
                             .foregroundStyle(.secondary)
                     }
                 } else if state == .loading {
-                    ProgressView()
-                        .progressViewStyle(.circular)
+                    VStack {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .tint(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
                 } else if state == .error {
-                    Text("Error loading expenses")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    VStack {
+                        Text("Something went wrong!")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             } header: {
                 Text("Transactions")

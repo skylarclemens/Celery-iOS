@@ -169,38 +169,12 @@ struct CreateExpenseSplitView: View {
             VStack {
                 Spacer()
                 Button {
-                    let newCategory = newExpense.category == "Category" ? "General" : newExpense.category
                     Task {
-                        var createdExpense: Expense?
-                        var createdDebts: [DebtModel]?
                         do {
-                            let createExpense: Expense = Expense(description: newExpense.name, amount: newExpense.amount, payer_id: newExpense.paidBy?.id.uuidString, category: newCategory, date: newExpense.date)
-                            createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
+                            try await onSubmit()
+                            isOpen = false
                         } catch {
-                            print("Error creating expense: \(error)")
-                        }
-                        
-                        do {
-                            if let createdExpense {
-                                let createDebts: [DebtModel] = newExpense.splitWith.compactMap { user in
-                                    if newExpense.paidBy?.id == user.id { return nil }
-                                    return DebtModel(amount: newExpense.userAmounts[user.id], creditor_id: newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
-                                }
-                                createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
-                            }
-                        } catch {
-                            print("Error creating debts: \(error)")
-                        }
-                        
-                        do {
-                            if let _ =
-                                createdDebts {
-                                let createActivity = Activity(user_id: currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
-                                try await SupabaseManager.shared.addNewActivity(activity: createActivity)
-                                dismiss()
-                            }
-                        } catch {
-                            print("Error creating activity: \(error)")
+                            print("Error submitting")
                         }
                     }
                 } label: {
@@ -255,7 +229,37 @@ struct CreateExpenseSplitView: View {
     }
     
     func onSubmit() async throws {
+        let newCategory = self.newExpense.category == "Category" ? "General" : self.newExpense.category
+        var createdExpense: Expense?
+        var createdDebts: [DebtModel]?
+        do {
+            let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id.uuidString, category: newCategory, date: self.newExpense.date)
+            createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
+        } catch {
+            print("Error creating expense: \(error)")
+        }
         
+        do {
+            if let createdExpense {
+                let createDebts: [DebtModel] = self.newExpense.splitWith.compactMap { user in
+                    if self.newExpense.paidBy?.id == user.id { return nil }
+                    return DebtModel(amount: self.newExpense.userAmounts[user.id], creditor_id: self.newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
+                }
+                createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
+            }
+        } catch {
+            print("Error creating debts: \(error)")
+        }
+        
+        do {
+            if let _ =
+                createdDebts {
+                let createActivity = Activity(user_id: self.currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
+                try await SupabaseManager.shared.addNewActivity(activity: createActivity)
+            }
+        } catch {
+            print("Error creating activity: \(error)")
+        }
     }
     
     func isCurrentUser(userId: UUID) -> Bool {
