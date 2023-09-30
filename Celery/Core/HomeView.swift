@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var transactionsList: [Debt]?
+    @State var filteredTransactionList: [Debt]?
     @State var currentUser: UserInfo?
     
     @State var totalBalance = 0.00
@@ -21,8 +22,22 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                HomeBalanceView(totalBalance: $totalBalance, transactionType: $transactionType)
-                TransactionsView(transactionsList: $transactionsList)
+                HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, transactionType: $transactionType)
+                    .onChange(of: transactionType) { newValue in
+                        switch newValue {
+                        case .all:
+                            self.filteredTransactionList = transactionsList
+                        case .owed:
+                            self.filteredTransactionList = transactionsList?.filter {
+                                $0.creditor?.id == currentUser?.id
+                            }
+                        case .owe:
+                            self.filteredTransactionList = transactionsList?.filter {
+                                $0.creditor?.id != currentUser?.id
+                            }
+                        }
+                    }
+                TransactionsView(transactionsList: $filteredTransactionList)
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.inline)
@@ -48,6 +63,7 @@ struct HomeView: View {
             }
             if self.transactionsList == nil {
                 self.transactionsList = try? await SupabaseManager.shared.getDebtsWithExpense()
+                self.filteredTransactionList = self.transactionsList
                 balanceCalc()
             }
         }
@@ -100,7 +116,21 @@ struct HomeBalanceView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var totalBalance: Double
+    @Binding var balanceOwed: Double
+    @Binding var balanceOwe: Double
     @Binding var transactionType: TransactionType
+    
+    var currentBalance: Double {
+        switch transactionType {
+        case .all:
+            return totalBalance
+        case .owed:
+            return balanceOwed
+        case .owe:
+            return balanceOwe
+        }
+    }
+    
     var body: some View {
         ZStack {
             Rectangle()
@@ -144,8 +174,23 @@ struct HomeBalanceView: View {
                     .ignoresSafeArea()
             }
             VStack {
+                Picker("Show Transactions", selection: $transactionType) {
+                    ForEach(TransactionType.allCases) { type in
+                        Text(type.rawValue.localizedCapitalized).tag(type)
+                    }
+                }
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.primary.opacity(0.125))
+                )
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 200)
+                .onAppear {
+                    UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.systemBackground], for: .normal)
+                    UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.label], for: .selected)
+                }
                 VStack {
-                    Text(totalBalance, format: .currency(code: "USD"))
+                    Text(currentBalance, format: .currency(code: "USD"))
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .kerning(0.96)
                         .foregroundStyle(.white
