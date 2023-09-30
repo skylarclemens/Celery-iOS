@@ -9,15 +9,20 @@ import SwiftUI
 
 struct CategoryPickerView: View {
     @Binding var category: String
+    var selectedCategory: Category? {
+        Category.categoryList.first(where: {
+            $0.name == category
+        })
+    }
     let categoryNames = Category.categoryList.map { category in
-        category.value.name
+        category.name
     }
     
     var body: some View {
         VStack {
             AtomView(showAtomColor: false) {
                 Circle()
-                    .fill(Color(hex: Category.categoryList[category]?.colorUInt ?? 0x6A9B5D)
+                    .fill(Color(hex: selectedCategory?.colorUInt ?? 0x6A9B5D)
                         .shadow(.inner(color: .black.opacity(0.05), radius: 0, y: 3)))
                 Image(category == "Category" ? "General" : category)
                     .resizable()

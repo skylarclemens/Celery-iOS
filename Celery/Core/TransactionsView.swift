@@ -7,18 +7,8 @@
 
 import SwiftUI
 
-@MainActor
-final class TransactionsViewModel: ObservableObject {
-    @Published var userExpenses: [Expense]?
-    
-    /*func getUserExpenses(userId: String) async throws {
-        self.userExpenses = try? await ExpenseManager.shared.getUsersExpenses(userId: userId)
-    }*/
-}
-
 struct TransactionsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @StateObject var viewModel = TransactionsViewModel()
     @Binding var transactionsList: [Debt]?
     
     var body: some View {
@@ -35,7 +25,9 @@ struct TransactionsView: View {
                             HStack(spacing: 12) {
                                 ZStack {
                                     Circle()
-                                        .fill(Color(hex: Category.categoryList[debt.expense?.category?.capitalized ?? "General"]?.colorUInt ?? 0x6A9B5D)
+                                        .fill(Color(hex: Category.categoryList.first(where: {
+                                            $0.name == debt.expense?.category?.capitalized
+                                        })?.colorUInt ?? 0x6A9B5D)
                                             .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
                                             .shadow(.drop(color: .black.opacity(0.2), radius: 2, y: 1))
                                         )

@@ -46,7 +46,9 @@ struct ExpenseView: View {
                     ZStack(alignment: .top) {
                         ZStack {
                             Circle()
-                                .fill(Color(hex: Category.categoryList[expense.category?.capitalized ?? "General"]?.colorUInt ?? 0x6A9B5D)
+                                .fill(Color(hex: Category.categoryList.first(where: {
+                                    $0.name == expense.category?.capitalized
+                                })?.colorUInt ?? 0x6A9B5D)
                                     .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
                                 )
                             Image(expense.category?.capitalized ?? "General")

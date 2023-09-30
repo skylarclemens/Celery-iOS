@@ -65,7 +65,7 @@ struct ActivityView: View {
 extension ActivityAction {
     func getAssociatedString() -> String {
         switch self {
-        case .create: return "created a new"
+        case .create: return "created"
         case .update: return "updated the"
         case .delete: return "deleted the"
         case .pay: return "paid"

@@ -42,12 +42,6 @@ final class AuthenticationViewModel: ObservableObject {
     
     private let supabase = SupabaseManager.shared.client
     
-    init() {
-        Task {
-            try? await initializeSessionListener()
-        }
-    }
-    
     func signInWithEmailPassword() async {
         self.authState = .authenticating
         do {

@@ -123,6 +123,8 @@ class SupabaseManager: ObservableObject {
             let transactionsList: [Debt] = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
                 expense: expense_id!inner(*)
                 """)
                 .eq(column: "paid", value: false)

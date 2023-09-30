@@ -22,7 +22,6 @@ private class FriendsViewModel: ObservableObject {
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject fileprivate var viewModel = FriendsViewModel()
-    //@State var friendsList: [UserFriend]?
     
     var body: some View {
         NavigationStack {

@@ -11,14 +11,13 @@ struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var openAuthView: Bool = false
-    @State var authState: AuthState = .signedIn
     
     @State var selectedTab = 0
     @State var prevSelectedTab = 0
     @State var openCreateExpense: Bool = false
     var body: some View {
         Group {
-            switch authState {
+            switch authViewModel.authState {
             case .signedIn:
                 ZStack(alignment: .bottom) {
                     TabView(selection: $selectedTab) {
