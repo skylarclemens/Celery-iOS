@@ -160,19 +160,26 @@ struct ProfileView: View {
                 TransactionsView(transactionsList: $sharedDebts, state: $transactionsState)
                     .padding(.top, 65)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .refreshable {
+                        try? await loadTransactions()
+                    }
             }
         }
         .task {
             self.transactionsState = .loading
-            do {
-                self.sharedDebts = try await SupabaseManager.shared.getSharedDebtsWithExpenses(friendId: user.id)
-                self.transactionsState = .success
-            } catch {
-                self.transactionsState = .error
-            }
+            try? await loadTransactions()
             if self.friendship == nil {
                 self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
             }
+        }
+    }
+    
+    func loadTransactions() async throws {
+        do {
+            self.sharedDebts = try await SupabaseManager.shared.getSharedDebtsWithExpenses(friendId: user.id)
+            self.transactionsState = .success
+        } catch {
+            self.transactionsState = .error
         }
     }
 }
