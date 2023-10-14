@@ -70,7 +70,8 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $openSettings) {
-                UserSettingsView()
+                UserSettingsView(currentUser: currentUser)
+                    .tint(.blue)
             }
         }
         .tint(.white)

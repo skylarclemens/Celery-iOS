@@ -212,7 +212,7 @@ struct CreateExpenseSplitView: View {
                     isOpen = false
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
         }
