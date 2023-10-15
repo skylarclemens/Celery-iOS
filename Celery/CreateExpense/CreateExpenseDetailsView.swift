@@ -29,6 +29,10 @@ struct CreateExpenseDetailsView: View {
     }
     
     @Binding var isOpen: Bool
+    
+    var invalidForm: Bool {
+        newExpense.name.isEmpty || newExpense.amount == 0
+    }
 
     var body: some View {
         ZStack {
@@ -107,10 +111,11 @@ struct CreateExpenseDetailsView: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(invalidForm ? Color.secondary.opacity(0.25) : Color.layoutGreen, lineWidth: 1))
                     .padding(.top, 8)
                     .tint(.primaryAction)
                 }
+                .disabled(invalidForm)
             }
             .padding()
         }

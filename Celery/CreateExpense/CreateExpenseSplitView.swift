@@ -35,6 +35,10 @@ struct CreateExpenseSplitView: View {
     
     @State private var creatingExpense: Bool = false
     
+    var invalidForm: Bool {
+        newExpense.splitWith.count <= 1 || newExpense.paidBy == nil
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             Rectangle()
@@ -195,10 +199,11 @@ struct CreateExpenseSplitView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(invalidForm ? Color.secondary.opacity(0.25) : Color.layoutGreen, lineWidth: 1))
                 .padding(.top, 8)
                 .padding(.horizontal)
                 .tint(.primaryAction)
+                .disabled(invalidForm)
             }
             .zIndex(1)
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -222,6 +227,7 @@ struct CreateExpenseSplitView: View {
                     isOpen = false
                 } label: {
                     Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 24))
                         .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
