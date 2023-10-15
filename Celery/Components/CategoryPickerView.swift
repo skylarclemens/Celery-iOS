@@ -27,11 +27,8 @@ struct CategoryPickerView: View {
                 Image(category == "Category" ? "General" : category)
                     .resizable()
                     .frame(maxWidth: 60, maxHeight: 60)
-                    .transaction { transaction in
-                        transaction.animation = nil
-                    }
             }
-            Picker("Category", selection: $category.animation(.spring(duration: 0.5))) {
+            Picker("Category", selection: $category) {
                 Text("Category").tag("Category")
                 ForEach(categoryNames, id: \.self) { name in
                     Text(name).tag(name)

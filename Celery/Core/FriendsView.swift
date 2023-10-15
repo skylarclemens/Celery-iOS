@@ -81,7 +81,6 @@ struct FriendsView: View {
                 }
             }
         }
-        .tint(.white)
         .task {
             try? await viewModel.fetchData()
         }

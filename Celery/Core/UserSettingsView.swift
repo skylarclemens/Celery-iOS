@@ -11,24 +11,30 @@ struct UserSettingsView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     
+    var currentUser: UserInfo?
+    
     var body: some View {
         NavigationStack {
             //AvatarUploadView()
             List {
-                /*if let user = user {
-                 Section {
-                 Text("User id: \(user.id)")
-                 Text("Display name: \(user.displayName ?? "")")
-                 if let email = user.email {
-                 Text("Email: \(email)")
-                 }
-                 /*if let photoURL = authViewModel.currentUser?.photoURL {
-                  Text("Photo URL: \(photoURL.absoluteString)")
-                  }*/
-                 } header: {
-                 Text("User information")
-                 }
-                 }*/
+                if let user = currentUser {
+                    Button {
+                        
+                    } label: {
+                        HStack(spacing: 14) {
+                            UserPhotoView(size: 45, imagePath: user.avatar_url)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(user.name ?? "")
+                                if let username = user.username {
+                                    Text("@\(username)")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                    .tint(.primary)
+                }
                 Button("Sign out") {
                     Task {
                         try? await authViewModel.signOut()
@@ -44,26 +50,16 @@ struct UserSettingsView: View {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                            .font(.system(size: 24))
+                            .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                     }
                 }
             }
-            /*.task {
-             try? await self.getCurrentUser()
-             }*/
-        }
-        .onAppear {
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor.label
-            ]
-        }
-        .onDisappear {
-            UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
 }
 
 #Preview {
-    UserSettingsView()
+    UserSettingsView(currentUser: UserInfo.example)
         .environmentObject(AuthenticationViewModel())
 }

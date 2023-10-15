@@ -28,36 +28,6 @@ struct ProfileView: View {
     init(user: UserInfo, friendship: UserFriend? = nil) {
         self.user = user
         self.friendship = friendship
-        
-        /*let attrs: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.white,
-            .shadow: NSShadow()
-        ]
-        
-        UINavigationBar.appearance().tintColor = UIColor.white
-        
-        UINavigationBar.appearance().titleTextAttributes = attrs*/
-        
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        
-        let proxy = UINavigationBar.appearance()
-        proxy.tintColor = .white
-        proxy.standardAppearance = appearance
-        proxy.scrollEdgeAppearance = appearance
-        
-        /*let coloredAppearance = UINavigationBarAppearance()
-        coloredAppearance.configureWithTransparentBackground()
-        coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        
-        UINavigationBar.appearance().standardAppearance = coloredAppearance
-        UINavigationBar.appearance().compactAppearance = coloredAppearance
-        UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
-        
-        UINavigationBar.appearance().tintColor = .white*/
     }
     
     var body: some View {
@@ -157,12 +127,13 @@ struct ProfileView: View {
                     .padding()
                     .offset(y: 60)
                 }.zIndex(2)
-                TransactionsView(transactionsList: $sharedDebts, state: $transactionsState)
-                    .padding(.top, 65)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .refreshable {
-                        try? await loadTransactions()
-                    }
+                List {
+                    TransactionsView(transactionsList: $sharedDebts, state: $transactionsState)
+                }
+                .padding(.top, 65)
+                .refreshable {
+                    try? await loadTransactions()
+                }
             }
         }
         .task {

@@ -123,7 +123,8 @@ struct CreateExpenseDetailsView: View {
                     dismiss()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel))
+                        .font(.system(size: 24))
+                        .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
             ToolbarItemGroup(placement: .keyboard) {
