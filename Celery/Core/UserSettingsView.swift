@@ -50,18 +50,11 @@ struct UserSettingsView: View {
                         dismiss()
                     } label: {
                         Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 24))
                             .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                     }
                 }
             }
-        }
-        .onAppear {
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor.label
-            ]
-        }
-        .onDisappear {
-            UINavigationBar.appearance().titleTextAttributes = nil
         }
     }
 }

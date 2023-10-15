@@ -170,14 +170,6 @@ struct ExpenseView: View {
             self.debts = try? await SupabaseManager.shared.getDebtsByExpense(expenseId: expense.id)
             self.activities = try? await SupabaseManager.shared.getRelatedActivities(for: expense.id)
         }
-        .onAppear {
-            UINavigationBar.appearance().titleTextAttributes = [
-                .foregroundColor: UIColor.white
-            ]
-        }
-        .onDisappear {
-            UINavigationBar.appearance().titleTextAttributes = nil
-        }
     }
     
     func deleteExpense() async {

@@ -63,7 +63,6 @@ struct CreateExpenseView: View {
 }
 
 #Preview {
-    
     CreateExpenseView(isOpen: .constant(true))
         .environmentObject(AuthenticationViewModel())
 }
