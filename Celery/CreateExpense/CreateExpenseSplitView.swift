@@ -33,6 +33,12 @@ struct CreateExpenseSplitView: View {
     var currentUser: UserInfo?
     @Binding var isOpen: Bool
     
+    @State private var creatingExpense: Bool = false
+    
+    var invalidForm: Bool {
+        newExpense.splitWith.count <= 1 || newExpense.paidBy == nil
+    }
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             Rectangle()
@@ -178,17 +184,26 @@ struct CreateExpenseSplitView: View {
                         }
                     }
                 } label: {
-                    Text("Send")
-                        .frame(maxWidth: .infinity)
+                    Group {
+                        if !creatingExpense {
+                            Text("Send")
+                        } else {
+                            ProgressView()
+                                .tint(.white)
+                                .controlSize(.regular)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 .font(.headline)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.layoutGreen, lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(invalidForm ? Color.secondary.opacity(0.25) : Color.layoutGreen, lineWidth: 1))
                 .padding(.top, 8)
                 .padding(.horizontal)
                 .tint(.primaryAction)
+                .disabled(invalidForm)
             }
             .zIndex(1)
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -212,6 +227,7 @@ struct CreateExpenseSplitView: View {
                     isOpen = false
                 } label: {
                     Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 24))
                         .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
@@ -233,6 +249,7 @@ struct CreateExpenseSplitView: View {
         var createdExpense: Expense?
         var createdDebts: [DebtModel]?
         do {
+            creatingExpense = true
             let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id.uuidString, category: newCategory, date: self.newExpense.date)
             createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
         } catch {
@@ -260,6 +277,7 @@ struct CreateExpenseSplitView: View {
         } catch {
             print("Error creating activity: \(error)")
         }
+        creatingExpense = false
     }
     
     func isCurrentUser(userId: UUID) -> Bool {

@@ -31,6 +31,7 @@
 		7E6270BF2A9EB1C7006067CD /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270BE2A9EB1C7006067CD /* LoginView.swift */; };
 		7E6270C12A9EC282006067CD /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270C02A9EC282006067CD /* FriendsView.swift */; };
 		7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270C42A9ED78B006067CD /* QueryUsersView.swift */; };
+		7E66E6F82ADC452100E6D552 /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */; };
 		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
 		7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C42A9FB73800A215FC /* ProfileView.swift */; };
 		7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */; };
@@ -76,6 +77,7 @@
 		7E6270BE2A9EB1C7006067CD /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		7E6270C02A9EC282006067CD /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		7E6270C42A9ED78B006067CD /* QueryUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUsersView.swift; sourceTree = "<group>"; };
+		7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
 		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		7E6F5AEF2AC8F0DC00E976CA /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		7E7A78C42A9FB73800A215FC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */,
 				7EECB80A2AC222820026A9B8 /* AtomView.swift */,
 				7E8025912AC65E8D005D284D /* ActivityView.swift */,
+				7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
 				7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */,
 				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
+				7E66E6F82ADC452100E6D552 /* CurrencyTextField.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7E8025902AC653F1005D284D /* Activity.swift in Sources */,
 				7EECB8072AC21B030026A9B8 /* CreateExpenseDetailsView.swift in Sources */,
