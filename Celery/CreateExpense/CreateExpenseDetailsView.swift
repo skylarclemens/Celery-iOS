@@ -19,12 +19,14 @@ struct CreateExpenseDetailsView: View {
         case name, amount
     }
     private let currencyFormat: FloatingPointFormatStyle<Double>.Currency = .currency(code: Locale.current.currency?.identifier ?? "USD")
-    var numberFormatter: NumberFormatter = {
+    
+    var locale: Locale = .current
+    var numberFormatter: NumberFormatter {
         let formatter = NumberFormatter()
+        formatter.locale = locale
         formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 2
         return formatter
-    }()
+    }
     
     @Binding var isOpen: Bool
 
@@ -41,10 +43,10 @@ struct CreateExpenseDetailsView: View {
                             .font(.system(size: 28, weight: .regular, design: .rounded))
                             .multilineTextAlignment(.center)
                             .textInputAutocapitalization(.never)
-                            .submitLabel(.next)
+                            .submitLabel(.done)
                             .focused($focusedInput, equals: .name)
                             .onSubmit {
-                                self.focusedInput = .amount
+                                self.focusedInput = nil
                             }
                             .padding(.vertical, 14)
                             .padding(.horizontal, 8)
@@ -56,7 +58,6 @@ struct CreateExpenseDetailsView: View {
                                             .fill(Color(UIColor.secondarySystemGroupedBackground))
                                     )
                             )
-                        
                     }.frame(maxWidth: .infinity)
                         .zIndex(1)
                 }
@@ -65,12 +66,7 @@ struct CreateExpenseDetailsView: View {
                 }
                 Section {
                     HStack {
-                        TextField("$0.00", value: $newExpense.amount, formatter: numberFormatter)
-                            .font(.system(size: 32, weight: .semibold, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .keyboardType(.decimalPad)
-                            .focused($focusedInput, equals: .amount)
-                            .padding(.vertical,10)
+                        CurrencyTextField(value: $newExpense.amount, formatter: numberFormatter)
                             .padding(.horizontal, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -81,6 +77,7 @@ struct CreateExpenseDetailsView: View {
                                     )
                             )
                             .frame(maxWidth: 160)
+                            .frame(height: 60)
                     }.frame(maxWidth: .infinity)
                         .zIndex(1)
                 }
@@ -127,7 +124,7 @@ struct CreateExpenseDetailsView: View {
                         .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
-            ToolbarItemGroup(placement: .keyboard) {
+            /*ToolbarItemGroup(placement: .keyboard) {
                 Button {
                     focusedInput = .name
                 } label: {
@@ -150,7 +147,7 @@ struct CreateExpenseDetailsView: View {
                         .font(.system(size: 15, weight: .semibold))
                 }
                 .tint(.layoutGreen)
-            }
+            }*/
         }
     }
 }
