@@ -15,7 +15,9 @@ private class FriendsViewModel: ObservableObject {
     func fetchData() async throws {
         self.loading = .loading
         do {
-            self.friendsList = try await SupabaseManager.shared.getUsersFriends()
+            if self.friendsList == nil {
+                self.friendsList = try await SupabaseManager.shared.getUsersFriends()
+            }
             self.loading = .success
         } catch {
             self.loading = .error

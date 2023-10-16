@@ -24,6 +24,7 @@ class NewExpense: ObservableObject {
             calcSplit()
         }
     }
+    @Published var selectedGroup: GroupInfo?
     
     @Published var userAmounts: [UUID:Double] = [:]
     

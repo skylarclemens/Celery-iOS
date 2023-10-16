@@ -18,6 +18,8 @@ struct UserPhotoView: View {
     
     @State var imagePath: String? = nil
     
+    var type: UserPhotoType = .user
+    
     var body: some View {
         ZStack(alignment: imageState == .empty ? .bottom : .center) {
             Circle()
@@ -48,7 +50,7 @@ struct UserPhotoView: View {
         .task {
             if let imagePath {
                 self.imageState = .loading
-                try? await SupabaseManager.shared.getAvatarImage(imagePath: imagePath) { image in
+                try? await SupabaseManager.shared.getAvatarImage(imagePath: imagePath, type: type) { image in
                     if let image {
                         self.userPhoto = image
                         self.imageState = .success
@@ -70,4 +72,9 @@ struct UserPhotoView: View {
             UserPhotoView(size: 50)
         }
     }
+}
+
+enum UserPhotoType: String {
+    case user = "avatars"
+    case group = "group-avatars"
 }

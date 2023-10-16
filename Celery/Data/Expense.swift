@@ -12,13 +12,13 @@ struct Expense: Codable, Identifiable {
     let paid: Bool?
     let description: String?
     let amount: Double?
-    let payer_id: String?
-    let group_id: String?
+    let payer_id: UUID?
+    let group_id: UUID?
     let category: String?
     let date: Date?
     let created_at: Date?
     
-    init(id: UUID? = nil, paid: Bool? = false, description: String?, amount: Double?, payer_id: String?, group_id: String? = nil, category: String?, date: Date?, created_at: Date? = nil) {
+    init(id: UUID? = nil, paid: Bool? = false, description: String?, amount: Double?, payer_id: UUID?, group_id: UUID? = nil, category: String?, date: Date?, created_at: Date? = nil) {
         self.id = id
         self.paid = paid
         self.description = description
@@ -30,5 +30,5 @@ struct Expense: Codable, Identifiable {
         self.created_at = created_at
     }
     
-    static let example = Expense(id: UUID(), paid: false, description: "Example", amount: 10.00, payer_id: UserInfo.example.id.uuidString, category: "Entertainment", date: Date(), created_at: Date())
+    static let example = Expense(id: UUID(), paid: false, description: "Example", amount: 10.00, payer_id: UserInfo.example.id, category: "Entertainment", date: Date(), created_at: Date())
 }
