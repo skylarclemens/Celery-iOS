@@ -18,10 +18,10 @@ struct Debt: Codable, Identifiable, Equatable {
     let debtor: UserInfo?
     let expense: Expense?
     let paid: Bool?
-    let group_id: String?
+    let group_id: UUID?
     let created_at: Date?
     
-    init(id: UUID? = nil, amount: Double?, creditor: UserInfo?, debtor: UserInfo?, expense: Expense?, paid: Bool? = false, group_id: String? = nil, created_at: Date? = nil) {
+    init(id: UUID? = nil, amount: Double?, creditor: UserInfo?, debtor: UserInfo?, expense: Expense?, paid: Bool? = false, group_id: UUID? = nil, created_at: Date? = nil) {
         self.id = id
         self.amount = amount
         self.creditor = creditor
@@ -42,10 +42,10 @@ struct DebtModel: Codable, Identifiable {
     let debtor_id: UUID?
     let expense_id: UUID?
     let paid: Bool?
-    let group_id: String?
+    let group_id: UUID?
     let created_at: Date?
     
-    init(id: UUID? = nil, amount: Double?, creditor_id: UUID?, debtor_id: UUID?, expense_id: UUID?, paid: Bool? = false, group_id: String? = nil, created_at: Date? = nil) {
+    init(id: UUID? = nil, amount: Double?, creditor_id: UUID?, debtor_id: UUID?, expense_id: UUID?, paid: Bool? = false, group_id: UUID? = nil, created_at: Date? = nil) {
         self.id = id
         self.amount = amount
         self.creditor_id = creditor_id

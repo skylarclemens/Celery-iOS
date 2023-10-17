@@ -138,7 +138,9 @@ struct ProfileView: View {
         }
         .task {
             self.transactionsState = .loading
-            try? await loadTransactions()
+            if self.sharedDebts == nil {
+                try? await loadTransactions()
+            }
             if self.friendship == nil {
                 self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
             }

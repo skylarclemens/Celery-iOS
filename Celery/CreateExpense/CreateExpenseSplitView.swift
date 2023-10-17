@@ -54,28 +54,33 @@ struct CreateExpenseSplitView: View {
                 Spacer()
                 VStack(alignment: .leading) {
                     Section {
-                        HStack {
+                        VStack(alignment: .leading) {
                             if !newExpense.splitWith.isEmpty {
-                                ForEach(newExpense.splitWith) { user in
-                                    VStack {
-                                        UserPhotoView(size: 45, imagePath: user.avatar_url)
-                                        Text(isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
-                                            .font(.system(size: 12))
-                                            .lineLimit(2)
-                                            .multilineTextAlignment(.center)
-                                            .truncationMode(.tail)
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 12) {
+                                        ForEach(newExpense.splitWith) { user in
+                                            VStack {
+                                                UserPhotoView(size: 45, imagePath: user.avatar_url)
+                                                Text(isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
+                                                    .font(.system(size: 12))
+                                                    .lineLimit(2)
+                                                    .multilineTextAlignment(.center)
+                                                    .truncationMode(.tail)
+                                            }
+                                            .frame(maxWidth: 60)
+                                        }
                                     }
-                                    .frame(maxWidth: 60)
+                                    .padding(.leading)
                                 }
                             } else {
                                 Text("Add people to split the expense with")
                                     .font(.callout)
                                     .foregroundStyle(.secondary)
-                                    .padding(.leading, 8)
+                                    .padding(.leading)
                             }
-                            Spacer()
                         }
-                        .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 12)
                         .background(
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .strokeBorder(.tertiary.opacity(0.75), lineWidth: 1, antialiased: true)
@@ -90,6 +95,21 @@ struct CreateExpenseSplitView: View {
                             Text("Split with")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
                                 .padding(.leading, 8)
+                            if let selectedGroup = newExpense.selectedGroup {
+                                Text(selectedGroup.group_name ?? "Unknown group")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+                                    .background(
+                                        Capsule()
+                                            .fill(.regularMaterial)
+                                    )
+                                    .overlay(
+                                        Capsule()
+                                            .stroke(Color(UIColor.systemFill), lineWidth: 1)
+                                    )
+                            }
                             Spacer()
                             Button {
                                 openUserSelection = true
@@ -106,6 +126,7 @@ struct CreateExpenseSplitView: View {
                             .padding(.vertical, 4)
                             .tint(Color(uiColor: UIColor.systemGroupedBackground))
                         }
+                        .frame(height: 34)
                     }
                     Section {
                         HStack {
@@ -209,7 +230,8 @@ struct CreateExpenseSplitView: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
         .sheet(isPresented: $openUserSelection) {
-            SelectUsersView(selectedUsers: $newExpense.splitWith)
+            SelectUsersView(selectedUsers: $newExpense.splitWith, selectedGroup: $newExpense.selectedGroup, showGroups: true)
+                .tint(.accentColor)
         }
         .onReceive(newExpense.$splitWith) { newValue in
             userDebts = newValue.map { user in
@@ -250,7 +272,7 @@ struct CreateExpenseSplitView: View {
         var createdDebts: [DebtModel]?
         do {
             creatingExpense = true
-            let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id.uuidString, category: newCategory, date: self.newExpense.date)
+            let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id, group_id: self.newExpense.selectedGroup?.id, category: newCategory, date: self.newExpense.date)
             createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
         } catch {
             print("Error creating expense: \(error)")
@@ -260,7 +282,7 @@ struct CreateExpenseSplitView: View {
             if let createdExpense {
                 let createDebts: [DebtModel] = self.newExpense.splitWith.compactMap { user in
                     if self.newExpense.paidBy?.id == user.id { return nil }
-                    return DebtModel(amount: self.newExpense.userAmounts[user.id], creditor_id: self.newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id)
+                    return DebtModel(amount: self.newExpense.userAmounts[user.id], creditor_id: self.newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id, group_id: self.newExpense.selectedGroup?.id)
                 }
                 createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
             }

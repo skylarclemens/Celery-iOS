@@ -38,6 +38,11 @@ struct ContentView: View {
                                 Image(systemName: "person.2")
                             }.tag(2)
                             .toolbar(.hidden, for: .tabBar)
+                        GroupsView()
+                            .tabItem {
+                                Image(systemName: "person.3")
+                            }.tag(3)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     .onChange(of: selectedTab) { index in
                         if index == 1 {
@@ -83,8 +88,7 @@ struct ContentView: View {
                                         .foregroundStyle(selectedTab == 0 ? .secondary : .quaternary)
                                 }
                                 .tint(.secondary)
-                                .padding(.horizontal, 40)
-                                Spacer()
+                                .padding(.horizontal, 20)
                                 Button {
                                     selectedTab = 2
                                 } label: {
@@ -93,7 +97,17 @@ struct ContentView: View {
                                         .foregroundStyle(selectedTab == 2 ? .secondary : .quaternary)
                                 }
                                 .tint(.secondary)
-                                .padding(.horizontal, 40)
+                                .padding(.horizontal, 20)
+                                Spacer()
+                                Button {
+                                    selectedTab = 3
+                                } label: {
+                                    Image(systemName: "person.3.fill")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(selectedTab == 3 ? .secondary : .quaternary)
+                                }
+                                .tint(.secondary)
+                                .padding(.horizontal, 20)
                             }
                             .frame(maxWidth: 373, maxHeight: 52)
                             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))

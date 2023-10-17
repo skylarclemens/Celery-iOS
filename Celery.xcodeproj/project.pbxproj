@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E01B2462AB653C7005D5F7B /* ExpenseView.swift */; };
+		7E073C912ADD885A00F3DD1C /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C902ADD885A00F3DD1C /* GroupsView.swift */; };
+		7E073C932ADD8B0900F3DD1C /* GroupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C922ADD8B0900F3DD1C /* GroupInfo.swift */; };
+		7E073C952ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C942ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift */; };
+		7E073C992ADD8CCF00F3DD1C /* UserSupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C982ADD8CCF00F3DD1C /* UserSupabaseManager.swift */; };
+		7E073C9B2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C9A2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift */; };
+		7E073C9D2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E073C9C2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift */; };
 		7E0E983F2ABA109400AA974D /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7E0E983E2ABA109400AA974D /* Supabase */; };
 		7E0E98422ABA111100AA974D /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98412ABA111100AA974D /* SupabaseManager.swift */; };
 		7E0E98442ABA141400AA974D /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98432ABA141400AA974D /* AuthenticationViewModel.swift */; };
@@ -15,6 +21,8 @@
 		7E0E98512ABBA27E00AA974D /* UserFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98502ABBA27E00AA974D /* UserFriend.swift */; };
 		7E20F4222AB7754B009DAB58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20F4212AB7754B009DAB58 /* Color.swift */; };
 		7E24D1492AC5FB5E003D9E51 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7E24D1482AC5FB5E003D9E51 /* Supabase */; };
+		7E2A2D072ADDAAD300365C04 /* TransactionsScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */; };
+		7E2A2D0A2ADDC33900365C04 /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A2D092ADDC33900365C04 /* CreateGroupView.swift */; };
 		7E4B2DEC2AA0FEAC00967E3E /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */; };
 		7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */; };
 		7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */; };
@@ -33,10 +41,12 @@
 		7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270C42A9ED78B006067CD /* QueryUsersView.swift */; };
 		7E66E6F82ADC452100E6D552 /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */; };
 		7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E67A7912A6B4704001E0C23 /* HomeView.swift */; };
+		7E6CFAF12ADD9C5900639E80 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6CFAF02ADD9C5900639E80 /* GroupView.swift */; };
 		7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C42A9FB73800A215FC /* ProfileView.swift */; };
 		7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */; };
 		7E8025902AC653F1005D284D /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E80258F2AC653F1005D284D /* Activity.swift */; };
 		7E8025922AC65E8D005D284D /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E8025912AC65E8D005D284D /* ActivityView.swift */; };
+		7E90FA412ADC8D4D00F1B2CE /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E90FA402ADC8D4D00F1B2CE /* TransactionView.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -54,11 +64,19 @@
 
 /* Begin PBXFileReference section */
 		7E01B2462AB653C7005D5F7B /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
+		7E073C902ADD885A00F3DD1C /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
+		7E073C922ADD8B0900F3DD1C /* GroupInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupInfo.swift; sourceTree = "<group>"; };
+		7E073C942ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsSupabaseManager.swift; sourceTree = "<group>"; };
+		7E073C982ADD8CCF00F3DD1C /* UserSupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSupabaseManager.swift; sourceTree = "<group>"; };
+		7E073C9A2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySupabaseManager.swift; sourceTree = "<group>"; };
+		7E073C9C2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseSupabaseManager.swift; sourceTree = "<group>"; };
 		7E0E98412ABA111100AA974D /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
 		7E0E98432ABA141400AA974D /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		7E0E98472ABA1E5700AA974D /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		7E0E98502ABBA27E00AA974D /* UserFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFriend.swift; sourceTree = "<group>"; };
 		7E20F4212AB7754B009DAB58 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsScrollView.swift; sourceTree = "<group>"; };
+		7E2A2D092ADDC33900365C04 /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhotoView.swift; sourceTree = "<group>"; };
@@ -79,11 +97,13 @@
 		7E6270C42A9ED78B006067CD /* QueryUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryUsersView.swift; sourceTree = "<group>"; };
 		7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
 		7E67A7912A6B4704001E0C23 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		7E6CFAF02ADD9C5900639E80 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		7E6F5AEF2AC8F0DC00E976CA /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		7E7A78C42A9FB73800A215FC /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusShape.swift; sourceTree = "<group>"; };
 		7E80258F2AC653F1005D284D /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		7E8025912AC65E8D005D284D /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		7E90FA402ADC8D4D00F1B2CE /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -119,8 +139,9 @@
 				7E6270B22A9E807D006067CD /* Expense.swift */,
 				7E6270B02A9E788F006067CD /* Debt.swift */,
 				7E0E98472ABA1E5700AA974D /* UserInfo.swift */,
-				7EBB04642AA2948500057123 /* Category.swift */,
+				7E073C922ADD8B0900F3DD1C /* GroupInfo.swift */,
 				7E0E98502ABBA27E00AA974D /* UserFriend.swift */,
+				7EBB04642AA2948500057123 /* Category.swift */,
 				7E80258F2AC653F1005D284D /* Activity.swift */,
 			);
 			path = Data;
@@ -131,6 +152,10 @@
 			children = (
 				7E0E98412ABA111100AA974D /* SupabaseManager.swift */,
 				7E0E98432ABA141400AA974D /* AuthenticationViewModel.swift */,
+				7E073C982ADD8CCF00F3DD1C /* UserSupabaseManager.swift */,
+				7E073C942ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift */,
+				7E073C9C2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift */,
+				7E073C9A2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift */,
 				7E4B2DF32AA142F200967E3E /* Storage */,
 			);
 			path = Supabase;
@@ -142,6 +167,14 @@
 				7E20F4212AB7754B009DAB58 /* Color.swift */,
 			);
 			path = Color;
+			sourceTree = "<group>";
+		};
+		7E2A2D082ADDC32000365C04 /* CreateGroup */ = {
+			isa = PBXGroup;
+			children = (
+				7E2A2D092ADDC33900365C04 /* CreateGroupView.swift */,
+			);
+			path = CreateGroup;
 			sourceTree = "<group>";
 		};
 		7E4B2DF32AA142F200967E3E /* Storage */ = {
@@ -187,6 +220,8 @@
 				7E6270C42A9ED78B006067CD /* QueryUsersView.swift */,
 				7EF7B2472AC0D05400BB1CFA /* SelectUsersView.swift */,
 				7ED926D72AC9E2DA00BDE2B8 /* PayView.swift */,
+				7E073C902ADD885A00F3DD1C /* GroupsView.swift */,
+				7E6CFAF02ADD9C5900639E80 /* GroupView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -200,6 +235,8 @@
 				7EECB80A2AC222820026A9B8 /* AtomView.swift */,
 				7E8025912AC65E8D005D284D /* ActivityView.swift */,
 				7E66E6F72ADC452100E6D552 /* CurrencyTextField.swift */,
+				7E90FA402ADC8D4D00F1B2CE /* TransactionView.swift */,
+				7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -229,6 +266,7 @@
 				7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */,
 				7E6270AB2A9E5419006067CD /* Core */,
 				7EECB8052AC21AD60026A9B8 /* CreateExpense */,
+				7E2A2D082ADDC32000365C04 /* CreateGroup */,
 				7E0E98402ABA10FB00AA974D /* Supabase */,
 				7E6270A22A9D3AFA006067CD /* Authentication */,
 				7E02CEF62A99282100B4A9B8 /* Data */,
@@ -337,38 +375,48 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7E6CFAF12ADD9C5900639E80 /* GroupView.swift in Sources */,
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
 				7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
 				7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */,
+				7E073C912ADD885A00F3DD1C /* GroupsView.swift in Sources */,
 				7E6270B52A9E8883006067CD /* CreateExpenseView.swift in Sources */,
 				7E66E6F82ADC452100E6D552 /* CurrencyTextField.swift in Sources */,
 				7E67A7922A6B4704001E0C23 /* HomeView.swift in Sources */,
 				7E8025902AC653F1005D284D /* Activity.swift in Sources */,
+				7E2A2D072ADDAAD300365C04 /* TransactionsScrollView.swift in Sources */,
 				7EECB8072AC21B030026A9B8 /* CreateExpenseDetailsView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
 				7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */,
 				7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */,
+				7E073C992ADD8CCF00F3DD1C /* UserSupabaseManager.swift in Sources */,
 				7EBB04652AA2948500057123 /* Category.swift in Sources */,
 				7E6270C52A9ED78B006067CD /* QueryUsersView.swift in Sources */,
+				7E073C9D2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift in Sources */,
 				7E8025922AC65E8D005D284D /* ActivityView.swift in Sources */,
 				7EF7B2482AC0D05400BB1CFA /* SelectUsersView.swift in Sources */,
 				7E6270B32A9E807D006067CD /* Expense.swift in Sources */,
 				7EECB8092AC21DCE0026A9B8 /* CreateExpenseSplitView.swift in Sources */,
 				7EECB8042AC21A8A0026A9B8 /* CategoryPickerView.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
+				7E073C932ADD8B0900F3DD1C /* GroupInfo.swift in Sources */,
 				7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */,
 				7E0E98422ABA111100AA974D /* SupabaseManager.swift in Sources */,
 				7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */,
 				7E6270C12A9EC282006067CD /* FriendsView.swift in Sources */,
 				7ED926D82AC9E2DA00BDE2B8 /* PayView.swift in Sources */,
 				7EECB80B2AC222820026A9B8 /* AtomView.swift in Sources */,
+				7E2A2D0A2ADDC33900365C04 /* CreateGroupView.swift in Sources */,
 				7E4B2DEC2AA0FEAC00967E3E /* LaunchView.swift in Sources */,
 				7E0E98512ABBA27E00AA974D /* UserFriend.swift in Sources */,
 				7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */,
 				7E20F4222AB7754B009DAB58 /* Color.swift in Sources */,
+				7E073C952ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift in Sources */,
+				7E90FA412ADC8D4D00F1B2CE /* TransactionView.swift in Sources */,
 				7E0E98442ABA141400AA974D /* AuthenticationViewModel.swift in Sources */,
 				7ED4938A2AC36D4A003F5B2C /* UserSplitView.swift in Sources */,
+				7E073C9B2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift in Sources */,
 				7EF7B2462AC0C26700BB1CFA /* ColorSchemeViewModifier.swift in Sources */,
 				7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */,
 				7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */,

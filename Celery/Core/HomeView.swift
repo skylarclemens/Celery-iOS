@@ -21,6 +21,9 @@ struct HomeView: View {
     @State var balanceOwed = 0.00
     @State var balanceOwe = 0.00
     
+    @State var uniqueUsers: [UserInfo]?
+    @State var usersGroups: [GroupInfo]?
+    
     @State var transactionType: TransactionType = .all
     
     @State var openSettings: Bool = false
@@ -28,7 +31,7 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            List {
+            ScrollView {
                 HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, transactionType: $transactionType)
                     .onChange(of: transactionType) { newValue in
                         switch newValue {
@@ -44,10 +47,13 @@ struct HomeView: View {
                             }
                         }
                     }
-                    
-                TransactionsView(transactionsList: $filteredTransactionList, state: $transactionsState)
+                    .padding(.horizontal)
+                if let uniqueUsers = uniqueUsers {
+                    RecentUsersView(users: uniqueUsers)
+                        .padding(.horizontal)
+                }
+                TransactionsScrollView(transactionsList: $filteredTransactionList, state: $transactionsState)
             }
-            .offset(y: -20)
             .animation(.default, value: filteredTransactionList)
             .refreshable {
                 try? await loadTransactions()
@@ -76,6 +82,23 @@ struct HomeView: View {
         }
     }
     
+    func organizeDebt(debt: [Debt]) {
+        if !debt.isEmpty {
+            let creditors = debt.map {
+                $0.creditor!
+            }
+            let debtors = debt.map {
+                $0.debtor!
+            }
+            let allUsers = creditors + debtors
+            let uniqueUsers = Set(allUsers)
+            //print(uniqueUsers)
+            self.uniqueUsers = Array(uniqueUsers).filter {
+                $0.id != self.currentUser?.id
+            }
+        }
+    }
+    
     func loadData() async throws {
         if self.currentUser == nil {
             self.currentUser = try? await authViewModel.getCurrentUserInfo()
@@ -83,6 +106,9 @@ struct HomeView: View {
         self.transactionsState = .loading
         if self.transactionsList == nil {
             try? await loadTransactions()
+            if let debt = self.transactionsList {
+                organizeDebt(debt: debt)
+            }
         } else {
             self.transactionsState = .success
         }
@@ -139,6 +165,48 @@ enum TransactionType: String, CaseIterable, Identifiable {
     
     var id: Self {
         return self
+    }
+}
+
+struct RecentUsersView: View {
+    var users: [UserInfo]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Recent")
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .foregroundStyle(.primary.opacity(0.9))
+                .textCase(nil)
+                .padding(.leading)
+                .padding(.top, 5)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 24) {
+                    ForEach(users) { user in
+                        NavigationLink {
+                            ProfileView(user: user)
+                        } label: {
+                            VStack {
+                                UserPhotoView(size: 45, imagePath: user.avatar_url)
+                                Text(user.name ?? "Unknown name")
+                                    .font(.system(size: 12))
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.center)
+                                    .truncationMode(.tail)
+                            }
+                        }
+                        .frame(maxWidth: 60)
+                        .buttonStyle(EmptyButtonStyle())
+                    }
+                }
+                .padding(.horizontal)
+            }
+            .frame(height: 65)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+        }
     }
 }
 

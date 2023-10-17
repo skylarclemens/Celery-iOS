@@ -22,6 +22,9 @@ struct AvatarUploadView: View {
     @State private var avatarImage: UIImage? = nil
     @State private var imageState: ImageState = .empty
     
+    @Binding var avatarUrl: String
+    var type: UserPhotoType = .user
+    
     var body: some View {
         ZStack {
             Circle()
@@ -51,26 +54,25 @@ struct AvatarUploadView: View {
             }
         }.onChange(of: selectedImage) { _ in
             Task {
-                /*self.imageState = .loading
+                self.imageState = .loading
                 do {
                     let data = try await selectedImage?.loadTransferable(type: Data.self)
                     if let data,
-                       let uiImage = UIImage(data: data),
-                       let currentUser = authViewModel.currentUserInfo {
+                       let currentUser = authViewModel.currentUser,
+                       let uiImage = UIImage(data: data) {
+                        let path = "\(currentUser.id.uuidString)/\(UUID().uuidString)"
+                        try await SupabaseManager.shared.uploadImageToStorage(uiImage, to: type.rawValue, name: path)
                         self.avatarImage = uiImage
-                        uiImage.upload(to: "avatars/\(currentUser.id).jpg") { url in
-                            authViewModel.updateCurrentUsersProfilePhoto(imageUrl: url)
-                            self.imageState = .success
-                        }
-                    } else {
-                        self.imageState = .failure
+                        self.imageState = .success
+                        self.avatarUrl = path
                     }
                 } catch {
                     self.imageState = .failure
-                }*/
+                }
             }
-        }.onAppear {
-            /*if let photoURL = authViewModel.currentUser?.photoURL {
+        }
+        /*.onAppear {
+            if let photoURL = authViewModel.currentUser?.photoURL {
                 self.imageState = .loading
                 try? storageManager.getImage(from: photoURL) { image in
                     if let image {
@@ -80,11 +82,11 @@ struct AvatarUploadView: View {
                         self.imageState = .empty
                     }
                 }
-            }*/
-        }
+            }
+        }*/
     }
 }
 
 #Preview {
-    AvatarUploadView()
+    AvatarUploadView(avatarUrl: .constant(""))
 }
