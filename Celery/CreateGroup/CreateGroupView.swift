@@ -32,7 +32,7 @@ struct CreateGroupView: View {
                         TextField("Group name", text: $groupName)
                     }
                     Section {
-                        HStack {
+                        HStack(spacing: 12) {
                             if !groupMembers.isEmpty {
                                 ForEach(groupMembers) { user in
                                     VStack {
@@ -67,7 +67,6 @@ struct CreateGroupView: View {
                                 }
                             }
                             .foregroundStyle(Color.secondary)
-                            .padding(.horizontal, 8)
                             .padding(.vertical, 4)
                             .tint(Color(uiColor: UIColor.systemGroupedBackground))
                         }
