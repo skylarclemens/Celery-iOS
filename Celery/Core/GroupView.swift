@@ -15,6 +15,8 @@ struct GroupView: View {
     @State var debts: [Debt]?
     @State var loading: LoadingState = .loading
     
+    @State var showEditGroup: Bool = false
+    
     var body: some View {
         ZStack {
             Color(uiColor: .systemGroupedBackground)
@@ -67,6 +69,23 @@ struct GroupView: View {
         }
         .navigationTitle(group.group_name ?? "Group")
         .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button {
+                        showEditGroup = true
+                        //showDeleteAlert = true
+                    } label: {
+                        Label("Manage group", systemImage: "pencil")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+        }
+        .sheet(isPresented: $showEditGroup) {
+            CreateGroupView(group: group, members: members)
+        }
         .task {
             try? await fetchData()
         }

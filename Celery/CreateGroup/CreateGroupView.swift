@@ -14,6 +14,20 @@ struct CreateGroupView: View {
     @State var groupName: String = ""
     @State var groupMembers: [UserInfo] = []
     @State var avatarUrl: String = ""
+    var editing: Bool = false
+    
+    init() {
+        self.groupName = ""
+        self.groupMembers = []
+        self.avatarUrl = ""
+    }
+    
+    init(group: GroupInfo, members: [UserInfo]?) {
+        self._groupName = State(initialValue: group.group_name ?? "")
+        self._groupMembers = State(initialValue: members ?? [])
+        self._avatarUrl = State(initialValue: group.avatar_url ?? "")
+        self.editing = true
+    }
     
     @State var loading: LoadingState = .success
     
@@ -54,7 +68,7 @@ struct CreateGroupView: View {
                         }
                     } header: {
                         HStack {
-                            Text("Split with")
+                            Text("Members")
                             Spacer()
                             Button {
                                 openUserSelection = true
@@ -63,7 +77,7 @@ struct CreateGroupView: View {
                                     Image(systemName: "plus")
                                 } else {
                                     Text("Edit")
-                                        .font(.system(size: 14))
+                                        .font(.system(size: 12))
                                 }
                             }
                             .foregroundStyle(Color.secondary)
@@ -82,7 +96,7 @@ struct CreateGroupView: View {
                     } label: {
                         Group {
                             if loading != .loading {
-                                Text("Create")
+                                Text(editing ? "Save changes" : "Create")
                                     .font(.headline)
                                     .foregroundStyle(.white)
                             } else {
@@ -117,7 +131,7 @@ struct CreateGroupView: View {
                     }
                 }
             }
-            .navigationTitle("Create group")
+            .navigationTitle("\(editing ? "Manage" : "Create") group")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
