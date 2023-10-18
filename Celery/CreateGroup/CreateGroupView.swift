@@ -104,7 +104,7 @@ struct CreateGroupView: View {
                 .ignoresSafeArea(.keyboard, edges: .bottom)
             }
             .sheet(isPresented: $openUserSelection) {
-                SelectUsersView(selectedUsers: $groupMembers)
+                SelectUsersView(users: $groupMembers)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

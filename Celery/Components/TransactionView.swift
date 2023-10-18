@@ -38,6 +38,8 @@ struct TransactionView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(debt.expense?.description ?? "Unknown name")
                         .font(.system(size: 16, weight: .semibold))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                     Text(debt.expense?.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundStyle(.tertiary)

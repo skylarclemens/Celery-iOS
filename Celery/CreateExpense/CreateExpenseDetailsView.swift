@@ -129,30 +129,6 @@ struct CreateExpenseDetailsView: View {
                         .foregroundStyle(Color(uiColor: UIColor.secondaryLabel), Color(uiColor: UIColor.tertiarySystemFill))
                 }
             }
-            /*ToolbarItemGroup(placement: .keyboard) {
-                Button {
-                    focusedInput = .name
-                } label: {
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 17))
-                }.disabled(focusedInput == .name)
-                    .tint(.layoutGreen)
-                Button {
-                    focusedInput = .amount
-                } label: {
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 17))
-                }.disabled(focusedInput == .amount)
-                    .tint(.layoutGreen)
-                Spacer()
-                Button {
-                    focusedInput = nil
-                } label: {
-                    Text("Done")
-                        .font(.system(size: 15, weight: .semibold))
-                }
-                .tint(.layoutGreen)
-            }*/
         }
     }
 }

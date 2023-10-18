@@ -19,21 +19,25 @@ struct TransactionsScrollView: View {
                 .foregroundStyle(.primary.opacity(0.9))
                 .textCase(nil)
                 .padding(.leading)
-                .padding(.bottom, 8)
                 .padding(.top, 5)
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 if state == .success {
                     if let transactionsList,
                        !transactionsList.isEmpty {
                         ForEach(transactionsList) { debt in
-                            TransactionView(debt: debt)
-                                .tint(.primary)
-                                .padding(.horizontal)
-                            if debt != transactionsList.last {
-                                Divider()
-                                    .padding(.vertical, 6)
-                                    .padding(.leading, 66)
+                            VStack {
+                                Spacer()
+                                TransactionView(debt: debt)
+                                    .tint(.primary)
+                                    .padding(.horizontal)
+                                Spacer()
+                                if debt != transactionsList.last {
+                                    Divider()
+                                    //.padding(.vertical, 6)
+                                        .padding(.leading, 66)
+                                }
                             }
+                            .frame(height: 60)
                         }
                     } else {
                         Text("No expenses")
@@ -56,7 +60,6 @@ struct TransactionsScrollView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
-            .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
