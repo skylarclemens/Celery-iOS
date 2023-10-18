@@ -230,7 +230,7 @@ struct CreateExpenseSplitView: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
         }
         .sheet(isPresented: $openUserSelection) {
-            SelectUsersView(selectedUsers: $newExpense.splitWith, selectedGroup: $newExpense.selectedGroup, showGroups: true)
+            SelectUsersView(users: $newExpense.splitWith, group: $newExpense.selectedGroup, showGroups: true)
                 .tint(.accentColor)
         }
         .onReceive(newExpense.$splitWith) { newValue in
