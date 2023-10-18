@@ -134,4 +134,28 @@ extension SupabaseManager {
             return nil
         }
     }
+    
+    func removeUserFromGroup(userId: UUID, groupId: UUID) async throws {
+        do {
+            try await self.client.database.from("user_group")
+                .delete()
+                .eq(column: "group_id", value: groupId)
+                .eq(column: "user_id", value: userId)
+                .execute()
+        } catch {
+            print("Error removing user from group: \(error)")
+        }
+    }
+    
+    //Delete group from database
+    func deleteGroup(groupId: UUID) async throws {
+        do {
+            try await self.client.database.from("group")
+                .delete()
+                .eq(column: "id", value: groupId)
+                .execute()
+        } catch {
+            print("Error deleting group: \(error)")
+        }
+    }
 }

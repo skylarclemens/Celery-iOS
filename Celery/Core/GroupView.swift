@@ -76,7 +76,7 @@ struct GroupView: View {
                         showEditGroup = true
                         //showDeleteAlert = true
                     } label: {
-                        Label("Manage group", systemImage: "pencil")
+                        Label("Manage group", systemImage: "gear")
                     }
                 } label: {
                     Image(systemName: "ellipsis")
@@ -84,7 +84,7 @@ struct GroupView: View {
             }
         }
         .sheet(isPresented: $showEditGroup) {
-            CreateGroupView(group: group, members: members)
+            EditGroupView(group: group, members: members)
         }
         .task {
             try? await fetchData()
