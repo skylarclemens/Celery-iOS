@@ -11,6 +11,7 @@ struct ExpenseView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     let expense: Expense
     @State var debts: [Debt]? = nil
     @State var activities: [Activity]?
@@ -174,7 +175,7 @@ struct ExpenseView: View {
     
     func deleteExpense() async {
         if let expenseId = expense.id {
-            try? await SupabaseManager.shared.deleteExpense(expenseId: expenseId)
+            try? await model.removeDebts(expenseId: expenseId)
         }
     }
 }
@@ -182,6 +183,7 @@ struct ExpenseView: View {
 #Preview {
     NavigationStack{
         ExpenseView(expense: Expense.example)
+            .environmentObject(Model())
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

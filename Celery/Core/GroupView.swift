@@ -16,6 +16,7 @@ struct GroupView: View {
     @State var loading: LoadingState = .loading
     
     @State var showEditGroup: Bool = false
+    @Binding var path: NavigationPath
     
     var body: some View {
         ZStack {
@@ -62,7 +63,7 @@ struct GroupView: View {
                         )
                     }
                     .padding(.horizontal)
-                    TransactionsScrollView(transactionsList: $debts, state: $loading)
+                    TransactionsScrollView(transactionsList: debts ?? [], state: $loading)
                         .animation(.default, value: debts)
                 }
             }
@@ -84,7 +85,7 @@ struct GroupView: View {
             }
         }
         .sheet(isPresented: $showEditGroup) {
-            EditGroupView(group: group, members: members)
+            EditGroupView(group: group, members: members, path: $path)
         }
         .task {
             try? await fetchData()
@@ -109,7 +110,7 @@ struct GroupView: View {
 
 #Preview {
     NavigationStack {
-        GroupView(group: GroupInfo.example)
+        GroupView(group: GroupInfo.example, path: .constant(NavigationPath()))
             .environmentObject(AuthenticationViewModel())
     }
 }

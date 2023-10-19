@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateGroupView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @Environment(\.dismiss) var dismiss
     
     @State var groupName: String = ""
@@ -18,6 +19,7 @@ struct CreateGroupView: View {
     @State var loading: LoadingState = .success
     
     @State var openUserSelection: Bool = false
+    @Binding var path: NavigationPath
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
@@ -69,6 +71,7 @@ struct CreateGroupView: View {
                         }
                     }
                 }
+                .scrollDismissesKeyboard(.immediately)
                 VStack {
                     Spacer()
                     Button {
@@ -130,9 +133,9 @@ struct CreateGroupView: View {
         do {
             let newGroupId = UUID()
             let newGroup = GroupInfo(id: newGroupId, group_name: self.groupName, created_at: Date(), avatar_url: self.avatarUrl.isEmpty ? nil : self.avatarUrl, color: nil)
-            try await SupabaseManager.shared.addNewGroup(group: newGroup)
-            for member in groupMembers {
-                try await SupabaseManager.shared.addNewUserGroup(userId: member.id, groupId: newGroupId)
+            let returnedGroup = try await model.addGroup(newGroup, members: groupMembers)
+            if let returnedGroup {
+                path.append(returnedGroup)
             }
             self.loading = .success
         } catch {
@@ -143,6 +146,7 @@ struct CreateGroupView: View {
 }
 
 #Preview {
-    CreateGroupView()
+    CreateGroupView(path: .constant(NavigationPath()))
         .environmentObject(AuthenticationViewModel())
+        .environmentObject(Model())
 }

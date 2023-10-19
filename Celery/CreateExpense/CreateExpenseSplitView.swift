@@ -22,6 +22,7 @@ enum SplitOption: CaseIterable, Identifiable, CustomStringConvertible {
 
 struct CreateExpenseSplitView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var newExpense: NewExpense
@@ -269,7 +270,6 @@ struct CreateExpenseSplitView: View {
     func onSubmit() async throws {
         let newCategory = self.newExpense.category == "Category" ? "General" : self.newExpense.category
         var createdExpense: Expense?
-        var createdDebts: [DebtModel]?
         do {
             creatingExpense = true
             let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id, group_id: self.newExpense.selectedGroup?.id, category: newCategory, date: self.newExpense.date)
@@ -284,18 +284,15 @@ struct CreateExpenseSplitView: View {
                     if self.newExpense.paidBy?.id == user.id { return nil }
                     return DebtModel(amount: self.newExpense.userAmounts[user.id], creditor_id: self.newExpense.paidBy?.id, debtor_id: user.id, expense_id: createdExpense.id, group_id: self.newExpense.selectedGroup?.id)
                 }
-                createdDebts = try await SupabaseManager.shared.addNewDebts(debts: createDebts)
+                try await model.addDebts(createDebts)
             }
         } catch {
             print("Error creating debts: \(error)")
         }
         
         do {
-            if let _ =
-                createdDebts {
-                let createActivity = Activity(user_id: self.currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
-                try await SupabaseManager.shared.addNewActivity(activity: createActivity)
-            }
+            let createActivity = Activity(user_id: self.currentUser?.id, reference_id: createdExpense?.id, type: .expense, action: .create)
+            try await SupabaseManager.shared.addNewActivity(activity: createActivity)
         } catch {
             print("Error creating activity: \(error)")
         }
@@ -314,5 +311,6 @@ struct CreateExpenseSplitView: View {
     NavigationStack {
         CreateExpenseSplitView(newExpense: NewExpense(), isOpen: .constant(true))
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(Model())
     }
 }

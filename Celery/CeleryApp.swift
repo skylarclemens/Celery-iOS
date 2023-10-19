@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct CeleryApp: App {
     @StateObject var authViewModel = AuthenticationViewModel()
+    @StateObject var model = Model()
     
     var body: some Scene {
         WindowGroup {
@@ -18,6 +19,7 @@ struct CeleryApp: App {
                 .task {
                     try? await self.authViewModel.initializeSessionListener()
                 }
+                .environmentObject(model)
         }
     }
 }
