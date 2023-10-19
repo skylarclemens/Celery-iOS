@@ -71,10 +71,10 @@ struct AvatarUploadView: View {
                 }
             }
         }
-        /*.onAppear {
-            if let photoURL = authViewModel.currentUser?.photoURL {
+        .task {
+            if !avatarUrl.isEmpty {
                 self.imageState = .loading
-                try? storageManager.getImage(from: photoURL) { image in
+                try? await SupabaseManager.shared.getAvatarImage(imagePath: avatarUrl, type: type) { image in
                     if let image {
                         self.avatarImage = image
                         self.imageState = .success
@@ -83,7 +83,7 @@ struct AvatarUploadView: View {
                     }
                 }
             }
-        }*/
+        }
     }
 }
 

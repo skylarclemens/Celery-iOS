@@ -14,7 +14,7 @@ struct CreateGroupView: View {
     @State var groupName: String = ""
     @State var groupMembers: [UserInfo] = []
     @State var avatarUrl: String = ""
-    
+
     @State var loading: LoadingState = .success
     
     @State var openUserSelection: Bool = false
@@ -23,6 +23,8 @@ struct CreateGroupView: View {
             ZStack(alignment: .bottom) {
                 Form {
                     Section {
+                        EmptyView()
+                    } header: {
                         AvatarUploadView(avatarUrl: $avatarUrl, type: .group)
                             .frame(maxWidth: .infinity)
                     }
@@ -32,29 +34,24 @@ struct CreateGroupView: View {
                         TextField("Group name", text: $groupName)
                     }
                     Section {
-                        HStack(spacing: 12) {
-                            if !groupMembers.isEmpty {
-                                ForEach(groupMembers) { user in
-                                    VStack {
-                                        UserPhotoView(size: 45, imagePath: user.avatar_url)
-                                        Text(authViewModel.isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
-                                            .font(.system(size: 12))
-                                            .lineLimit(2)
-                                            .multilineTextAlignment(.center)
-                                            .truncationMode(.tail)
-                                    }
-                                    .frame(maxWidth: 60)
+                        if !groupMembers.isEmpty {
+                            ForEach(groupMembers) { user in
+                                HStack(spacing: 12) {
+                                    UserPhotoView(size: 40, imagePath: user.avatar_url)
+                                    Text(authViewModel.isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
+                                        .font(.system(size: 16))
+                                        .lineLimit(2)
+                                        .truncationMode(.tail)
                                 }
-                            } else {
-                                Text("Add people to the group")
-                                    .font(.callout)
-                                    .foregroundStyle(.secondary)
                             }
-                            Spacer()
+                        } else {
+                            Text("Add people to the group")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
                         }
                     } header: {
                         HStack {
-                            Text("Split with")
+                            Text("Members")
                             Spacer()
                             Button {
                                 openUserSelection = true
@@ -63,7 +60,7 @@ struct CreateGroupView: View {
                                     Image(systemName: "plus")
                                 } else {
                                     Text("Edit")
-                                        .font(.system(size: 14))
+                                        .font(.system(size: 12))
                                 }
                             }
                             .foregroundStyle(Color.secondary)

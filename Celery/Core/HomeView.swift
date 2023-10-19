@@ -92,7 +92,6 @@ struct HomeView: View {
             }
             let allUsers = creditors + debtors
             let uniqueUsers = Set(allUsers)
-            //print(uniqueUsers)
             self.uniqueUsers = Array(uniqueUsers).filter {
                 $0.id != self.currentUser?.id
             }

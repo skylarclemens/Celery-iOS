@@ -43,12 +43,14 @@ struct TransactionsScrollView: View {
                         Text("No expenses")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .padding()
                     }
                 } else if state == .loading {
                     VStack {
                         ProgressView()
                             .progressViewStyle(.circular)
                             .tint(.secondary)
+                            .padding()
                     }
                     .frame(maxWidth: .infinity)
                 } else if state == .error {
@@ -56,6 +58,7 @@ struct TransactionsScrollView: View {
                         Text("Something went wrong!")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .padding()
                     }
                     .frame(maxWidth: .infinity)
                 }
