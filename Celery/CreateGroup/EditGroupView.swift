@@ -14,6 +14,7 @@ struct EditGroupView: View {
     let group: GroupInfo
     @State var groupName: String = ""
     @State var groupMembers: [UserInfo] = []
+    @State var membersToAdd: [UserInfo] = []
     @State var avatarUrl: String = ""
     
     init(group: GroupInfo, members: [UserInfo]?) {
@@ -130,17 +131,38 @@ struct EditGroupView: View {
                 }
             }
             .sheet(isPresented: $openUserSelection) {
-                SelectUsersView(users: $groupMembers)
+                SelectUsersView(users: $membersToAdd, existingGroupMembers: groupMembers, selectToAdd: true)
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
+            .onChange(of: membersToAdd) { newValue in
+                Task {
+                    if !newValue.isEmpty {
+                        var newUsers: [UserGroupModel] = []
+                        for user in newValue {
+                            newUsers.append(UserGroupModel(user_id: user.id, group_id: group.id))
+                        }
+                        do {
+                            let addedUsers: [UserInfo]? = try await SupabaseManager.shared.addUsersToGroup(groupUsers: newUsers)
+                            if let addedUsers {
+                                self.groupMembers += addedUsers
+                            }
+                            self.membersToAdd = []
+                        } catch {
+                            print("Error adding new users")
+                        }
                     }
                 }
+            }
+            .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        dismiss()
+                    Button("Done") {
+                        if self.groupName != group.group_name {
+                            Task {
+                                try? await updateGroup()
+                                dismiss()
+                            }
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -184,6 +206,15 @@ struct EditGroupView: View {
             try await SupabaseManager.shared.removeUserFromGroup(userId: id, groupId: group.id)
         } catch {
             print("Error removing user from group")
+        }
+    }
+    
+    func updateGroup() async throws {
+        let updatedGroup = GroupInfo(id: group.id, group_name: groupName, created_at: group.created_at, avatar_url: avatarUrl, color: group.color)
+        do {
+            let newGroup = try await SupabaseManager.shared.updateGroup(group: updatedGroup)
+        } catch {
+            print("Error updating group")
         }
     }
     

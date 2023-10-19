@@ -34,8 +34,6 @@ struct SelectUsersView: View {
     @Environment(\.dismiss) var dismiss
     
     @StateObject var viewModel = SelectUsersViewModel()
-    //private var initialSelectedUsers: [UserInfo]
-    //private var initialSelectedGroup: GroupInfo?
     @Binding var completedSelectedUsers: [UserInfo]
     @Binding var completedSelectedGroup: GroupInfo?
     
@@ -43,6 +41,7 @@ struct SelectUsersView: View {
     @State private var selectedGroup: GroupInfo?
     
     @State var selectedGroupMembers: [UserInfo]?
+    let existingGroupMembers: [UserInfo]?
     @State var usersGroups: [GroupInfo]?
     
     @FocusState private var focusedInput: FocusableField?
@@ -51,13 +50,16 @@ struct SelectUsersView: View {
     }
     
     var showGroups: Bool
+    var selectToAdd: Bool
     
-    init(users: Binding<[UserInfo]>, group: Binding<GroupInfo?>? = nil, showGroups: Bool = false) {
+    init(users: Binding<[UserInfo]>, group: Binding<GroupInfo?>? = nil, existingGroupMembers: [UserInfo]? = nil, showGroups: Bool = false, selectToAdd: Bool = false) {
         self._completedSelectedUsers = users
         self._completedSelectedGroup = group ?? Binding.constant(nil)
         self._selectedUsers = State(initialValue: users.wrappedValue)
         self._selectedGroup = State(initialValue: group?.wrappedValue)
+        self.existingGroupMembers = existingGroupMembers
         self.showGroups = showGroups
+        self.selectToAdd = selectToAdd
     }
     
     var body: some View {
@@ -270,7 +272,15 @@ struct SelectUsersView: View {
                                 .padding(.horizontal)
                             LazyVStack(spacing: 0) {
                                 ForEach(queriedUsers) { user in
-                                    SelectUserRowView(selectedUsers: $selectedUsers, user: user)
+                                    if selectToAdd,
+                                       let existingGroupMembers,
+                                       existingGroupMembers.contains(where: { $0.id == user.id }) {
+                                        SelectUserRowView(selectedUsers: $selectedUsers, user: user, alreadyAdded: true)
+                                            .disabled(true)
+                                    } else {
+                                        SelectUserRowView(selectedUsers: $selectedUsers, user: user)
+                                    }
+                                    
                                 }
                             }
                         }
@@ -347,6 +357,7 @@ struct SelectUserRowView: View {
     var userSelected: Array.Index? {
         selectedUsers.firstIndex(where: { $0.id == user.id })
     }
+    var alreadyAdded: Bool = false
     
     var body: some View {
         Button {
@@ -364,9 +375,9 @@ struct SelectUserRowView: View {
                     HStack {
                         Text(user.name ?? "Unknown user")
                         Spacer()
-                        if userSelected != nil {
+                        if userSelected != nil || alreadyAdded {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(alreadyAdded ? Color.secondary : .blue)
                         } else {
                             Image(systemName: "circle")
                                 .foregroundStyle(.secondary)

@@ -102,13 +102,8 @@ extension SupabaseManager {
         }
     }
     
-    struct UserGroup: Encodable {
-        let user_id: UUID?
-        let group_id: UUID?
-    }
-    
     func addNewUserGroup(userId: UUID, groupId: UUID) async throws {
-        let newUserGroup = UserGroup(user_id: userId, group_id: groupId)
+        let newUserGroup = UserGroupModel(user_id: userId, group_id: groupId)
         
         do {
             try await self.client.database.from("user_group")
@@ -144,6 +139,35 @@ extension SupabaseManager {
                 .execute()
         } catch {
             print("Error removing user from group: \(error)")
+        }
+    }
+    
+    func addUsersToGroup(groupUsers: [UserGroupModel]) async throws -> [UserInfo]? {
+        do {
+            let addedUsers: [UserInfo] = try await self.client.database.from("user_group")
+                .upsert(values: groupUsers, onConflict: "user_id, group_id")
+                .select(columns: "...user_id(*)")
+                .execute()
+                .value
+            return addedUsers
+        } catch {
+            print("Error adding users to group: \(error)")
+            return nil
+        }
+    }
+
+    func updateGroup(group: GroupInfo) async throws -> GroupInfo? {
+        do {
+            let updatedGroup: [GroupInfo] = try await self.client.database.from("group")
+                .update(values: group, returning: .representation)
+                .eq(column: "id", value: group.id)
+                .select()
+                .execute()
+                .value
+            return updatedGroup.first
+        } catch {
+            print("Error updating group details: \(error)")
+            return nil
         }
     }
     

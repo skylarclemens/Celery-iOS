@@ -46,7 +46,6 @@ class SupabaseManager: ObservableObject {
                 path: pathName,
                 file: imageFile,
                 fileOptions: FileOptions(cacheControl: "604800"))
-            print(image)
         } catch {
             print(error)
         }
