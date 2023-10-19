@@ -128,6 +128,46 @@ extension SupabaseManager {
         }
     }
     
+    func getDebtsWithExpense(count: Int) async throws -> [Debt]? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            
+            let response = try await self.client.database.from("debt")
+                .select(columns: """
+                *,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
+                expense: expense_id!inner(*)
+                """)
+                .eq(column: "paid", value: false)
+                .or(filters: "debtor_id.eq.\(currentUserId.uuidString),creditor_id.eq.\(currentUserId.uuidString)")
+                .order(column: "created_at", ascending: false)
+                .limit(count: count)
+                .execute()
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            return data
+        } catch {
+            print("Error fetching debts: \(error)")
+            return nil
+        }
+    }
+    
     // Get related debts between current user and another user
     func getSharedDebtsWithExpenses(friendId: UUID) async throws -> [Debt]? {
         let decoder = JSONDecoder()

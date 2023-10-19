@@ -14,27 +14,35 @@ enum LoadingState {
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var model: Model
-    @State var transactionsList: [Debt]?
+    var maxDebtCount: Int {
+        guard let debts = model.debts else { return 0 }
+        if debts.count < 10 {
+            return debts.count
+        } else {
+            return 10
+        }
+    }
     var filteredTransactionList: [Debt] {
+        guard let debts = model.debts else { return [] }
         switch transactionType {
         case .all:
-            return model.debts ?? []
+            return Array(debts[0..<maxDebtCount])
         case .owed:
-            return model.debts?.filter {
+            let filteredArraySlice = debts.filter {
                 $0.creditor?.id == authViewModel.currentUserInfo?.id
-            } ?? []
+            }[0..<maxDebtCount]
+            return Array(filteredArraySlice)
         case .owe:
-            return model.debts?.filter {
+            let filteredArraySlice = debts.filter {
                 $0.creditor?.id != authViewModel.currentUserInfo?.id
-            } ?? []
+            }[0..<maxDebtCount]
+            return Array(filteredArraySlice)
         }
     }
     
     @State var totalBalance = 0.00
     @State var balanceOwed = 0.00
     @State var balanceOwe = 0.00
-    
-    @State var uniqueUsers: [UserInfo]?
     
     @State var transactionType: TransactionType = .all
     
@@ -46,11 +54,13 @@ struct HomeView: View {
             ScrollView {
                 HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, transactionType: $transactionType)
                     .padding(.horizontal)
-                /*if let uniqueUsers = uniqueUsers {
-                    RecentUsersView(users: uniqueUsers)
-                        .padding(.horizontal)
-                }*/
-                TransactionsScrollView(transactionsList: filteredTransactionList, state: $transactionsState)
+                if let recentUsers = model.recentUsers {
+                    VStack(alignment: .leading) {
+                        RecentUsersView(users: recentUsers, debts: filteredTransactionList)
+                    }
+                    .padding()
+                }
+                /*TransactionsScrollView(transactionsList: filteredTransactionList, state: $transactionsState)*/
             }
             .animation(.default, value: filteredTransactionList)
             .refreshable {
@@ -84,6 +94,7 @@ struct HomeView: View {
             if model.debts == nil {
                 transactionsState = .loading
                 await fetchDebts()
+                organizeDebt()
             } else {
                 transactionsState = .success
             }
@@ -95,8 +106,9 @@ struct HomeView: View {
 }
 
 extension HomeView {
-    func organizeDebt(debt: [Debt]) {
-        if !debt.isEmpty {
+    func organizeDebt() {
+        if let debt = model.debts,
+            !debt.isEmpty {
             let creditors = debt.map {
                 $0.creditor!
             }
@@ -105,7 +117,7 @@ extension HomeView {
             }
             let allUsers = creditors + debtors
             let uniqueUsers = Set(allUsers)
-            self.uniqueUsers = Array(uniqueUsers).filter {
+            model.recentUsers = Array(uniqueUsers).filter {
                 $0.id != authViewModel.currentUserInfo?.id
             }
         }
@@ -172,42 +184,33 @@ enum TransactionType: String, CaseIterable, Identifiable {
 
 struct RecentUsersView: View {
     var users: [UserInfo]
+    var debts: [Debt]
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Recent")
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                .foregroundStyle(.primary.opacity(0.9))
-                .textCase(nil)
-                .padding(.leading)
-                .padding(.top, 5)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 24) {
-                    ForEach(users) { user in
-                        NavigationLink {
-                            ProfileView(user: user)
-                        } label: {
-                            VStack {
-                                UserPhotoView(size: 45, imagePath: user.avatar_url)
-                                Text(user.name ?? "Unknown name")
-                                    .font(.system(size: 12))
-                                    .lineLimit(2)
-                                    .multilineTextAlignment(.center)
-                                    .truncationMode(.tail)
-                            }
-                        }
-                        .frame(maxWidth: 60)
-                        .buttonStyle(EmptyButtonStyle())
+        ForEach(users) { user in
+            VStack(alignment: .leading) {
+                HStack {
+                    NavigationLink {
+                        ProfileView(user: user)
+                    } label: {
+                        UserPhotoView(size: 30, imagePath: user.avatar_url)
+                        Text(user.name ?? "Unknown name")
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .truncationMode(.tail)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 2)
                     }
+                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal)
+                .padding(.bottom, 8)
+                TransactionsScrollView(transactionsList: debts.filter {
+                    $0.creditor?.id == user.id || $0.debtor?.id == user.id
+                }, state: .constant(.success))
             }
-            .frame(height: 65)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
-            )
         }
     }
 }

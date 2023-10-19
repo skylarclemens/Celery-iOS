@@ -11,6 +11,12 @@ import Foundation
 class Model: ObservableObject {
     @Published var debts: [Debt]?
     @Published var groups: [GroupInfo]?
+    @Published var recentUsers: [UserInfo]?
+    
+    func fetchInitialDebts() async throws {
+        let userDebts = try await SupabaseManager.shared.getDebtsWithExpense(count: 10)
+        self.debts = userDebts
+    }
     
     func fetchDebts() async throws {
         let usersDebts = try await SupabaseManager.shared.getDebtsWithExpense()

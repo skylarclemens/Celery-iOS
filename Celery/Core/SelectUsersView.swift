@@ -31,6 +31,7 @@ class SelectUsersViewModel: ObservableObject {
 
 struct SelectUsersView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @Environment(\.dismiss) var dismiss
     
     @StateObject var viewModel = SelectUsersViewModel()
@@ -242,6 +243,23 @@ struct SelectUsersView: View {
                         .padding(.vertical, 8)
                     }
                     
+                    // MARK: Most recent users list
+                    if let recentUsers = model.recentUsers,
+                        selectedGroup == nil,
+                       viewModel.debouncedQuery.isEmpty {
+                        VStack(alignment: .leading) {
+                            Text("Recent")
+                                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                .foregroundStyle(.primary.opacity(0.9))
+                                .padding(.horizontal)
+                            LazyVStack(spacing: 0) {
+                                ForEach(recentUsers) { user in
+                                    SelectUserRowView(selectedUsers: $selectedUsers, user: user)
+                                }
+                            }
+                        }
+                    }
+                    
                     // MARK: Group members list
                     // Shows members of the selected group
                     if let selectedGroupMembers = selectedGroupMembers,
@@ -349,6 +367,8 @@ struct SelectUsersView: View {
 
 #Preview {
     SelectUsersView(users: .constant([]), showGroups: true)
+        .environmentObject(AuthenticationViewModel())
+        .environmentObject(Model())
 }
 
 struct SelectUserRowView: View {
