@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TransactionsScrollView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @Binding var transactionsList: [Debt]?
+    let transactionsList: [Debt]
     @Binding var state: LoadingState
     
     var body: some View {
@@ -22,8 +22,7 @@ struct TransactionsScrollView: View {
                 .padding(.top, 5)
             LazyVStack(spacing: 0) {
                 if state == .success {
-                    if let transactionsList,
-                       !transactionsList.isEmpty {
+                    if !transactionsList.isEmpty {
                         ForEach(transactionsList) { debt in
                             VStack {
                                 Spacer()
@@ -79,7 +78,7 @@ struct TransactionsScrollView: View {
             Color(uiColor: .systemGroupedBackground)
                 .ignoresSafeArea()
             ScrollView {
-                TransactionsScrollView(transactionsList: .constant([Debt.example, Debt(id: UUID(), amount: 20.0, creditor: UserInfo.example, debtor: UserInfo.example, expense: Expense.example)]), state: .constant(.success))
+                TransactionsScrollView(transactionsList: [Debt.example, Debt(id: UUID(), amount: 20.0, creditor: UserInfo.example, debtor: UserInfo.example, expense: Expense.example)], state: .constant(.success))
                     .environmentObject(AuthenticationViewModel())
             }
         }

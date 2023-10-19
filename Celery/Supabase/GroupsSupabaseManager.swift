@@ -32,7 +32,6 @@ extension SupabaseManager {
                 .eq(column: "user_id", value: currentUserId)
                 .execute()
                 .value
-            //print(String(data: groups.underlyingResponse.data, encoding: .utf8))
             return groups
         } catch {
             print(error)
@@ -91,14 +90,17 @@ extension SupabaseManager {
         }
     }
     
-    func addNewGroup(group: GroupInfo) async throws {
+    func addNewGroup(group: GroupInfo) async throws -> GroupInfo? {
         do {
-            try await self.client.database.from("group")
+            let group: [GroupInfo] = try await self.client.database.from("group")
                 .insert(values: group, returning: .representation)
                 .select()
                 .execute()
+                .value
+            return group.first
         } catch {
             print("Error creating new group: \(error)")
+            return nil
         }
     }
     

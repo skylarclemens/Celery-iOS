@@ -10,14 +10,35 @@ import Foundation
 extension SupabaseManager {
     // MARK: Debt methods
     // Add new debts to database
-    func addNewDebts(debts: [DebtModel]) async throws -> [DebtModel]? {
+    func addNewDebts(debts: [DebtModel]) async throws -> [Debt]? {
+        let decoder = JSONDecoder()
+        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            let dateFormatter = DateFormatter()
+            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+            } else {
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                dateFormatter.calendar = Calendar(identifier: .iso8601)
+            }
+            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
+            return date
+        }
+        
         do {
-            let newDebts: [DebtModel] = try await self.client.database.from("debt")
+            let response = try await self.client.database.from("debt")
                 .insert(values: debts, returning: .representation)
-                .select()
+                .select(columns: """
+                *,
+                creditor: creditor_id!inner(*),
+                debtor: debtor_id!inner(*),
+                expense: expense_id!inner(*)
+                """)
                 .execute()
-                .value
-            return newDebts
+            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
+            return data
         } catch {
             print("Error creating new debts: \(error)")
             return nil

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditGroupView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @Environment(\.dismiss) var dismiss
     
     let group: GroupInfo
@@ -17,11 +18,14 @@ struct EditGroupView: View {
     @State var membersToAdd: [UserInfo] = []
     @State var avatarUrl: String = ""
     
-    init(group: GroupInfo, members: [UserInfo]?) {
+    @Binding var path: NavigationPath
+    
+    init(group: GroupInfo, members: [UserInfo]?, path: Binding<NavigationPath>) {
         self.group = group
         self._groupName = State(initialValue: group.group_name ?? "")
         self._groupMembers = State(initialValue: members ?? [])
         self._avatarUrl = State(initialValue: group.avatar_url ?? "")
+        self._path = path
     }
     
     @State var loading: LoadingState = .success
@@ -157,7 +161,7 @@ struct EditGroupView: View {
                     Button("Done") {
                         if self.groupName != group.group_name {
                             Task {
-                                try? await updateGroup()
+                                await updateGroup()
                                 dismiss()
                             }
                         } else {
@@ -176,10 +180,13 @@ struct EditGroupView: View {
                         case .leave:
                             if let currentUser = authViewModel.currentUserInfo {
                                 try? await removeUser(currentUser.id)
+                                model.removeGroup(group.id)
                             }
+                            path.removeLast(path.count)
                             dismiss()
                         case .group:
-                            try? await deleteGroup()
+                            await deleteGroup()
+                            path.removeLast(path.count)
                             dismiss()
                         }
                     }
@@ -193,12 +200,8 @@ struct EditGroupView: View {
         }
     }
     
-    func deleteGroup() async throws {
-        do {
-            try await SupabaseManager.shared.deleteGroup(groupId: group.id)
-        } catch {
-            print("Error deleting group")
-        }
+    func deleteGroup() async {
+        try? await model.deleteGroup(group.id)
     }
     
     func removeUser(_ id: UUID) async throws {
@@ -209,33 +212,14 @@ struct EditGroupView: View {
         }
     }
     
-    func updateGroup() async throws {
+    func updateGroup() async {
         let updatedGroup = GroupInfo(id: group.id, group_name: groupName, created_at: group.created_at, avatar_url: avatarUrl, color: group.color)
-        do {
-            let newGroup = try await SupabaseManager.shared.updateGroup(group: updatedGroup)
-        } catch {
-            print("Error updating group")
-        }
-    }
-    
-    func createGroup() async throws {
-        self.loading = .loading
-        do {
-            let newGroupId = UUID()
-            let newGroup = GroupInfo(id: newGroupId, group_name: self.groupName, created_at: Date(), avatar_url: self.avatarUrl.isEmpty ? nil : self.avatarUrl, color: nil)
-            try await SupabaseManager.shared.addNewGroup(group: newGroup)
-            for member in groupMembers {
-                try await SupabaseManager.shared.addNewUserGroup(userId: member.id, groupId: newGroupId)
-            }
-            self.loading = .success
-        } catch {
-            print("Error creating new group")
-            self.loading = .error
-        }
+        try? await model.updateGroup(updatedGroup)
     }
 }
 
 #Preview {
-    EditGroupView(group: GroupInfo.example, members: [UserInfo.example])
+    EditGroupView(group: GroupInfo.example, members: [UserInfo.example], path: .constant(NavigationPath()))
         .environmentObject(AuthenticationViewModel())
+        .environmentObject(Model())
 }

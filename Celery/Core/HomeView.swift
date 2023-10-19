@@ -13,16 +13,28 @@ enum LoadingState {
 
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @State var transactionsList: [Debt]?
-    @State var filteredTransactionList: [Debt]?
-    @State var currentUser: UserInfo?
+    var filteredTransactionList: [Debt] {
+        switch transactionType {
+        case .all:
+            return model.debts ?? []
+        case .owed:
+            return model.debts?.filter {
+                $0.creditor?.id == authViewModel.currentUserInfo?.id
+            } ?? []
+        case .owe:
+            return model.debts?.filter {
+                $0.creditor?.id != authViewModel.currentUserInfo?.id
+            } ?? []
+        }
+    }
     
     @State var totalBalance = 0.00
     @State var balanceOwed = 0.00
     @State var balanceOwe = 0.00
     
     @State var uniqueUsers: [UserInfo]?
-    @State var usersGroups: [GroupInfo]?
     
     @State var transactionType: TransactionType = .all
     
@@ -33,30 +45,16 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, transactionType: $transactionType)
-                    .onChange(of: transactionType) { newValue in
-                        switch newValue {
-                        case .all:
-                            self.filteredTransactionList = transactionsList
-                        case .owed:
-                            self.filteredTransactionList = transactionsList?.filter {
-                                $0.creditor?.id == currentUser?.id
-                            }
-                        case .owe:
-                            self.filteredTransactionList = transactionsList?.filter {
-                                $0.creditor?.id != currentUser?.id
-                            }
-                        }
-                    }
                     .padding(.horizontal)
-                if let uniqueUsers = uniqueUsers {
+                /*if let uniqueUsers = uniqueUsers {
                     RecentUsersView(users: uniqueUsers)
                         .padding(.horizontal)
-                }
-                TransactionsScrollView(transactionsList: $filteredTransactionList, state: $transactionsState)
+                }*/
+                TransactionsScrollView(transactionsList: filteredTransactionList, state: $transactionsState)
             }
             .animation(.default, value: filteredTransactionList)
             .refreshable {
-                try? await loadTransactions()
+                await fetchDebts()
             }
             .background(Color(uiColor: .systemGroupedBackground))
             .coordinateSpace(name: "scroll")
@@ -67,21 +65,36 @@ struct HomeView: View {
                     Button {
                         openSettings = true
                     } label: {
-                        UserPhotoView(size: 28, imagePath: currentUser?.avatar_url)
+                        UserPhotoView(size: 28, imagePath: authViewModel.currentUserInfo?.avatar_url)
                     }
                     .accessibilityLabel("Open user settings")
                 }
             }
             .sheet(isPresented: $openSettings) {
-                UserSettingsView(currentUser: currentUser)
+                UserSettingsView(currentUser: authViewModel.currentUserInfo)
                     .tint(.blue)
             }
         }
+        .onReceive(model.$debts) { newValue in
+            withAnimation {
+                balanceCalc(debts: newValue)
+            }
+        }
         .task {
-            try? await loadData()
+            if model.debts == nil {
+                transactionsState = .loading
+                await fetchDebts()
+            } else {
+                transactionsState = .success
+            }
+            if model.groups == nil {
+                await fetchGroups()
+            }
         }
     }
-    
+}
+
+extension HomeView {
     func organizeDebt(debt: [Debt]) {
         if !debt.isEmpty {
             let creditors = debt.map {
@@ -93,45 +106,34 @@ struct HomeView: View {
             let allUsers = creditors + debtors
             let uniqueUsers = Set(allUsers)
             self.uniqueUsers = Array(uniqueUsers).filter {
-                $0.id != self.currentUser?.id
+                $0.id != authViewModel.currentUserInfo?.id
             }
         }
     }
     
-    func loadData() async throws {
-        if self.currentUser == nil {
-            self.currentUser = try? await authViewModel.getCurrentUserInfo()
-        }
-        self.transactionsState = .loading
-        if self.transactionsList == nil {
-            try? await loadTransactions()
-            if let debt = self.transactionsList {
-                organizeDebt(debt: debt)
-            }
-        } else {
-            self.transactionsState = .success
-        }
-    }
-    
-    func loadTransactions() async throws {
+    func fetchDebts() async {
         do {
-            self.transactionsList = try await SupabaseManager.shared.getDebtsWithExpense()
-            self.filteredTransactionList = self.transactionsList
-            self.transactionsState = .success
-            withAnimation {
-                balanceCalc()
-            }
+            try await model.fetchDebts()
+            transactionsState = .success
         } catch {
-            self.transactionsState = .error
+            transactionsState = .error
         }
     }
     
-    func balanceCalc() {
+    func fetchGroups() async {
+        do {
+            try await model.fetchGroups()
+        } catch {
+            print("Error fetching groups \(error)")
+        }
+    }
+    
+    func balanceCalc(debts: [Debt]?) {
         var totalBalance = 0.00
         var balanceOwed = 0.00
         var balanceOwe = 0.00
-        if let transactionsList = self.transactionsList,
-           let currentUser = self.currentUser {
+        if let transactionsList = debts,
+           let currentUser = authViewModel.currentUserInfo {
             for debt in transactionsList {
                 let amount = debt.amount ?? 0.00
                 if debt.paid ?? true {
@@ -156,6 +158,7 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(Model())
     }
 }
 

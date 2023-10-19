@@ -9,21 +9,20 @@ import SwiftUI
 
 struct GroupsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    @State var groups: [GroupInfo]?
+    @EnvironmentObject var model: Model
     @State var loading: LoadingState = .loading
     
     @State var openCreateGroup: Bool = false
+    @State private var path = NavigationPath()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack {
                 List {
                     if self.loading == .success {
-                        if let groups = self.groups {
+                        if let groups = model.groups {
                             ForEach(groups) { group in
-                                NavigationLink {
-                                    GroupView(group: group)
-                                } label: {
+                                NavigationLink(value: group) {
                                     HStack(spacing: 12) {
                                         UserPhotoView(size: 40, imagePath: group.avatar_url, type: .group)
                                         Text(group.group_name ?? "Unknown group")
@@ -39,8 +38,11 @@ struct GroupsView: View {
                         }
                     }
                 }
+                .navigationDestination(for: GroupInfo.self) { value in
+                    GroupView(group: value, path: $path)
+                }
                 .refreshable {
-                    try? await fetchGroups()
+                    await fetchGroups()
                 }
             }
             .navigationTitle("Groups")
@@ -55,28 +57,26 @@ struct GroupsView: View {
                 }
             }
             .sheet(isPresented: $openCreateGroup) {
-                CreateGroupView()
+                CreateGroupView(path: $path)
             }
         }
         .task {
-            try? await fetchData()
+            if model.groups == nil {
+                self.loading = .loading
+                await fetchGroups()
+            } else {
+                self.loading = .success
+            }
         }
     }
     
-    func fetchData() async throws {
-        self.loading = .loading
+    func fetchGroups() async {
         do {
-            if self.groups == nil {
-                try await fetchGroups()
-            }
+            try await model.fetchGroups()
             self.loading = .success
         } catch {
             self.loading = .error
         }
-    }
-    
-    func fetchGroups() async throws {
-        self.groups = try? await SupabaseManager.shared.getUsersGroups()
     }
 }
 
@@ -84,5 +84,6 @@ struct GroupsView: View {
     NavigationStack {
         GroupsView()
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(Model())
     }
 }
