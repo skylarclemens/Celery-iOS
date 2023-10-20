@@ -174,9 +174,7 @@ struct ExpenseView: View {
     }
     
     func deleteExpense() async {
-        if let expenseId = expense.id {
-            try? await model.removeDebts(expenseId: expenseId)
-        }
+        try? await model.removeDebts(expenseId: expense.id)
     }
 }
 

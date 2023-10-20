@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Expense: Codable, Identifiable {
-    let id: UUID?
+struct Expense: Codable, Identifiable, Hashable {
+    let id: UUID
     let paid: Bool?
     let description: String?
     let amount: Double?
@@ -18,7 +18,7 @@ struct Expense: Codable, Identifiable {
     let date: Date?
     let created_at: Date?
     
-    init(id: UUID? = nil, paid: Bool? = false, description: String?, amount: Double?, payer_id: UUID?, group_id: UUID? = nil, category: String?, date: Date?, created_at: Date? = nil) {
+    init(id: UUID, paid: Bool? = false, description: String?, amount: Double?, payer_id: UUID?, group_id: UUID? = nil, category: String?, date: Date?, created_at: Date? = nil) {
         self.id = id
         self.paid = paid
         self.description = description
