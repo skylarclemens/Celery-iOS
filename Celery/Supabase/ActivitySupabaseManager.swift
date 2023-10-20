@@ -34,6 +34,16 @@ extension SupabaseManager {
         }
     }
     
+    func addNewActivities(_ activities: [Activity]) async throws {
+        do {
+            try await self.client.database.from("activity")
+                .insert(values: activities, returning: .none)
+                .execute()
+        } catch {
+            print("Error creating new activities: \(error.localizedDescription)")
+        }
+    }
+    
     func getRelatedActivities(for referenceId: UUID?) async throws -> [Activity]? {
         guard let referenceId else { return nil }
         do {

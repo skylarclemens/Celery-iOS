@@ -69,6 +69,7 @@ extension ActivityAction {
         case .create: return "created"
         case .update: return "updated the"
         case .delete: return "deleted the"
+        case .settle: return "settled the"
         case .pay: return "paid"
         }
     }
