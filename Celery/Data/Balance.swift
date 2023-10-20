@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Balance {
+struct Balance: Equatable {
     var total: Double = 0.00
     var owed: Double = 0.00
     var owe: Double = 0.00

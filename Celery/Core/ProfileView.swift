@@ -20,7 +20,9 @@ struct ProfileView: View {
     @State var sharedDebts: [Debt]? = nil
     @State var transactionsState: LoadingState = .loading
     
-    @State var balance: Balance = Balance()
+    var balances: Balance {
+        balanceCalc(using: sharedDebts)
+    }
     
     @State var totalBalance = 0.00
     @State var balanceOwed = 0.00
@@ -111,7 +113,8 @@ struct ProfileView: View {
                         )
                     }
                     .padding(.horizontal)
-                    UserBalanceView(balanceOwed: balance.owed, balanceOwe: balance.owe)
+                    UserBalanceView(balanceOwed: balances.owed, balanceOwe: balances.owe)
+                        .animation(.default, value: balances)
                         .padding(.top, 12)
                         .padding(.horizontal)
                     VStack(alignment: .leading) {
@@ -127,11 +130,6 @@ struct ProfileView: View {
             }
             .refreshable {
                 try? await loadTransactions()
-            }
-        }
-        .onChange(of: sharedDebts) { _ in
-            withAnimation {
-                self.balance = balanceCalc(using: sharedDebts)
             }
         }
         .task {
