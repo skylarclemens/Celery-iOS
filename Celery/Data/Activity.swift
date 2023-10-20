@@ -38,4 +38,5 @@ enum ActivityAction: String, Codable {
     case update = "UPDATE"
     case delete = "DELETE"
     case pay = "PAY"
+    case settle = "SETTLE"
 }

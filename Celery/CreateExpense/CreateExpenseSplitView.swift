@@ -272,7 +272,7 @@ struct CreateExpenseSplitView: View {
         var createdExpense: Expense?
         do {
             creatingExpense = true
-            let createExpense: Expense = Expense(description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id, group_id: self.newExpense.selectedGroup?.id, category: newCategory, date: self.newExpense.date)
+            let createExpense: Expense = Expense(id: UUID(), description: self.newExpense.name, amount: self.newExpense.amount, payer_id: self.newExpense.paidBy?.id, group_id: self.newExpense.selectedGroup?.id, category: newCategory, date: self.newExpense.date)
             createdExpense = try await SupabaseManager.shared.addNewExpense(expense: createExpense)
         } catch {
             print("Error creating expense: \(error)")

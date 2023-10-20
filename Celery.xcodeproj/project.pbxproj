@@ -51,6 +51,7 @@
 		7E90FA412ADC8D4D00F1B2CE /* TransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E90FA402ADC8D4D00F1B2CE /* TransactionView.swift */; };
 		7E9357982AE2C1C200F7950F /* UserBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9357972AE2C1C200F7950F /* UserBalanceView.swift */; };
 		7E93579A2AE2C61300F7950F /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9357992AE2C61300F7950F /* Balance.swift */; };
+		7E93579C2AE2E04500F7950F /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E93579B2AE2E04500F7950F /* Payment.swift */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -112,6 +113,7 @@
 		7E90FA402ADC8D4D00F1B2CE /* TransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionView.swift; sourceTree = "<group>"; };
 		7E9357972AE2C1C200F7950F /* UserBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBalanceView.swift; sourceTree = "<group>"; };
 		7E9357992AE2C61300F7950F /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
+		7E93579B2AE2E04500F7950F /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				7E80258F2AC653F1005D284D /* Activity.swift */,
 				7E48D16C2AE1903100C29750 /* Model.swift */,
 				7E9357992AE2C61300F7950F /* Balance.swift */,
+				7E93579B2AE2E04500F7950F /* Payment.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -439,6 +442,7 @@
 				7E0E98482ABA1E5700AA974D /* UserInfo.swift in Sources */,
 				7E6270BF2A9EB1C7006067CD /* LoginView.swift in Sources */,
 				7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */,
+				7E93579C2AE2E04500F7950F /* Payment.swift in Sources */,
 				7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

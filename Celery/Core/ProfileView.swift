@@ -24,15 +24,12 @@ struct ProfileView: View {
         balanceCalc(using: sharedDebts)
     }
     
-    @State var totalBalance = 0.00
-    @State var balanceOwed = 0.00
-    @State var balanceOwe = 0.00
-    
     init(user: UserInfo, friendship: UserFriend? = nil) {
         self.user = user
         self.friendship = friendship
     }
     
+    @State private var openPayView: Bool = false
     var body: some View {
         ZStack {
             Rectangle()
@@ -91,7 +88,7 @@ struct ProfileView: View {
                             }
                             Spacer()
                             Button {
-                                
+                                openPayView = true
                             } label: {
                                 Label("Pay", systemImage: "dollarsign")
                             }
@@ -130,6 +127,13 @@ struct ProfileView: View {
             }
             .refreshable {
                 try? await loadTransactions()
+            }
+        }
+        .sheet(isPresented: $openPayView) {
+            if let currentUser = authViewModel.currentUserInfo {
+                PayView(creditor: balances.owed > balances.owe ? currentUser : user, debtor: balances.owed < balances.owe ? currentUser : user, debts: sharedDebts, amount: abs(balances.total))
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
             }
         }
         .task {
