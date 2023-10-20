@@ -14,12 +14,6 @@ struct TransactionsScrollView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Transactions")
-                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                .foregroundStyle(.primary.opacity(0.9))
-                .textCase(nil)
-                .padding(.leading)
-                .padding(.top, 5)
             LazyVStack(spacing: 0) {
                 if state == .success {
                     if !transactionsList.isEmpty {
@@ -68,7 +62,6 @@ struct TransactionsScrollView: View {
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
     }
 }
 

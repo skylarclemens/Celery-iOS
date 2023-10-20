@@ -14,6 +14,20 @@ struct GroupView: View {
     @State var members: [UserInfo]?
     @State var debts: [Debt]?
     @State var loading: LoadingState = .loading
+    var usersSharedDebts: [Debt] {
+        if let debts,
+           let currentUser = authViewModel.currentUserInfo {
+            return debts.filter {
+                $0.creditor?.id == currentUser.id || $0.debtor?.id == currentUser.id
+            }
+        } else {
+            return []
+        }
+    }
+    var balances: Balance {
+        guard !usersSharedDebts.isEmpty else { return Balance() }
+        return balanceCalc(using: usersSharedDebts)
+    }
     
     @State var showEditGroup: Bool = false
     @Binding var path: NavigationPath
@@ -27,10 +41,7 @@ struct GroupView: View {
                     VStack(alignment: .leading) {
                         Text("Members")
                             .font(.system(size: 18, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.primary.opacity(0.9))
-                            .textCase(nil)
                             .padding(.leading)
-                            .padding(.top, 5)
                         ScrollView(.horizontal, showsIndicators: false) {
                             if let members = members {
                                 HStack(spacing: 24) {
@@ -63,8 +74,22 @@ struct GroupView: View {
                         )
                     }
                     .padding(.horizontal)
-                    TransactionsScrollView(transactionsList: debts ?? [], state: $loading)
-                        .animation(.default, value: debts)
+                    .padding(.top, 5)
+                    UserBalanceView(balanceOwed: balances.owed, balanceOwe: balances.owe)
+                        .animation(.default, value: balances)
+                        .padding()
+                    VStack(alignment: .leading) {
+                        Text("Transactions")
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .padding(.leading)
+                        TransactionsScrollView(transactionsList: debts ?? [], state: $loading)
+                            .animation(.default, value: debts)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 40)
+                }
+                .refreshable {
+                    try? await fetchData()
                 }
             }
         }
@@ -105,6 +130,27 @@ struct GroupView: View {
         } catch {
             self.loading = .error
         }
+    }
+    
+    func balanceCalc(using debts: [Debt]?) -> Balance {
+        var balance = Balance()
+        if let transactionsList = debts,
+           let currentUser = authViewModel.currentUserInfo {
+            for debt in transactionsList {
+                let amount = debt.amount ?? 0.00
+                if debt.paid ?? true {
+                    continue
+                }
+                if debt.creditor?.id == currentUser.id {
+                    balance.total += amount
+                    balance.owed += amount
+                } else {
+                    balance.total -= amount
+                    balance.owe += amount
+                }
+            }
+        }
+        return balance
     }
 }
 
