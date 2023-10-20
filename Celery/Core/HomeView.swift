@@ -24,7 +24,7 @@ struct HomeView: View {
     }
     var filteredTransactionList: [Debt] {
         guard let debts = model.debts else { return [] }
-        switch transactionType {
+        switch balanceType {
         case .all:
             return Array(debts[0..<maxDebtCount])
         case .owed:
@@ -44,7 +44,7 @@ struct HomeView: View {
     @State var balanceOwed = 0.00
     @State var balanceOwe = 0.00
     
-    @State var transactionType: TransactionType = .all
+    @State var balanceType: BalanceType = .all
     
     @State var openSettings: Bool = false
     @State var transactionsState: LoadingState = .loading
@@ -52,15 +52,15 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, transactionType: $transactionType)
+                HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, balanceType: $balanceType)
                     .padding(.horizontal)
                 if let recentUsers = model.recentUsers {
                     VStack(alignment: .leading) {
                         RecentUsersView(users: recentUsers, debts: filteredTransactionList)
                     }
                     .padding()
+                    .padding(.bottom, 40)
                 }
-                /*TransactionsScrollView(transactionsList: filteredTransactionList, state: $transactionsState)*/
             }
             .animation(.default, value: filteredTransactionList)
             .refreshable {
@@ -89,12 +89,12 @@ struct HomeView: View {
             withAnimation {
                 balanceCalc(debts: newValue)
             }
+            organizeDebt(debt: newValue)
         }
         .task {
             if model.debts == nil {
                 transactionsState = .loading
                 await fetchDebts()
-                organizeDebt()
             } else {
                 transactionsState = .success
             }
@@ -106,8 +106,8 @@ struct HomeView: View {
 }
 
 extension HomeView {
-    func organizeDebt() {
-        if let debt = model.debts,
+    func organizeDebt(debt: [Debt]?) {
+        if let debt,
             !debt.isEmpty {
             let creditors = debt.map {
                 $0.creditor!
@@ -174,7 +174,7 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-enum TransactionType: String, CaseIterable, Identifiable {
+enum BalanceType: String, CaseIterable, Identifiable {
     case all, owed, owe
     
     var id: Self {
@@ -211,6 +211,7 @@ struct RecentUsersView: View {
                     $0.creditor?.id == user.id || $0.debtor?.id == user.id
                 }, state: .constant(.success))
             }
+            .padding(.bottom)
         }
     }
 }
@@ -221,10 +222,10 @@ struct HomeBalanceView: View {
     @Binding var totalBalance: Double
     @Binding var balanceOwed: Double
     @Binding var balanceOwe: Double
-    @Binding var transactionType: TransactionType
+    @Binding var balanceType: BalanceType
     
     var currentBalance: Double {
-        switch transactionType {
+        switch balanceType {
         case .all:
             return totalBalance
         case .owed:
@@ -235,76 +236,78 @@ struct HomeBalanceView: View {
     }
     
     var body: some View {
-        Section {
-            ZStack(alignment: .bottom) {
-                if colorScheme != .dark {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(
-                            LinearGradient(
-                                stops: [
-                                    Gradient.Stop(color: Color(red: 0.32, green: 0.46, blue: 0.3), location: 0.21),
-                                    Gradient.Stop(color: Color(red: 0.3, green: 0.46, blue: 0.28), location: 0.38),
-                                    Gradient.Stop(color: Color(red: 0.29, green: 0.46, blue: 0.25), location: 0.45),
-                                    Gradient.Stop(color: Color(red: 0.34, green: 0.52, blue: 0.31), location: 0.57),
-                                    Gradient.Stop(color: Color(red: 0.41, green: 0.61, blue: 0.36), location: 0.70),
-                                    Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.52), location: 0.88)
-                                ],
-                                startPoint: UnitPoint(x: 0.5, y: -0.5),
-                                endPoint: UnitPoint(x: 0.5, y: 1.29)
+        VStack {
+            Section {
+                ZStack(alignment: .bottom) {
+                    if colorScheme != .dark {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.32, green: 0.46, blue: 0.3), location: 0.21),
+                                        Gradient.Stop(color: Color(red: 0.3, green: 0.46, blue: 0.28), location: 0.38),
+                                        Gradient.Stop(color: Color(red: 0.29, green: 0.46, blue: 0.25), location: 0.45),
+                                        Gradient.Stop(color: Color(red: 0.34, green: 0.52, blue: 0.31), location: 0.57),
+                                        Gradient.Stop(color: Color(red: 0.41, green: 0.61, blue: 0.36), location: 0.70),
+                                        Gradient.Stop(color: Color(red: 0.69, green: 0.81, blue: 0.52), location: 0.88)
+                                    ],
+                                    startPoint: UnitPoint(x: 0.5, y: -0.5),
+                                    endPoint: UnitPoint(x: 0.5, y: 1.29)
+                                )
+                                .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
                             )
-                            .shadow(.inner(color: .black.opacity(0.05), radius: 0, x: 0, y: -3))
-                        )
-                } else {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(
-                            LinearGradient(
-                                stops: [
-                                    Gradient.Stop(color: Color(red: 0.11, green: 0.11, blue: 0.12), location: 0.00),
-                                    Gradient.Stop(color: Color(red: 0.14, green: 0.15, blue: 0.14), location: 0.43),
-                                    Gradient.Stop(color: Color(red: 0.14, green: 0.21, blue: 0.13), location: 0.86),
-                                    Gradient.Stop(color: Color(red: 0.19, green: 0.28, blue: 0.17), location: 1.00),
-                                ],
-                                startPoint: UnitPoint(x: 0.5, y: 0),
-                                endPoint: UnitPoint(x: 0.5, y: 1)
+                    } else {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.11, green: 0.11, blue: 0.12), location: 0.00),
+                                        Gradient.Stop(color: Color(red: 0.14, green: 0.15, blue: 0.14), location: 0.43),
+                                        Gradient.Stop(color: Color(red: 0.14, green: 0.21, blue: 0.13), location: 0.86),
+                                        Gradient.Stop(color: Color(red: 0.19, green: 0.28, blue: 0.17), location: 1.00),
+                                    ],
+                                    startPoint: UnitPoint(x: 0.5, y: 0),
+                                    endPoint: UnitPoint(x: 0.5, y: 1)
+                                )
+                                .shadow(.inner(color: .white.opacity(0.1), radius: 0, x: 0, y: -2))
                             )
-                            .shadow(.inner(color: .white.opacity(0.1), radius: 0, x: 0, y: -2))
-                        )
-                }
-                VStack(spacing: 12) {
-                    Picker("Show Transactions", selection: $transactionType) {
-                        ForEach(TransactionType.allCases) { type in
-                            Text(type.rawValue.localizedCapitalized).tag(type)
+                    }
+                    VStack(spacing: 12) {
+                        Picker("Show Transactions", selection: $balanceType) {
+                            ForEach(BalanceType.allCases) { type in
+                                Text(type.rawValue.localizedCapitalized).tag(type)
+                            }
                         }
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.primary.opacity(0.125))
+                        )
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: 260)
+                        .onAppear {
+                            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+                            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.label], for: .selected)
+                        }
+                        VStack {
+                            Text(currentBalance, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                .font(.system(size: 42, weight: .bold, design: .rounded))
+                                .kerning(0.96)
+                                .foregroundStyle(.white
+                                    .shadow(.drop(color: .black.opacity(0.25), radius: 0, x: 0, y: 2)))
+                                .contentTransition(.numericText())
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 2)
+                        .background(.black.opacity(0.1))
+                        .cornerRadius(16)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.3), lineWidth: 1)
+                        )
+                        .animation(.default, value: currentBalance)
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(.primary.opacity(0.125))
-                    )
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 260)
-                    .onAppear {
-                        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-                        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.label], for: .selected)
-                    }
-                    VStack {
-                        Text(currentBalance, format: .currency(code: "USD"))
-                            .font(.system(size: 42, weight: .bold, design: .rounded))
-                            .kerning(0.96)
-                            .foregroundStyle(.white
-                                .shadow(.drop(color: .black.opacity(0.25), radius: 0, x: 0, y: 2)))
-                            .contentTransition(.numericText())
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 2)
-                    .background(.black.opacity(0.1))
-                    .cornerRadius(16)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.layoutGreen.opacity(colorScheme != .dark ? 0 : 0.3), lineWidth: 1)
-                    )
-                    .animation(.default, value: currentBalance)
+                    .padding()
                 }
-                .padding()
             }
         }
         .listRowInsets(EdgeInsets())

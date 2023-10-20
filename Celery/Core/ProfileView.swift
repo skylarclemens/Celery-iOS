@@ -19,11 +19,12 @@ struct ProfileView: View {
     private var user: UserInfo
     @State var sharedDebts: [Debt]? = nil
     @State var transactionsState: LoadingState = .loading
-    //@State var friendship: Friendship? = nil
     
-    /*var isFriendUser1: Bool {
-        friendship?.user1 == user.id
-    }*/
+    @State var balance: Balance = Balance()
+    
+    @State var totalBalance = 0.00
+    @State var balanceOwed = 0.00
+    @State var balanceOwe = 0.00
     
     init(user: UserInfo, friendship: UserFriend? = nil) {
         self.user = user
@@ -35,53 +36,31 @@ struct ProfileView: View {
             Rectangle()
                 .fill(Color(uiColor: UIColor.systemGroupedBackground))
                 .ignoresSafeArea()
-            VStack {
-                ZStack {
-                    if colorScheme != .dark {
-                        Rectangle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color(red: 0.42, green: 0.61, blue: 0.36), Color(red: 0.36, green: 0.53, blue: 0.32)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                                .shadow(.inner(color: .black.opacity(0.25), radius: 0, x: 0, y: -3))
-                            )
-                            .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
-                            .ignoresSafeArea()
-                            .frame(maxHeight: 140)
-                    } else {
-                        Rectangle()
-                            .fill(Color.clear)
-                            .roundedCorners(24, corners: [.bottomLeft, .bottomRight])
-                            .ignoresSafeArea()
-                            .frame(maxHeight: 140)
-                    }
-                    ZStack {
-                        UserPhotoView(size: 80, imagePath: user.avatar_url)
-                            .offset(y: -80)
-                            .zIndex(1)
-                        VStack {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 12) {
+                            UserPhotoView(size: 60, imagePath: user.avatar_url)
                             Text(user.name ?? "User unknown")
                                 .font(.system(size: 36, weight: .semibold, design: .rounded))
-                            HStack {
+                        }
+                        HStack {
+                            Group {
                                 if let friendship = friendship {
                                     Button {
                                         Task {
                                             //try await acceptRequest(friendship: friendship)
                                         }
                                     } label: {
-                                        if friendship.status == 0 {
-                                            Text("Accept")
-                                                .font(.headline)
-                                        } else {
-                                            Text("Friends")
-                                                .font(.headline)
-                                        }
+                                        Text(friendship.status == 0 ? "Accept" : "Friends")
                                     }
                                     .buttonStyle(.borderedProminent)
-                                    .tint(.primaryAction)
+                                    .tint(Color.primaryAction)
                                     .disabled(friendship.status == 1)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.layoutGreen, lineWidth: friendship.status == 0 ? 1 : 0)
+                                    )
                                 } else {
                                     Button {
                                         Task {
@@ -96,44 +75,63 @@ struct ProfileView: View {
                                                 .progressViewStyle(.circular)
                                                 .controlSize(.small)
                                         } else {
-                                            Text("Add friend")
-                                                .font(.headline)
-                                                .foregroundStyle(.white)
-                                                .padding(.vertical, 8)
-                                                .padding(.horizontal, 12)
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 16)
-                                                        .stroke(Color.layoutGreen, lineWidth: 1)
-                                                )
+                                            Label("Add", systemImage: "plus")
                                         }
                                     }
-                                    .background(Color.primaryAction)
-                                    .cornerRadius(16)
+                                    .buttonStyle(.borderedProminent)
+                                    .tint(Color.primaryAction)
                                     .disabled(requestStatus == .requestSending)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(Color.layoutGreen, lineWidth: 1)
+                                    )
                                 }
-                                Spacer()
                             }
+                            Spacer()
+                            Button {
+                                
+                            } label: {
+                                Label("Pay", systemImage: "dollarsign")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(Color.primaryAction)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.layoutGreen, lineWidth: 1)
+                            )
                         }
                         .padding()
-                        .padding(.top, 40)
                         .background(
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .fill(Color(uiColor: UIColor.secondarySystemGroupedBackground))
-                                .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 4)
-                                .shadow(color: .black.opacity(0.04), radius: 2, x: 0, y: 0)
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(UIColor.secondarySystemGroupedBackground))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(.secondary.opacity(0.25), lineWidth: 0.5)
+                                )
                         )
-                        .frame(maxHeight: 100)
                     }
-                    .padding()
-                    .offset(y: 60)
-                }.zIndex(2)
-                List {
-                    TransactionsView(transactionsList: $sharedDebts, state: $transactionsState)
+                    .padding(.horizontal)
+                    UserBalanceView(balanceOwed: balance.owed, balanceOwe: balance.owe)
+                        .padding(.top, 12)
+                        .padding(.horizontal)
+                    VStack(alignment: .leading) {
+                        Text("Transactions")
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.primary.opacity(0.9))
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                        TransactionsScrollView(transactionsList: sharedDebts ?? [], state: $transactionsState)
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.top, 65)
-                .refreshable {
-                    try? await loadTransactions()
-                }
+            }
+            .refreshable {
+                try? await loadTransactions()
+            }
+        }
+        .onChange(of: sharedDebts) { _ in
+            withAnimation {
+                self.balance = balanceCalc(using: sharedDebts)
             }
         }
         .task {
@@ -146,7 +144,9 @@ struct ProfileView: View {
             }
         }
     }
-    
+}
+
+extension ProfileView {
     func loadTransactions() async throws {
         do {
             self.sharedDebts = try await SupabaseManager.shared.getSharedDebtsWithExpenses(friendId: user.id)
@@ -154,6 +154,27 @@ struct ProfileView: View {
         } catch {
             self.transactionsState = .error
         }
+    }
+    
+    func balanceCalc(using debts: [Debt]?) -> Balance {
+        var balance = Balance()
+        if let transactionsList = debts,
+           let currentUser = authViewModel.currentUserInfo {
+            for debt in transactionsList {
+                let amount = debt.amount ?? 0.00
+                if debt.paid ?? true {
+                    continue
+                }
+                if debt.creditor?.id == currentUser.id {
+                    balance.total += amount
+                    balance.owed += amount
+                } else {
+                    balance.total -= amount
+                    balance.owe += amount
+                }
+            }
+        }
+        return balance
     }
 }
 
