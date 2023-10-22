@@ -32,6 +32,15 @@ struct Debt: Codable, Identifiable, Equatable {
         self.created_at = created_at
     }
     
+    var expenseDate: Date {
+        if let expense,
+           let date = expense.date {
+            return date
+        } else {
+            return Date()
+        }
+    }
+    
     static let example = Debt(id: UUID(), amount: 10.00, creditor: UserInfo.example, debtor: nil, expense: Expense.example, paid: false, group_id: nil, created_at: Date())
 }
 

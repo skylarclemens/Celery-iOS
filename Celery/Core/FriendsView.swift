@@ -61,11 +61,6 @@ struct FriendsView: View {
                             .tint(.secondary)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(UIColor.secondarySystemGroupedBackground))
-                    )
                 } else if viewModel.loading == .error {
                     VStack {
                         Text("Something went wrong!")
@@ -81,7 +76,7 @@ struct FriendsView: View {
                 }
                 Spacer()
             }
-            .padding(.horizontal)
+            .padding()
             .frame(maxHeight: .infinity, alignment: .top)
             .background(
                 Rectangle()
@@ -90,6 +85,7 @@ struct FriendsView: View {
             )
             .animation(.default, value: viewModel.friendsList)
             .navigationTitle("Friends")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 NavigationLink {
                     QueryUsersView()

@@ -53,6 +53,9 @@ struct TransactionView: View {
                     .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
                     .font(.system(size: 17, weight: .semibold, design: .rounded))
                 }
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
         }
     }
