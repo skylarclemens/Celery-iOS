@@ -31,6 +31,7 @@
 		7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF12AA1417400967E3E /* UIImage.swift */; };
 		7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */; };
 		7E4B4D042AE5B19D00095D0E /* VStackList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B4D032AE5B19D00095D0E /* VStackList.swift */; };
+		7E4B4D062AE5C92E00095D0E /* FriendOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */; };
 		7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
 		7E6270A52A9D529E006067CD /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* UserSettingsView.swift */; };
@@ -91,6 +92,7 @@
 		7E4B2DF12AA1417400967E3E /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		7E4B2DF42AA1430800967E3E /* AvatarUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadView.swift; sourceTree = "<group>"; };
 		7E4B4D032AE5B19D00095D0E /* VStackList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VStackList.swift; sourceTree = "<group>"; };
+		7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendOverviewView.swift; sourceTree = "<group>"; };
 		7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarColorModifier.swift; sourceTree = "<group>"; };
 		7E6270A02A9D26AC006067CD /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 				7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */,
 				7E9357972AE2C1C200F7950F /* UserBalanceView.swift */,
 				7E4B4D032AE5B19D00095D0E /* VStackList.swift */,
+				7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				7E2A2D072ADDAAD300365C04 /* TransactionsScrollView.swift in Sources */,
 				7EECB8072AC21B030026A9B8 /* CreateExpenseDetailsView.swift in Sources */,
 				7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */,
+				7E4B4D062AE5C92E00095D0E /* FriendOverviewView.swift in Sources */,
 				7E7A78C82A9FBA0700A215FC /* CornerRadiusShape.swift in Sources */,
 				7E4B2DF52AA1430800967E3E /* AvatarUploadView.swift in Sources */,
 				7E073C992ADD8CCF00F3DD1C /* UserSupabaseManager.swift in Sources */,

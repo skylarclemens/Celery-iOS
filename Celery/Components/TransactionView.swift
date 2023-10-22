@@ -15,7 +15,6 @@ struct TransactionView: View {
         NavigationLink {
             if let expense = debt.expense {
                 ExpenseView(expense: expense)
-                    .tint(.white)
             }
         } label: {
             HStack(spacing: 12) {

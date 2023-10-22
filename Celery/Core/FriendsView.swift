@@ -27,52 +27,69 @@ private class FriendsViewModel: ObservableObject {
 
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var model: Model
     @StateObject fileprivate var viewModel = FriendsViewModel()
     
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    if viewModel.loading == .success {
-                        if let friendsList = viewModel.friendsList {
-                            ForEach(friendsList) { friend in
-                                NavigationLink {
-                                    if let currentFriend = friend.friend {
-                                        ProfileView(user: currentFriend)
-                                    }
-                                } label: {
-                                    HStack {
-                                        UserPhotoView(size: 40, imagePath: friend.friend?.avatar_url)
-                                        Text(friend.friend?.name ?? "Unknown user")
-                                    }
+            LazyVStack {
+                if viewModel.loading == .success {
+                    if let friendsList = viewModel.friendsList {
+                        ForEach(friendsList) { friend in
+                            if let user = friend.friend,
+                               let debts = model.debts {
+                                let sharedDebts = debts.filter {
+                                    $0.creditor?.id == user.id || $0.debtor?.id == user.id
                                 }
-                                .listRowInsets(EdgeInsets(.init(top: 8, leading: 8, bottom: 8, trailing: 12)))
+                                FriendOverviewView(debts: sharedDebts, user: user)
                             }
-                        } else {
-                            Text("No friends")
-                                .foregroundStyle(.secondary)
                         }
-                    } else if viewModel.loading == .loading {
-                        VStack {
-                            ProgressView()
-                                .progressViewStyle(.circular)
-                                .tint(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                    } else if viewModel.loading == .error {
-                        VStack {
-                            Text("Something went wrong!")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
+                    } else {
+                        Text("No friends")
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(UIColor.secondarySystemGroupedBackground))
+                            )
                     }
+                } else if viewModel.loading == .loading {
+                    VStack {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .tint(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color(UIColor.secondarySystemGroupedBackground))
+                    )
+                } else if viewModel.loading == .error {
+                    VStack {
+                        Text("Something went wrong!")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color(UIColor.secondarySystemGroupedBackground))
+                    )
                 }
-                .animation(.default, value: viewModel.friendsList)
+                Spacer()
             }
+            .padding(.horizontal)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .background(
+                Rectangle()
+                    .fill(Color(UIColor.systemGroupedBackground))
+                    .ignoresSafeArea()
+            )
+            .animation(.default, value: viewModel.friendsList)
             .navigationTitle("Friends")
-            .navigationBarTitleDisplayMode(.inline)
-            .statusBarColorScheme(.dark, showBackground: true, backgroundColor: Color.primaryAction)
             .toolbar {
                 NavigationLink {
                     QueryUsersView()
@@ -92,4 +109,5 @@ struct FriendsView: View {
 #Preview {
     FriendsView()
         .environmentObject(AuthenticationViewModel())
+        .environmentObject(Model())
 }
