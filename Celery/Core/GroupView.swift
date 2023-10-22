@@ -38,43 +38,52 @@ struct GroupView: View {
                 .ignoresSafeArea()
             VStack {
                 ScrollView() {
-                    VStack(alignment: .leading) {
-                        Text("Members")
-                            .font(.system(size: 18, weight: .semibold, design: .rounded))
-                            .padding(.leading)
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            if let members = members {
-                                HStack(spacing: 24) {
-                                    ForEach(members) { user in
-                                        NavigationLink {
-                                            ProfileView(user: user)
-                                        } label: {
-                                            VStack {
-                                                UserPhotoView(size: 45, imagePath: user.avatar_url)
-                                                Text(authViewModel.isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
-                                                    .font(.system(size: 12))
-                                                    .lineLimit(2)
-                                                    .multilineTextAlignment(.center)
-                                                    .truncationMode(.tail)
-                                            }
-                                        }
-                                        .frame(maxWidth: 60)
-                                        .disabled(authViewModel.isCurrentUser(userId: user.id))
-                                        .buttonStyle(EmptyButtonStyle())
-                                    }
-                                }
-                                .padding(.horizontal)
+                    VStack {
+                        VStack {
+                            VStack(spacing: 8) {
+                                UserPhotoView(size: 60, imagePath: group.avatar_url, type: .group)
+                                Text(group.group_name ?? "Group name unknown")
+                                    .font(.system(size: 36, weight: .semibold, design: .rounded))
                             }
                         }
-                        .frame(height: 65)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                        )
+                        .padding(.bottom)
+                        VStack(alignment: .leading) {
+                            Text("Members")
+                                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                .padding(.leading)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                if let members = members {
+                                    HStack(spacing: 24) {
+                                        ForEach(members) { user in
+                                            NavigationLink {
+                                                ProfileView(user: user)
+                                            } label: {
+                                                VStack {
+                                                    UserPhotoView(size: 45, imagePath: user.avatar_url)
+                                                    Text(authViewModel.isCurrentUser(userId: user.id) ? "You" : user.name ?? "Unknown name")
+                                                        .font(.system(size: 12))
+                                                        .lineLimit(2)
+                                                        .multilineTextAlignment(.center)
+                                                        .truncationMode(.tail)
+                                                }
+                                            }
+                                            .frame(maxWidth: 60)
+                                            .disabled(authViewModel.isCurrentUser(userId: user.id))
+                                            .buttonStyle(EmptyButtonStyle())
+                                        }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                            }
+                            .frame(height: 65)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+                            )
+                        }
                     }
                     .padding(.horizontal)
-                    .padding(.top, 5)
                     UserBalanceView(balanceOwed: balances.owed, balanceOwe: balances.owe)
                         .animation(.default, value: balances)
                         .padding()
@@ -86,15 +95,13 @@ struct GroupView: View {
                             .animation(.default, value: debts)
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 40)
+                    //.padding(.bottom, 40)
                 }
                 .refreshable {
                     try? await fetchData()
                 }
             }
         }
-        .navigationTitle(group.group_name ?? "Group")
-        .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

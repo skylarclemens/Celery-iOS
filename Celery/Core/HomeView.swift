@@ -40,9 +40,10 @@ struct HomeView: View {
         }
     }
     
-    @State var totalBalance = 0.00
-    @State var balanceOwed = 0.00
-    @State var balanceOwe = 0.00
+    var balances: Balance {
+        guard let debts = model.debts else { return Balance() }
+        return balanceCalc(using: debts)
+    }
     
     @State var balanceType: BalanceType = .all
     
@@ -52,11 +53,27 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                HomeBalanceView(totalBalance: $totalBalance, balanceOwed: $balanceOwed, balanceOwe: $balanceOwe, balanceType: $balanceType)
+                HomeBalanceView(balances: balances, balanceType: $balanceType)
                     .padding(.horizontal)
-                if let recentUsers = model.recentUsers {
+                if let recentUsers = model.recentUsers,
+                   let debts = model.debts {
                     VStack(alignment: .leading) {
-                        RecentUsersView(users: recentUsers, debts: filteredTransactionList)
+                        Text("Recent Transactions")
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .padding(.leading)
+                        ScrollView(.horizontal) {
+                            LazyHStack(spacing: 12) {
+                                ForEach(filteredTransactionList) { debt in
+                                    RecentTransaction(debt: debt)
+                                }
+                            }
+                            .padding([.horizontal, .bottom])
+                        }
+                        .scrollIndicators(.hidden)
+                    }
+                    .padding(.top)
+                    VStack(alignment: .leading) {
+                        RecentUsersView(users: recentUsers, debts: debts)
                     }
                     .padding()
                     .padding(.bottom, 40)
@@ -86,9 +103,6 @@ struct HomeView: View {
             }
         }
         .onReceive(model.$debts) { newValue in
-            withAnimation {
-                balanceCalc(debts: newValue)
-            }
             organizeDebt(debt: newValue)
         }
         .task {
@@ -108,7 +122,7 @@ struct HomeView: View {
 extension HomeView {
     func organizeDebt(debt: [Debt]?) {
         if let debt,
-            !debt.isEmpty {
+           !debt.isEmpty {
             let creditors = debt.map {
                 $0.creditor!
             }
@@ -140,10 +154,8 @@ extension HomeView {
         }
     }
     
-    func balanceCalc(debts: [Debt]?) {
-        var totalBalance = 0.00
-        var balanceOwed = 0.00
-        var balanceOwe = 0.00
+    func balanceCalc(using debts: [Debt]?) -> Balance {
+        var balance = Balance()
         if let transactionsList = debts,
            let currentUser = authViewModel.currentUserInfo {
             for debt in transactionsList {
@@ -152,17 +164,15 @@ extension HomeView {
                     continue
                 }
                 if debt.creditor?.id == currentUser.id {
-                    totalBalance += amount
-                    balanceOwed += amount
+                    balance.total += amount
+                    balance.owed += amount
                 } else {
-                    totalBalance -= amount
-                    balanceOwe += amount
+                    balance.total -= amount
+                    balance.owe += amount
                 }
             }
-            self.totalBalance = totalBalance
-            self.balanceOwed = balanceOwed
-            self.balanceOwe = balanceOwe
         }
+        return balance
     }
 }
 
@@ -171,6 +181,90 @@ struct HomeView_Previews: PreviewProvider {
         HomeView()
             .environmentObject(AuthenticationViewModel())
             .environmentObject(Model())
+    }
+}
+
+
+struct RecentTransaction: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @Environment(\.colorScheme) var colorScheme
+    
+    var debt: Debt
+    
+    var body: some View {
+        NavigationLink {
+            if let expense = debt.expense {
+                ExpenseView(expense: expense)
+            }
+        } label: {
+            VStack(alignment: .leading) {
+                HStack {
+                    ZStack {
+                        Circle()
+                            .fill(Color(hex: Category.categoryList.first(where: {
+                                $0.name == debt.expense?.category?.capitalized
+                            })?.colorUInt ?? 0x6A9B5D)
+                                .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
+                                .shadow(.drop(color: .black.opacity(0.2), radius: 2, y: 1))
+                            )
+                        
+                        Image(debt.expense?.category?.capitalized ?? "General")
+                            .resizable()
+                            .frame(maxWidth: 10, maxHeight: 10)
+                        Circle()
+                            .stroke(Color(uiColor: UIColor.secondarySystemGroupedBackground), lineWidth: 2)
+                    }
+                    .frame(width: 20, height: 20)
+                    Text(debt.expense?.description ?? "Unknown name")
+                        .font(.system(size: 14, weight: .medium))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer()
+                    if let currentUser = authViewModel.currentUserInfo {
+                        let userOwed = debt.creditor?.id == currentUser.id
+                        HStack(spacing: 0) {
+                            Text(userOwed ? "+" : "-")
+                            Text(debt.amount ?? 0, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        }
+                        .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    }
+                }
+                .padding(.vertical, 2)
+                Divider()
+                Spacer()
+                HStack(spacing: -5) {
+                    UserPhotoView(size: 35, imagePath: debt.creditor?.avatar_url)
+                    UserPhotoView(size: 35, imagePath: debt.debtor?.avatar_url)
+                }
+                .padding(.vertical, 2)
+                Spacer()
+                Divider()
+                HStack {
+                    Text(debt.expense?.date?.formatted(date: .abbreviated, time: .omitted) ?? "")
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(.tertiary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.vertical, 2)
+            }
+            .padding(8)
+            .frame(height: 130)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.secondary.opacity(colorScheme == .light ? 0.25 : 0.5), lineWidth: 0.5)
+                    )
+            )
+            .shadow(color: .black.opacity(0.05), radius: 4, y: 3)
+            .frame(width: 200)
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -188,50 +282,129 @@ struct RecentUsersView: View {
     
     var body: some View {
         ForEach(users) { user in
+            let sharedDebts = debts.filter {
+                $0.creditor?.id == user.id || $0.debtor?.id == user.id
+            }
+            RecentUserView(debts: sharedDebts, user: user)
+        }
+    }
+}
+
+struct RecentUserView: View {
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @Environment(\.colorScheme) var colorScheme
+    var debts: [Debt]
+    var user: UserInfo
+    var sharedBalance: Double {
+        calculateTotalBalance(debts: debts)
+    }
+    
+    var body: some View {
+        NavigationLink {
+            ProfileView(user: user)
+        } label: {
             VStack(alignment: .leading) {
                 HStack {
-                    NavigationLink {
-                        ProfileView(user: user)
-                    } label: {
-                        UserPhotoView(size: 30, imagePath: user.avatar_url)
+                    HStack {
+                        UserPhotoView(size: 45, imagePath: user.avatar_url)
                         Text(user.name ?? "Unknown name")
+                            .fontWeight(.medium)
                             .lineLimit(2)
                             .multilineTextAlignment(.center)
                             .truncationMode(.tail)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 12))
-                            .foregroundStyle(.secondary)
-                            .padding(.leading, 2)
                     }
-                    .buttonStyle(.plain)
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        HStack(spacing: 0) {
+                            Text("\(sharedBalance > 0 ? "You're owed" : "You owe")  ")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.primary)
+                            Text(abs(sharedBalance), format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .padding(4)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(sharedBalance >= 0 ? Color.layoutGreen : Color.layoutRed)
+                                )
+                        }
+                        Group {
+                            Text("\(debts.count)")
+                                .fontWeight(.medium) +
+                            Text(" active bill\(debts.count != 1 ? "s" : "")")
+                        }
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(
+                            Capsule()
+                                .fill(Color(UIColor.secondarySystemBackground))
+                                .overlay(
+                                    Capsule()
+                                        .stroke(.secondary.opacity(0.33), lineWidth: 0.5)
+                                )
+                        )
+                    }
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.tertiary)
+                        .padding(.leading, 4)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 8)
-                TransactionsScrollView(transactionsList: debts.filter {
-                    $0.creditor?.id == user.id || $0.debtor?.id == user.id
-                }, state: .constant(.success))
             }
-            .padding(.bottom)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(.secondary.opacity(colorScheme == .light ? 0.25 : 0.5), lineWidth: 0.5)
+                    )
+            )
+            .shadow(color: .black.opacity(0.05), radius: 4, y: 3)
+            .padding(.bottom, 8)
         }
+        .buttonStyle(.plain)
+    }
+}
+
+extension RecentUserView {
+    func calculateTotalBalance(debts: [Debt]?) -> Double {
+        var total: Double = 0.00
+        if let debts = debts,
+           let currentUser = authViewModel.currentUserInfo {
+            for debt in debts {
+                let amount = debt.amount ?? 0.00
+                if debt.paid ?? true {
+                    continue
+                }
+                if debt.creditor?.id == currentUser.id {
+                    total += amount
+                } else {
+                    total -= amount
+                }
+            }
+        }
+        return total
     }
 }
 
 struct HomeBalanceView: View {
     @Environment(\.colorScheme) var colorScheme
     
-    @Binding var totalBalance: Double
-    @Binding var balanceOwed: Double
-    @Binding var balanceOwe: Double
+    var balances: Balance
     @Binding var balanceType: BalanceType
     
     var currentBalance: Double {
         switch balanceType {
         case .all:
-            return totalBalance
+            return balances.total
         case .owed:
-            return balanceOwed
+            return balances.owed
         case .owe:
-            return balanceOwe
+            return balances.owe
         }
     }
     

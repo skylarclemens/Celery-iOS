@@ -20,7 +20,7 @@ struct UserBalanceView: View {
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color.layoutGreen)
                     Spacer()
-                    Image(systemName: "arrow.up.right")
+                    Image(systemName: "arrow.down.left")
                         .foregroundStyle(Color.layoutGreen)
                 }
                 Text(balanceOwed, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
@@ -44,7 +44,7 @@ struct UserBalanceView: View {
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                         .foregroundStyle(Color.layoutRed)
                     Spacer()
-                    Image(systemName: "arrow.down.left")
+                    Image(systemName: "arrow.up.right")
                         .foregroundStyle(Color.layoutRed)
                 }
                 Text(balanceOwe, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))

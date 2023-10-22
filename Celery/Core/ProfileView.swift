@@ -19,6 +19,7 @@ struct ProfileView: View {
     private var user: UserInfo
     @State var sharedDebts: [Debt]? = nil
     @State var transactionsState: LoadingState = .loading
+    @State var friendshipState: LoadingState = .loading
     
     var balances: Balance {
         balanceCalc(using: sharedDebts)
@@ -37,8 +38,8 @@ struct ProfileView: View {
                 .ignoresSafeArea()
             ScrollView {
                 VStack(alignment: .leading) {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 12) {
+                    VStack {
+                        VStack(spacing: 8) {
                             UserPhotoView(size: 60, imagePath: user.avatar_url)
                             Text(user.name ?? "User unknown")
                                 .font(.system(size: 36, weight: .semibold, design: .rounded))
@@ -69,20 +70,21 @@ struct ProfileView: View {
                                              }*/
                                         }
                                     } label: {
-                                        if requestStatus == .requestSending {
+                                        if requestStatus == .requestSending || friendshipState == .loading {
                                             ProgressView()
                                                 .progressViewStyle(.circular)
                                                 .controlSize(.small)
+                                                .frame(width: 54, height: 20)
                                         } else {
                                             Label("Add", systemImage: "plus")
                                         }
                                     }
                                     .buttonStyle(.borderedProminent)
                                     .tint(Color.primaryAction)
-                                    .disabled(requestStatus == .requestSending)
+                                    .disabled(requestStatus == .requestSending || friendshipState == .loading)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.layoutGreen, lineWidth: 1)
+                                            .stroke(Color.layoutGreen, lineWidth: requestStatus == .requestSending || friendshipState == .loading ? 0 : 1)
                                     )
                                 }
                             }
@@ -137,12 +139,16 @@ struct ProfileView: View {
             }
         }
         .task {
-            self.transactionsState = .loading
             if self.sharedDebts == nil {
                 try? await loadTransactions()
+            } else {
+                self.transactionsState = .success
             }
             if self.friendship == nil {
                 self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
+                self.friendshipState = .success
+            } else {
+                self.friendshipState = .success
             }
         }
     }
