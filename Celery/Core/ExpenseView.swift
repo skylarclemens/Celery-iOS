@@ -158,8 +158,19 @@ struct ExpenseHeader: View {
             Rectangle()
                 .fill(Color(hex: Category.categoryList.first(where: {
                     $0.name == expense.category?.capitalized
-                })?.colorUInt ?? 0x6A9B5D)
-                    .shadow(.inner(color: .black.opacity(0.04), radius: 2, x: 0, y: 0))
+                })?.colorUInt ?? 0x6A9B5D))
+                .overlay(
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                            stops: [
+                            Gradient.Stop(color: .black.opacity(0.25), location: 0.00),
+                            Gradient.Stop(color: .black.opacity(0), location: 1.00),
+                            ],
+                            startPoint: .bottom,
+                            endPoint: .top
+                            )
+                        )
                 )
             Image(expense.category?.capitalized ?? "General")
                 .resizable()

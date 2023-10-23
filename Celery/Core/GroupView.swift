@@ -91,7 +91,7 @@ struct GroupView: View {
                         Text("Transactions")
                             .font(.system(size: 18, weight: .semibold, design: .rounded))
                             .padding(.leading)
-                        TransactionsScrollView(transactionsList: debts ?? [], state: $loading)
+                        TransactionsByMonth(transactionsList: debts ?? [], state: $loading)
                             .animation(.default, value: debts)
                     }
                     .padding(.horizontal)

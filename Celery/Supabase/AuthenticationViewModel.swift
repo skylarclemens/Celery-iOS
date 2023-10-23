@@ -98,6 +98,21 @@ final class AuthenticationViewModel: ObservableObject {
         return nil
     }
     
+    func updateCurrentUserInfo(_ updatedInfo: UserInfo, emailChange: Bool) async throws {
+        do {
+            let updatedUser = try await SupabaseManager.shared.updateUserInfo(user: updatedInfo)
+            if let updatedUser {
+                self.currentUserInfo = updatedUser
+            }
+            if emailChange,
+               let email = updatedInfo.email {
+                try await SupabaseManager.shared.client.auth.update(user: UserAttributes(email: email))
+            }
+        } catch {
+            print("Error updating user info: \(error)")
+        }
+    }
+    
     func signOut() async throws {
         do {
             try await supabase.auth.signOut()

@@ -98,7 +98,7 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $openSettings) {
-                UserSettingsView(currentUser: authViewModel.currentUserInfo)
+                SettingsView(currentUser: authViewModel.currentUserInfo)
                     .tint(.blue)
             }
         }

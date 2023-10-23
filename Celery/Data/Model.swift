@@ -78,4 +78,10 @@ class Model: ObservableObject {
             print("Error updating group")
         }
     }
+    
+    func reset() {
+        self.debts = nil
+        self.groups = nil
+        self.recentUsers = nil
+    }
 }
