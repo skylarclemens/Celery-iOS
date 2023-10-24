@@ -105,7 +105,6 @@ struct UserSettingsView: View {
                     TextField("Email", text: $email, onEditingChanged: { isChanged in
                         if !isChanged {
                             self.isEmailValid = validEmail(self.email)
-                            print(self.isEmailValid)
                         }
                     })
                         .keyboardType(.emailAddress)
@@ -174,10 +173,8 @@ struct UserSettingsView: View {
     func updateAccount() async throws {
         if email != user.email {
             emailChange = true
-            print(emailChange)
         } else {
             emailChange = false
-            print(emailChange)
         }
         let newInfo = UserInfo(id: user.id, email: email, name: name, avatar_url: avatarUrl.isEmpty ? nil : avatarUrl, updated_at: Date(), username: username)
         try? await authViewModel.updateCurrentUserInfo(newInfo, emailChange: emailChange)
