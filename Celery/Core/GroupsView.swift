@@ -46,6 +46,7 @@ struct GroupsView: View {
                 }
             }
             .navigationTitle("Groups")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -21,12 +21,13 @@ struct AvatarUploadView: View {
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var avatarImage: UIImage? = nil
     @State private var imageState: ImageState = .empty
-    
     @Binding var avatarUrl: String
     var type: UserPhotoType = .user
     
+    var size: CGFloat = 100
+    
     var body: some View {
-        ZStack {
+        ZStack(alignment: imageState == .empty ? .bottom : .center) {
             Circle()
                 .fill(.black.opacity(0.1))
             if imageState == .success,
@@ -36,21 +37,32 @@ struct AvatarUploadView: View {
                     .aspectRatio(contentMode: .fill)
                     .clipShape(Circle())
             } else if imageState == .loading {
-                
+                ProgressView()
+            } else if imageState == .empty {
+                Image(systemName: "person.fill")
+                    .font(.system(size: size * 0.75))
+                    .foregroundStyle(.black.opacity(0.25))
+                    .offset(y: size/16)
             }
             Circle()
                 .strokeBorder(.white, lineWidth: 3)
         }
         .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
-        .frame(width: 100, height: 100)
+        .frame(width: size, height: size)
+        .clipShape(Circle())
         .overlay(alignment: .bottomTrailing) {
             PhotosPicker(selection: $selectedImage,
                          matching: .images,
                          photoLibrary: .shared()) {
                 Image(systemName: "pencil.circle.fill")
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 30))
-                    .foregroundStyle(Color(red: 0.87, green: 0.88, blue: 0.89))
+                    .font(.system(size: size/3.5))
+                    .foregroundStyle(Color(UIColor.systemGray2))
+                    .overlay(
+                        Circle()
+                            .stroke(.background, lineWidth: 2)
+                            .frame(width: size/3.5)
+                    )
             }
         }.onChange(of: selectedImage) { _ in
             Task {
@@ -82,6 +94,8 @@ struct AvatarUploadView: View {
                         self.imageState = .empty
                     }
                 }
+            } else {
+                self.imageState = .empty
             }
         }
     }

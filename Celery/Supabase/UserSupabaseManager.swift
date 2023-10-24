@@ -80,4 +80,19 @@ extension SupabaseManager {
             return nil
         }
     }
+    
+    // Update current user's information
+    func updateUserInfo(user: UserInfo) async throws -> UserInfo? {
+        do {
+            let updatedUser: [UserInfo] = try await self.client.database.from("users")
+                .update(values: user)
+                .eq(column: "id", value: user.id)
+                .execute()
+                .value
+            return updatedUser.first
+        } catch {
+            print("Error updating user info: \(error)")
+            return nil
+        }
+    }
 }

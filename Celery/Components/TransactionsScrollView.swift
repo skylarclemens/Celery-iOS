@@ -26,7 +26,6 @@ struct TransactionsScrollView: View {
                                 Spacer()
                                 if debt != transactionsList.last {
                                     Divider()
-                                    //.padding(.vertical, 6)
                                         .padding(.leading, 66)
                                 }
                             }

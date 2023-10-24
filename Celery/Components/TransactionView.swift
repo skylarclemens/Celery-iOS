@@ -15,7 +15,6 @@ struct TransactionView: View {
         NavigationLink {
             if let expense = debt.expense {
                 ExpenseView(expense: expense)
-                    .tint(.white)
             }
         } label: {
             HStack(spacing: 12) {
@@ -54,6 +53,9 @@ struct TransactionView: View {
                     .foregroundStyle(!userOwed ? Color.layoutRed : Color.layoutGreen)
                     .font(.system(size: 17, weight: .semibold, design: .rounded))
                 }
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
         }
     }

@@ -54,24 +54,8 @@ extension SupabaseManager {
     }
     
     func getGroupDebtsWithExpenses(groupId: UUID) async throws -> [Debt]? {
-        let decoder = JSONDecoder()
-        // Decode ISO8601 dates and yyyy-MM-dd formatted dates
-        decoder.dateDecodingStrategy = .custom { decoder -> Date in
-            let container = try decoder.singleValueContainer()
-            let dateString = try container.decode(String.self)
-            let dateFormatter = DateFormatter()
-            if dateString.wholeMatch(of: /\d{4}-\d{2}-\d{2}/) != nil {
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-            } else {
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-                dateFormatter.calendar = Calendar(identifier: .iso8601)
-            }
-            guard let date = dateFormatter.date(from: dateString) else { throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date") }
-            return date
-        }
-        
         do {
-            let response = try await self.client.database.from("debt")
+            let debts: [Debt] = try await self.client.database.from("debt")
                 .select(columns: """
                 *,
                 creditor: creditor_id!inner(*),
@@ -82,8 +66,8 @@ extension SupabaseManager {
                 .eq(column: "group_id", value: groupId)
                 .order(column: "created_at", ascending: false)
                 .execute()
-            let data = try decoder.decode([Debt].self, from: response.underlyingResponse.data)
-            return data
+                .value
+            return debts
         } catch {
             print("Error fetching debts: \(error)")
             return nil
