@@ -14,3 +14,10 @@ struct UserFriend: Codable, Identifiable, Equatable {
     let status: Int?
     let status_change: Date?
 }
+
+struct UserFriendModel: Codable {
+    let user_id: UUID?
+    let friend_id: UUID?
+    let status: Int?
+    let status_change: Date?
+}
