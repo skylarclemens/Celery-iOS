@@ -30,6 +30,7 @@ extension SupabaseManager {
             let friendsList: [UserFriend] = try await self.client.database.from("user_friend")
                 .select(columns: """
                 *,
+                user: user_id(*),
                 friend: friend_id(*)
                 """)
                 .eq(column: "user_id", value: currentUserId)
@@ -50,6 +51,7 @@ extension SupabaseManager {
             let friend: [UserFriend] = try await self.client.database.from("user_friend")
                 .select(columns: """
                 *,
+                user: user_id(*),
                 friend: friend_id(*)
                 """)
                 .eq(column: "user_id", value: currentUserId)
@@ -69,6 +71,7 @@ extension SupabaseManager {
             let friend: [UserFriend] = try await self.client.database.from("user_friend")
                 .select(columns: """
                 *,
+                user: user_id(*),
                 friend: friend_id(*)
                 """)
                 .eq(column: "user_id", value: friendId)
@@ -79,6 +82,26 @@ extension SupabaseManager {
             return friend.first
         } catch {
             print("Error fetching friend: \(error)")
+            return nil
+        }
+    }
+    
+    func getAllFriendRequests() async throws -> [UserFriend]? {
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            let requests: [UserFriend] = try await self.client.database.from("user_friend")
+                .select(columns: """
+                *,
+                user: user_id(*),
+                friend: friend_id(*)
+                """)
+                .eq(column: "friend_id", value: currentUserId)
+                .eq(column: "status", value: 0)
+                .execute()
+                .value
+            return requests
+        } catch {
+            print("Error fetching all friend requests: \(error)")
             return nil
         }
     }
@@ -114,7 +137,7 @@ extension SupabaseManager {
     
     func addNewFriend(request: UserFriend) async throws -> UserFriend? {
         do {
-            let newRequest = UserFriendModel(user_id: request.friend?.id, friend_id: request.user_id, status: 1, status_change: Date())
+            let newRequest = UserFriendModel(user_id: request.friend?.id, friend_id: request.user?.id, status: 1, status_change: Date())
             let friend: [UserFriend] = try await self.client.database.from("user_friend")
                 .insert(values: newRequest, returning: .representation)
                 .select()

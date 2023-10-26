@@ -90,10 +90,8 @@ extension ProfileView {
     }
     
     func fetchFriendshipOrRequest() async {
-        let friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
-        if let friendship {
-            self.friendship = friendship
-        } else {
+        self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
+        if self.friendship == nil {
             self.request = try? await SupabaseManager.shared.getFriendRequest(friendId: user.id)
         }
     }
@@ -245,7 +243,7 @@ extension ProfileViewHeader {
     func acceptFriendRequest(request: UserFriend) async throws {
         self.requestStatus = .requestSending
         do {
-            try await SupabaseManager.shared.updateFriendStatus(user1: request.user_id!, user2: request.friend!.id, status: 1)
+            try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 1)
             self.friendship = try await SupabaseManager.shared.addNewFriend(request: request)
             self.request = nil
             self.requestStatus = .requestSent
