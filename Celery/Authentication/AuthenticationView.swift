@@ -15,10 +15,14 @@ struct AuthenticationView: View {
             LoginView()
         case .signUp:
             SignUpView()
+        case .confirmEmail:
+            VerifyAccountView()
+                .padding()
         }
     }
 }
 
 #Preview {
     AuthenticationView()
+        .environmentObject(AuthenticationViewModel())
 }

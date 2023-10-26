@@ -97,14 +97,14 @@ struct LoginView: View {
                     .frame(maxWidth: .infinity, maxHeight: 1)
             }
             .padding(.vertical, 8)
-            /*SignInWithAppleButton(.signIn) { request in
+            SignInWithAppleButton(.signIn) { request in
                 authViewModel.handleSignInWithAppleRequest(request)
             } onCompletion: { result in
                 authViewModel.signInWithApple(result)
             }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             .frame(height: 50)
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))*/
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             HStack {
                 Text("Need an account?")
                 Button {

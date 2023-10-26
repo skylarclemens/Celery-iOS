@@ -20,6 +20,7 @@ struct SignUpView: View {
     @EnvironmentObject var supabaseManager: SupabaseManager
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @FocusState private var focusedInput: FocusableField?
+    @State private var loadingState: LoadingState = .success
     
     var body: some View {
         VStack {
@@ -82,7 +83,6 @@ struct SignUpView: View {
                         .submitLabel(.done)
                         .onSubmit {
                             self.focusedInput = nil
-                            signUpWithEmailPassword()
                         }
                 }
                 .padding()
@@ -98,9 +98,11 @@ struct SignUpView: View {
                     .fill(Color(UIColor.secondarySystemBackground))
             )
             Button {
+                self.focusedInput = nil
+                self.loadingState = .loading
                 signUpWithEmailPassword()
             } label: {
-                if authViewModel.authState != .authenticating {
+                if loadingState != .loading {
                     Text("Sign up")
                         .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.white)
@@ -129,14 +131,14 @@ struct SignUpView: View {
                     .frame(maxWidth: .infinity, maxHeight: 1)
             }
             .padding(.vertical, 8)
-            /*SignInWithAppleButton(.signUp) { request in
+            SignInWithAppleButton(.signUp) { request in
                 authViewModel.handleSignInWithAppleRequest(request)
             } onCompletion: { result in
                 authViewModel.signInWithApple(result)
             }
             .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             .frame(height: 50)
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))*/
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             HStack {
                 Text("Already have an account?")
                 Button {
@@ -154,7 +156,7 @@ struct SignUpView: View {
     
     private func signUpWithEmailPassword() {
         Task {
-            //await authViewModel.signUpWithEmailPassword()
+            await authViewModel.signUpWithEmailPassword()
         }
     }
 }
