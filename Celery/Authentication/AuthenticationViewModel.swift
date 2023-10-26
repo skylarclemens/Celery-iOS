@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Supabase
+import AuthenticationServices
 
 enum AuthState: Equatable {
     case authenticating
@@ -21,7 +22,7 @@ struct AppUser {
 }
 
 enum AuthType {
-    case login, signUp
+    case login, signUp, confirmEmail
 }
 
 @MainActor
@@ -29,6 +30,7 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var authState: AuthState = .authenticating
     @Published var currentUser: User?
     @Published var currentUserInfo: UserInfo?
+    @Published var tempUserInfo: UserInfo?
     @Published var session: Session? = nil
     
     @Published var email = ""
@@ -41,6 +43,18 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var currentAuthType: AuthType = .login
     
     private let supabase = SupabaseManager.shared.client
+    private let signInWithAppleHelper = SignInWithAppleHelper()
+    
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        return signInWithAppleHelper.handleSignInWithAppleRequest(request)
+    }
+    
+    func signInWithApple(_ result: Result<ASAuthorization, Error>) {
+        Task { [weak self] in
+            let state = await self?.signInWithAppleHelper.signInWithApple(result)
+            self?.authState = state ?? .signedOut
+        }
+    }
     
     func signInWithEmailPassword() async {
         self.authState = .authenticating
@@ -55,6 +69,24 @@ final class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    func signUpWithEmailPassword() async {
+        do {
+            let authResponse = try await SupabaseManager.shared.client.auth.signUp(email: email, password: password, data: [
+                "name": AnyJSON.string(displayName)
+            ])
+            if let responseUser = authResponse.user {
+                let tempUser = UserInfo(id: responseUser.id, email: responseUser.email, name: responseUser.userMetadata["name"]?.value as? String, avatar_url: nil, updated_at: nil, username: nil)
+                self.tempUserInfo = tempUser
+            }
+            
+            self.currentAuthType = .confirmEmail
+        } catch {
+            print("### Sign up  error: \(error)")
+            self.errorMessage = error.localizedDescription
+            self.authState = .signedOut
+        }
+    }
+    
     func initializeSessionListener() async throws {
         self.authState = .authenticating
         for await _ in supabase.auth.authEventChange {
@@ -62,7 +94,6 @@ final class AuthenticationViewModel: ObservableObject {
             if let user = self.session?.user {
                 self.currentUser = user
                 self.currentUserInfo = try await SupabaseManager.shared.getUser(userId: user.id)
-                self.authState = .signedIn
             } else {
                 self.resetValues()
                 self.authState = .signedOut

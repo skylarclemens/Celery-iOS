@@ -134,9 +134,9 @@ struct ContentView: View {
                 }
             case .signedOut:
                 WelcomeView(openAuthView: $openAuthView)
-                .sheet(isPresented: $openAuthView) {
-                    AuthenticationView()
-                }
+                    .sheet(isPresented: $openAuthView) {
+                        AuthenticationView()
+                    }
             case .authenticating:
                 LaunchView()
             }

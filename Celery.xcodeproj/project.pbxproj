@@ -60,6 +60,8 @@
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
 		7EB7CFE62A5F75B4000B04FE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE52A5F75B4000B04FE /* Preview Assets.xcassets */; };
 		7EBB04652AA2948500057123 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBB04642AA2948500057123 /* Category.swift */; };
+		7EC593C42AEAAD2000F8664E /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC593C32AEAAD2000F8664E /* AuthHelper.swift */; };
+		7EC593C62AEAC1DD00F8664E /* VerifyAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC593C52AEAC1DD00F8664E /* VerifyAccountView.swift */; };
 		7ED4938A2AC36D4A003F5B2C /* UserSplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED493892AC36D4A003F5B2C /* UserSplitView.swift */; };
 		7ED926D82AC9E2DA00BDE2B8 /* PayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ED926D72AC9E2DA00BDE2B8 /* PayView.swift */; };
 		7EECB8042AC21A8A0026A9B8 /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */; };
@@ -126,6 +128,8 @@
 		7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7EB7CFE52A5F75B4000B04FE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7EBB04642AA2948500057123 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		7EC593C32AEAAD2000F8664E /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
+		7EC593C52AEAC1DD00F8664E /* VerifyAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyAccountView.swift; sourceTree = "<group>"; };
 		7ED493892AC36D4A003F5B2C /* UserSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSplitView.swift; sourceTree = "<group>"; };
 		7ED926D72AC9E2DA00BDE2B8 /* PayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayView.swift; sourceTree = "<group>"; };
 		7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
@@ -170,7 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				7E0E98412ABA111100AA974D /* SupabaseManager.swift */,
-				7E0E98432ABA141400AA974D /* AuthenticationViewModel.swift */,
 				7E073C982ADD8CCF00F3DD1C /* UserSupabaseManager.swift */,
 				7E073C942ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift */,
 				7E073C9C2ADD8EDE00F3DD1C /* ExpenseSupabaseManager.swift */,
@@ -218,11 +221,14 @@
 		7E6270A22A9D3AFA006067CD /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				7E0E98432ABA141400AA974D /* AuthenticationViewModel.swift */,
 				7E6270A02A9D26AC006067CD /* AuthenticationView.swift */,
 				7E6270BC2A9EA58A006067CD /* SignUpView.swift */,
 				7E6270BE2A9EB1C7006067CD /* LoginView.swift */,
 				7E4B2DEB2AA0FEAC00967E3E /* LaunchView.swift */,
 				7E4B2DED2AA0FFDF00967E3E /* WelcomeView.swift */,
+				7EC593C32AEAAD2000F8664E /* AuthHelper.swift */,
+				7EC593C52AEAC1DD00F8664E /* VerifyAccountView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -429,6 +435,7 @@
 				7E9357982AE2C1C200F7950F /* UserBalanceView.swift in Sources */,
 				7EECB8042AC21A8A0026A9B8 /* CategoryPickerView.swift in Sources */,
 				7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */,
+				7EC593C62AEAC1DD00F8664E /* VerifyAccountView.swift in Sources */,
 				7E073C932ADD8B0900F3DD1C /* GroupInfo.swift in Sources */,
 				7E4B2DEE2AA0FFDF00967E3E /* WelcomeView.swift in Sources */,
 				7E0E98422ABA111100AA974D /* SupabaseManager.swift in Sources */,
@@ -442,6 +449,7 @@
 				7E0E98512ABBA27E00AA974D /* UserFriend.swift in Sources */,
 				7E7A78C52A9FB73800A215FC /* ProfileView.swift in Sources */,
 				7E20F4222AB7754B009DAB58 /* Color.swift in Sources */,
+				7EC593C42AEAAD2000F8664E /* AuthHelper.swift in Sources */,
 				7E073C952ADD8C9B00F3DD1C /* GroupsSupabaseManager.swift in Sources */,
 				7E48D16D2AE1903100C29750 /* Model.swift in Sources */,
 				7E90FA412ADC8D4D00F1B2CE /* TransactionView.swift in Sources */,
