@@ -94,6 +94,7 @@ final class AuthenticationViewModel: ObservableObject {
             if let user = self.session?.user {
                 self.currentUser = user
                 self.currentUserInfo = try await SupabaseManager.shared.getUser(userId: user.id)
+                self.authState = .signedIn
             } else {
                 self.resetValues()
                 self.authState = .signedOut
