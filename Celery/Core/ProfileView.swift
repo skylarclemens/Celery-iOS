@@ -20,6 +20,7 @@ struct ProfileView: View {
     @State var sharedDebts: [Debt]? = nil
     @State var transactionsState: LoadingState = .loading
     @State var friendshipState: LoadingState = .loading
+    @State private var showAlert = false
     
     var balances: Balance {
         balanceCalc(using: sharedDebts)
@@ -58,6 +59,32 @@ struct ProfileView: View {
             try? await loadTransactions()
             await fetchFriendshipOrRequest()
         }
+        .toolbar {
+            if let friendship,
+               friendship.status == 1 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            showAlert = true
+                        } label: {
+                            Label("Remove friend", systemImage: "person.badge.minus")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }
+                }
+            }
+        }
+        .alert("Remove friend", isPresented: $showAlert) {
+            Button("Unfriend", role: .destructive) {
+                Task {
+                    try? await unfriendUser()
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to remove this friend from your friends list?")
+        }
         .sheet(isPresented: $openPayView) {
             if let currentUser = authViewModel.currentUserInfo {
                 PayView(creditor: balances.owed > balances.owe ? currentUser : user, debtor: balances.owed < balances.owe ? currentUser : user, debts: sharedDebts, amount: abs(balances.total))
@@ -93,6 +120,17 @@ extension ProfileView {
         self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
         if self.friendship == nil || self.friendship?.status == 2 {
             self.request = try? await SupabaseManager.shared.getFriendRequest(friendId: user.id)
+        }
+    }
+    
+    func unfriendUser() async throws {
+        if let friendship = friendship,
+           friendship.status == 1,
+           let user1 = friendship.user?.id,
+           let user2 = friendship.friend?.id {
+            try? await SupabaseManager.shared.removeFriendship(user1: user1, user2: user2)
+            try? await SupabaseManager.shared.removeFriendship(user1: user2, user2: user1)
+            self.friendship = nil
         }
     }
     

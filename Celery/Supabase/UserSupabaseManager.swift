@@ -154,6 +154,18 @@ extension SupabaseManager {
         }
     }
     
+    func removeFriendship(user1: UUID, user2: UUID) async throws {
+        do {
+            try await self.client.database.from("user_friend")
+                .delete()
+                .eq(column: "user_id", value: user1)
+                .eq(column: "friend_id", value: user2)
+                .execute()
+        } catch {
+            print("Error removing friendship: \(error)")
+        }
+    }
+    
     // Get all users by query
     func getUsersByQuery(value: String) async throws -> [UserInfo]? {
         do {
