@@ -91,7 +91,7 @@ extension ProfileView {
     
     func fetchFriendshipOrRequest() async {
         self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
-        if self.friendship == nil {
+        if self.friendship == nil || self.friendship?.status == 2 {
             self.request = try? await SupabaseManager.shared.getFriendRequest(friendId: user.id)
         }
     }
@@ -150,34 +150,45 @@ struct ProfileViewHeader: View {
             }
             HStack {
                 Group {
-                    if let friendship = friendship {
+                    if let request = request {
+                        HStack {
+                            Button {
+                                Task {
+                                    try? await acceptFriendRequest(request: request)
+                                }
+                            } label: {
+                                if requestStatus == .requestSending {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .controlSize(.small)
+                                        .frame(width: 54, height: 20)
+                                } else {
+                                    Text("Accept")
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(Color.primaryAction)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.layoutGreen, lineWidth: requestStatus == .requestSending ? 0 : 1)
+                            )
+                        }
+                        Button {
+                            Task {
+                                try? await ignoreFriendRequest(request: request)
+                            }
+                        } label: {
+                            Text("Ignore")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    } else if let friendship = friendship {
                         Button { } label: {
                             Text(friendship.status == 0 ? "Requested" : "Friends")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(Color.primaryAction)
                         .disabled(true)
-                    } else if let request = request {
-                        Button {
-                            Task {
-                                try? await acceptFriendRequest(request: request)
-                            }
-                        } label: {
-                            if requestStatus == .requestSending {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .controlSize(.small)
-                                    .frame(width: 54, height: 20)
-                            } else {
-                                Text("Accept")
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.primaryAction)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.layoutGreen, lineWidth: requestStatus == .requestSending ? 0 : 1)
-                        )
                     } else {
                         Button {
                             Task {
@@ -245,6 +256,17 @@ extension ProfileViewHeader {
         do {
             try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 1)
             self.friendship = try await SupabaseManager.shared.addNewFriend(request: request)
+            self.request = nil
+            self.requestStatus = .requestSent
+        } catch {
+            self.requestStatus = .requestError
+        }
+    }
+    
+    func ignoreFriendRequest(request: UserFriend) async throws {
+        self.requestStatus = .requestSending
+        do {
+            try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 2)
             self.request = nil
             self.requestStatus = .requestSent
         } catch {

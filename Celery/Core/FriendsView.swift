@@ -7,39 +7,29 @@
 
 import SwiftUI
 
-private class FriendsViewModel: ObservableObject {
+private class FriendsLists: ObservableObject {
     @Published var friendsList: [UserFriend]?
     @Published var requestsList: [UserFriend]?
-    @Published var loading: LoadingState = .loading
-    
-    @MainActor
-    func fetchData() async throws {
-        do {
-            if self.friendsList == nil {
-                self.friendsList = try await SupabaseManager.shared.getUsersFriends()
-            }
-            self.requestsList = try await SupabaseManager.shared.getAllFriendRequests()
-            self.loading = .success
-        } catch {
-            self.loading = .error
-        }
-    }
 }
 
 struct FriendsView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var model: Model
-    @StateObject fileprivate var viewModel = FriendsViewModel()
+    @StateObject fileprivate var friends = FriendsLists()
+    
+    @State private var loading: LoadingState = .loading
+    @State private var searchText: String = ""
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVStack {
-                    if viewModel.loading == .success {
-                        if let requestsList = viewModel.requestsList,
+                    if loading == .success {
+                        if let requestsList = friends.requestsList,
                            !requestsList.isEmpty {
                             NavigationLink {
-                                FriendRequestsList(list: $viewModel.requestsList, friendsList: $viewModel.friendsList)
+                                FriendRequestsList()
+                                    .environmentObject(friends)
                             } label: {
                                 HStack {
                                     Text("Requests")
@@ -71,7 +61,7 @@ struct FriendsView: View {
                             }
                             .buttonStyle(.plain)
                         }
-                        if let friendsList = viewModel.friendsList {
+                        if let friendsList = friends.friendsList {
                             ForEach(friendsList) { friend in
                                 if let user = friend.friend,
                                    let debts = model.debts {
@@ -91,14 +81,14 @@ struct FriendsView: View {
                                         .fill(Color(UIColor.secondarySystemGroupedBackground))
                                 )
                         }
-                    } else if viewModel.loading == .loading {
+                    } else if loading == .loading {
                         VStack {
                             ProgressView()
                                 .progressViewStyle(.circular)
                                 .tint(.secondary)
                         }
                         .frame(maxWidth: .infinity)
-                    } else if viewModel.loading == .error {
+                    } else if loading == .error {
                         VStack {
                             Text("Something went wrong!")
                                 .font(.subheadline)
@@ -115,7 +105,7 @@ struct FriendsView: View {
                 }
                 .padding()
                 .frame(maxHeight: .infinity, alignment: .top)
-                .animation(.default, value: viewModel.friendsList)
+                .animation(.default, value: friends.friendsList)
             }
             .background(
                 Rectangle()
@@ -123,7 +113,8 @@ struct FriendsView: View {
                     .ignoresSafeArea()
             )
             .refreshable {
-                try? await viewModel.fetchData()
+                try? await fetchFriends()
+                try? await fetchRequests()
             }
             .navigationTitle("Friends")
             .navigationBarTitleDisplayMode(.inline)
@@ -138,9 +129,33 @@ struct FriendsView: View {
             }
         }
         .task {
-            viewModel.loading = .loading
-            try? await viewModel.fetchData()
+            loading = .loading
+            try? await fetchData()
         }
+    }
+}
+
+extension FriendsView {
+    func fetchData() async throws {
+        do {
+            if self.friends.friendsList == nil {
+                try await fetchFriends()
+            }
+            if self.friends.requestsList == nil {
+                try await fetchRequests()
+            }
+            self.loading = .success
+        } catch {
+            self.loading = .error
+        }
+    }
+    
+    func fetchFriends() async throws {
+        self.friends.friendsList = try? await SupabaseManager.shared.getUsersFriends()
+    }
+    
+    func fetchRequests() async throws {
+        self.friends.requestsList = try? await SupabaseManager.shared.getAllFriendRequests()
     }
 }
 
@@ -151,34 +166,36 @@ struct FriendsView: View {
 }
 
 struct FriendRequestsList: View {
-    @Binding var list: [UserFriend]?
-    @Binding var friendsList: [UserFriend]?
+    @EnvironmentObject fileprivate var friends: FriendsLists
     
     var body: some View {
         List {
-            ForEach(list ?? []) { request in
-                if let user = request.user {
-                    RequestRow(user: user, request: request, friendsList: $friendsList)
+            if let list = friends.requestsList {
+                ForEach(Array(list.enumerated()), id: \.element) { index, element in
+                    RequestRow(index: index, user: element.user, request: element)
                 }
             }
         }
         .listStyle(.inset)
+        .animation(.default, value: friends.requestsList)
         .navigationTitle("Requests")
     }
 }
 
 struct RequestRow: View {
-    let user: UserInfo
+    let index: Int
+    let user: UserInfo?
     let request: UserFriend
     @State var friendship: UserFriend? = nil
     @State var requestStatus: FriendRequestStatus? = nil
-    @Binding var friendsList: [UserFriend]?
+    
+    @EnvironmentObject fileprivate var friends: FriendsLists
     
     var body: some View {
         HStack {
             HStack {
-                UserPhotoView(size: 45, imagePath: user.avatar_url)
-                Text(user.name ?? "Unknown name")
+                UserPhotoView(size: 45, imagePath: user?.avatar_url)
+                Text(user?.name ?? "Unknown name")
                     .fontWeight(.medium)
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
@@ -187,22 +204,24 @@ struct RequestRow: View {
             Spacer()
             HStack(spacing: 12) {
                 if self.friendship != nil {
-                    Text("Accepted")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.secondary)
+                    AnimatedCheckmark(color: .secondary)
+                        .scaleEffect(0.8)
+                        .padding(.trailing, 8)
                 } else if requestStatus == .requestSending {
                     ProgressView()
                 } else {
-                    /*Button {
-                        
+                    Button {
+                        Task {
+                            try? await ignoreFriendRequest(request: self.request, index: index)
+                        }
                     } label: {
                         Text("Ignore")
                             .font(.system(size: 15))
                             .foregroundStyle(.secondary)
-                    }*/
+                    }
                     Button("Accept") {
                         Task {
-                            try? await acceptFriendRequest(request: self.request)
+                            try? await acceptFriendRequest(request: self.request, index: index)
                         }
                     }
                     .buttonStyle(.borderedProminent)
@@ -214,15 +233,33 @@ struct RequestRow: View {
         .padding(.vertical)
         .padding(.horizontal, 10)
         .listRowInsets(EdgeInsets())
+        .transition(.opacity)
     }
 }
 
 extension RequestRow {
-    func acceptFriendRequest(request: UserFriend) async throws {
+    func acceptFriendRequest(request: UserFriend, index: Int) async throws {
         self.requestStatus = .requestSending
         do {
             try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 1)
             self.friendship = try await SupabaseManager.shared.addNewFriend(request: request)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.75) {
+                self.friends.requestsList?.remove(at: index)
+            }
+            if let friendship = self.friendship {
+                self.friends.friendsList?.append(friendship)
+            }
+            self.requestStatus = .requestSent
+        } catch {
+            self.requestStatus = .requestError
+        }
+    }
+    
+    func ignoreFriendRequest(request: UserFriend, index: Int) async throws {
+        self.requestStatus = .requestSending
+        do {
+            try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 2)
+            self.friends.requestsList?.remove(at: index)
             self.requestStatus = .requestSent
         } catch {
             self.requestStatus = .requestError
@@ -232,6 +269,7 @@ extension RequestRow {
 
 #Preview {
     NavigationStack {
-        FriendRequestsList(list: .constant([UserFriend.example]), friendsList: .constant([]))
+        FriendRequestsList()
+            .environmentObject(FriendsLists())
     }
 }

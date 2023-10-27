@@ -21,6 +21,7 @@
 		7E0E98512ABBA27E00AA974D /* UserFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E98502ABBA27E00AA974D /* UserFriend.swift */; };
 		7E20F4222AB7754B009DAB58 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E20F4212AB7754B009DAB58 /* Color.swift */; };
 		7E24D1492AC5FB5E003D9E51 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 7E24D1482AC5FB5E003D9E51 /* Supabase */; };
+		7E29B5852AEC3CC300991F84 /* AnimatedCheckmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E29B5842AEC3CC300991F84 /* AnimatedCheckmark.swift */; };
 		7E2A2D072ADDAAD300365C04 /* TransactionsScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */; };
 		7E2A2D0A2ADDC33900365C04 /* CreateGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2A2D092ADDC33900365C04 /* CreateGroupView.swift */; };
 		7E35CF992AE0623200CF2C02 /* EditGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E35CF982AE0623200CF2C02 /* EditGroupView.swift */; };
@@ -85,6 +86,7 @@
 		7E0E98472ABA1E5700AA974D /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		7E0E98502ABBA27E00AA974D /* UserFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFriend.swift; sourceTree = "<group>"; };
 		7E20F4212AB7754B009DAB58 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		7E29B5842AEC3CC300991F84 /* AnimatedCheckmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedCheckmark.swift; sourceTree = "<group>"; };
 		7E2A2D062ADDAAD300365C04 /* TransactionsScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsScrollView.swift; sourceTree = "<group>"; };
 		7E2A2D092ADDC33900365C04 /* CreateGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupView.swift; sourceTree = "<group>"; };
 		7E35CF982AE0623200CF2C02 /* EditGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditGroupView.swift; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 				7E4B4D032AE5B19D00095D0E /* VStackList.swift */,
 				7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */,
 				7E4B4D072AE5DACD00095D0E /* TransactionsByMonth.swift */,
+				7E29B5842AEC3CC300991F84 /* AnimatedCheckmark.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -407,6 +410,7 @@
 			files = (
 				7E6CFAF12ADD9C5900639E80 /* GroupView.swift in Sources */,
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
+				7E29B5852AEC3CC300991F84 /* AnimatedCheckmark.swift in Sources */,
 				7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
 				7E4B2DF22AA1417400967E3E /* UIImage.swift in Sources */,

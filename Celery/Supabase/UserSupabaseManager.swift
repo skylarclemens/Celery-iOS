@@ -139,8 +139,12 @@ extension SupabaseManager {
         do {
             let newRequest = UserFriendModel(user_id: request.friend?.id, friend_id: request.user?.id, status: 1, status_change: Date())
             let friend: [UserFriend] = try await self.client.database.from("user_friend")
-                .insert(values: newRequest, returning: .representation)
-                .select()
+                .upsert(values: newRequest, returning: .representation)
+                .select(columns: """
+                *,
+                user: user_id(*),
+                friend: friend_id(*)
+                """)
                 .execute()
                 .value
             return friend.first
