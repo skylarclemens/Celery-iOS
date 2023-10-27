@@ -53,6 +53,7 @@ struct TransactionsByMonth: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .padding()
+                            .frame(maxWidth: .infinity)
                     }
                 } else if state == .loading {
                     VStack {

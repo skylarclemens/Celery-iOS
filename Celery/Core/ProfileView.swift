@@ -15,10 +15,12 @@ struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State var friendship: UserFriend? = nil
+    @State var request: UserFriend? = nil
     private var user: UserInfo
     @State var sharedDebts: [Debt]? = nil
     @State var transactionsState: LoadingState = .loading
     @State var friendshipState: LoadingState = .loading
+    @State private var showAlert = false
     
     var balances: Balance {
         balanceCalc(using: sharedDebts)
@@ -33,7 +35,7 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                ProfileViewHeader(user: user, friendship: friendship, friendshipState: $friendshipState, openPayView: $openPayView)
+                ProfileViewHeader(user: user, friendship: $friendship, request: $request, friendshipState: $friendshipState, openPayView: $openPayView)
                 UserBalanceView(balanceOwed: balances.owed, balanceOwe: balances.owe)
                     .animation(.default, value: balances)
                     .padding(.top, 12)
@@ -44,7 +46,6 @@ struct ProfileView: View {
                         .padding(.horizontal)
                         .padding(.top, 8)
                     TransactionsByMonth(transactionsList: sharedDebts ?? [], state: $transactionsState)
-                    //TransactionsScrollView(transactionsList: sharedDebts ?? [], state: $transactionsState)
                 }
                 .padding(.horizontal)
             }
@@ -56,6 +57,33 @@ struct ProfileView: View {
         )
         .refreshable {
             try? await loadTransactions()
+            await fetchFriendshipOrRequest()
+        }
+        .toolbar {
+            if let friendship,
+               friendship.status == 1 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            showAlert = true
+                        } label: {
+                            Label("Remove friend", systemImage: "person.badge.minus")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                    }
+                }
+            }
+        }
+        .alert("Remove friend", isPresented: $showAlert) {
+            Button("Unfriend", role: .destructive) {
+                Task {
+                    try? await unfriendUser()
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to remove this friend from your friends list?")
         }
         .sheet(isPresented: $openPayView) {
             if let currentUser = authViewModel.currentUserInfo {
@@ -71,11 +99,9 @@ struct ProfileView: View {
                 self.transactionsState = .success
             }
             if self.friendship == nil {
-                self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
-                self.friendshipState = .success
-            } else {
-                self.friendshipState = .success
+                await fetchFriendshipOrRequest()
             }
+            self.friendshipState = .success
         }
     }
 }
@@ -87,6 +113,24 @@ extension ProfileView {
             self.transactionsState = .success
         } catch {
             self.transactionsState = .error
+        }
+    }
+    
+    func fetchFriendshipOrRequest() async {
+        self.friendship = try? await SupabaseManager.shared.getFriendship(friendId: user.id)
+        if self.friendship == nil || self.friendship?.status == 2 {
+            self.request = try? await SupabaseManager.shared.getFriendRequest(friendId: user.id)
+        }
+    }
+    
+    func unfriendUser() async throws {
+        if let friendship = friendship,
+           friendship.status == 1,
+           let user1 = friendship.user?.id,
+           let user2 = friendship.friend?.id {
+            try? await SupabaseManager.shared.removeFriendship(user1: user1, user2: user2)
+            try? await SupabaseManager.shared.removeFriendship(user1: user2, user2: user1)
+            self.friendship = nil
         }
     }
     
@@ -128,7 +172,8 @@ extension ProfileView {
 
 struct ProfileViewHeader: View {
     let user: UserInfo
-    let friendship: UserFriend?
+    @Binding var friendship: UserFriend?
+    @Binding var request: UserFriend?
     @State var requestStatus: FriendRequestStatus? = nil
     
     @Binding var friendshipState: LoadingState
@@ -143,28 +188,49 @@ struct ProfileViewHeader: View {
             }
             HStack {
                 Group {
-                    if let friendship = friendship {
+                    if let request = request {
+                        HStack {
+                            Button {
+                                Task {
+                                    try? await acceptFriendRequest(request: request)
+                                }
+                            } label: {
+                                if requestStatus == .requestSending {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .controlSize(.small)
+                                        .frame(width: 54, height: 20)
+                                } else {
+                                    Text("Accept")
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(Color.primaryAction)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.layoutGreen, lineWidth: requestStatus == .requestSending ? 0 : 1)
+                            )
+                        }
                         Button {
                             Task {
-                                //try await acceptRequest(friendship: friendship)
+                                try? await ignoreFriendRequest(request: request)
                             }
                         } label: {
-                            Text(friendship.status == 0 ? "Accept" : "Friends")
+                            Text("Ignore")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    } else if let friendship = friendship {
+                        Button { } label: {
+                            Text(friendship.status == 0 ? "Requested" : "Friends")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(Color.primaryAction)
-                        .disabled(friendship.status == 1)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.layoutGreen, lineWidth: friendship.status == 0 ? 1 : 0)
-                        )
+                        .disabled(true)
                     } else {
                         Button {
                             Task {
-                                /*if let currentUser = authViewModel.currentUserInfo {
-                                 requestStatus = .requestSending
-                                 try await handleAddFriend(user1: currentUser, user2: user)
-                                 }*/
+                                try? await sendFriendRequest()
                             }
                         } label: {
                             if requestStatus == .requestSending || friendshipState == .loading {
@@ -209,5 +275,40 @@ struct ProfileViewHeader: View {
             )
         }
         .padding(.horizontal)
+    }
+}
+
+extension ProfileViewHeader {
+    func sendFriendRequest() async throws {
+        self.requestStatus = .requestSending
+        do {
+            self.friendship = try await SupabaseManager.shared.addFriendRequest(friendId: user.id)
+            self.requestStatus = .requestSent
+        } catch {
+            self.requestStatus = .requestError
+        }
+    }
+    
+    func acceptFriendRequest(request: UserFriend) async throws {
+        self.requestStatus = .requestSending
+        do {
+            try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 1)
+            self.friendship = try await SupabaseManager.shared.addNewFriend(request: request)
+            self.request = nil
+            self.requestStatus = .requestSent
+        } catch {
+            self.requestStatus = .requestError
+        }
+    }
+    
+    func ignoreFriendRequest(request: UserFriend) async throws {
+        self.requestStatus = .requestSending
+        do {
+            try await SupabaseManager.shared.updateFriendStatus(user1: request.user!.id, user2: request.friend!.id, status: 2)
+            self.request = nil
+            self.requestStatus = .requestSent
+        } catch {
+            self.requestStatus = .requestError
+        }
     }
 }
