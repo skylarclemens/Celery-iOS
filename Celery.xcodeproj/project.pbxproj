@@ -35,6 +35,10 @@
 		7E4B4D062AE5C92E00095D0E /* FriendOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */; };
 		7E4B4D082AE5DACD00095D0E /* TransactionsByMonth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4B4D072AE5DACD00095D0E /* TransactionsByMonth.swift */; };
 		7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */; };
+		7E532D6F2AF0052700B2E72F /* ToastViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E532D6E2AF0052700B2E72F /* ToastViewModifier.swift */; };
+		7E532D712AF0055C00B2E72F /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E532D702AF0055C00B2E72F /* View.swift */; };
+		7E532D732AF0058600B2E72F /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E532D722AF0058600B2E72F /* AlertView.swift */; };
+		7E532D762AF005F800B2E72F /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E532D752AF005F800B2E72F /* ToastManager.swift */; };
 		7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A02A9D26AC006067CD /* AuthenticationView.swift */; };
 		7E6270A52A9D529E006067CD /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270A42A9D529E006067CD /* SettingsView.swift */; };
 		7E6270B12A9E788F006067CD /* Debt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6270B02A9E788F006067CD /* Debt.swift */; };
@@ -100,6 +104,10 @@
 		7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendOverviewView.swift; sourceTree = "<group>"; };
 		7E4B4D072AE5DACD00095D0E /* TransactionsByMonth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsByMonth.swift; sourceTree = "<group>"; };
 		7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarColorModifier.swift; sourceTree = "<group>"; };
+		7E532D6E2AF0052700B2E72F /* ToastViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastViewModifier.swift; sourceTree = "<group>"; };
+		7E532D702AF0055C00B2E72F /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		7E532D722AF0058600B2E72F /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
+		7E532D752AF005F800B2E72F /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
 		7E6270A02A9D26AC006067CD /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		7E6270A32A9D438C006067CD /* Celery.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celery.entitlements; sourceTree = "<group>"; };
 		7E6270A42A9D529E006067CD /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -216,8 +224,64 @@
 			children = (
 				7E4E7DB12AB643CB004D6617 /* StatusBarColorModifier.swift */,
 				7EF7B2452AC0C26700BB1CFA /* ColorSchemeViewModifier.swift */,
+				7E532D6E2AF0052700B2E72F /* ToastViewModifier.swift */,
+				7E532D702AF0055C00B2E72F /* View.swift */,
 			);
 			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		7E532D742AF005EA00B2E72F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				7E532D752AF005F800B2E72F /* ToastManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		7E532D772AF018BA00B2E72F /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				7E073C902ADD885A00F3DD1C /* GroupsView.swift */,
+				7E6CFAF02ADD9C5900639E80 /* GroupView.swift */,
+				7E2A2D082ADDC32000365C04 /* CreateGroup */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
+		7E532D782AF018C400B2E72F /* Friend */ = {
+			isa = PBXGroup;
+			children = (
+				7E6270C02A9EC282006067CD /* FriendsView.swift */,
+				7E7A78C42A9FB73800A215FC /* ProfileView.swift */,
+			);
+			path = Friend;
+			sourceTree = "<group>";
+		};
+		7E532D792AF018D600B2E72F /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				7E6270C42A9ED78B006067CD /* QueryUsersView.swift */,
+				7EF7B2472AC0D05400BB1CFA /* SelectUsersView.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		7E532D7A2AF018FF00B2E72F /* Expense */ = {
+			isa = PBXGroup;
+			children = (
+				7E01B2462AB653C7005D5F7B /* ExpenseView.swift */,
+				7ED926D72AC9E2DA00BDE2B8 /* PayView.swift */,
+				7EECB8052AC21AD60026A9B8 /* CreateExpense */,
+			);
+			path = Expense;
+			sourceTree = "<group>";
+		};
+		7E532D7B2AF0196100B2E72F /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				7E6270A42A9D529E006067CD /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		7E6270A22A9D3AFA006067CD /* Authentication */ = {
@@ -240,16 +304,11 @@
 			children = (
 				7EB7CFE02A5F75B3000B04FE /* ContentView.swift */,
 				7E67A7912A6B4704001E0C23 /* HomeView.swift */,
-				7E6270A42A9D529E006067CD /* SettingsView.swift */,
-				7E6270B62A9E8DE6006067CD /* TransactionsView.swift */,
-				7E6270C02A9EC282006067CD /* FriendsView.swift */,
-				7E7A78C42A9FB73800A215FC /* ProfileView.swift */,
-				7E01B2462AB653C7005D5F7B /* ExpenseView.swift */,
-				7E6270C42A9ED78B006067CD /* QueryUsersView.swift */,
-				7EF7B2472AC0D05400BB1CFA /* SelectUsersView.swift */,
-				7ED926D72AC9E2DA00BDE2B8 /* PayView.swift */,
-				7E073C902ADD885A00F3DD1C /* GroupsView.swift */,
-				7E6CFAF02ADD9C5900639E80 /* GroupView.swift */,
+				7E532D792AF018D600B2E72F /* Search */,
+				7E532D782AF018C400B2E72F /* Friend */,
+				7E532D772AF018BA00B2E72F /* Group */,
+				7E532D7A2AF018FF00B2E72F /* Expense */,
+				7E532D7B2AF0196100B2E72F /* Settings */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -257,6 +316,7 @@
 		7E7A78C62A9FB9F600A215FC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				7E6270B62A9E8DE6006067CD /* TransactionsView.swift */,
 				7E7A78C72A9FBA0700A215FC /* CornerRadiusShape.swift */,
 				7E4B2DEF2AA10BB500967E3E /* UserPhotoView.swift */,
 				7EECB8032AC21A8A0026A9B8 /* CategoryPickerView.swift */,
@@ -270,6 +330,7 @@
 				7E4B4D052AE5C92E00095D0E /* FriendOverviewView.swift */,
 				7E4B4D072AE5DACD00095D0E /* TransactionsByMonth.swift */,
 				7E29B5842AEC3CC300991F84 /* AnimatedCheckmark.swift */,
+				7E532D722AF0058600B2E72F /* AlertView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -298,12 +359,11 @@
 				7E6270A32A9D438C006067CD /* Celery.entitlements */,
 				7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */,
 				7E6270AB2A9E5419006067CD /* Core */,
-				7EECB8052AC21AD60026A9B8 /* CreateExpense */,
-				7E2A2D082ADDC32000365C04 /* CreateGroup */,
 				7E0E98402ABA10FB00AA974D /* Supabase */,
 				7E6270A22A9D3AFA006067CD /* Authentication */,
-				7E02CEF62A99282100B4A9B8 /* Data */,
+				7E532D742AF005EA00B2E72F /* Managers */,
 				7E7A78C62A9FB9F600A215FC /* Components */,
+				7E02CEF62A99282100B4A9B8 /* Data */,
 				7E4E7DB02AB643BD004D6617 /* ViewModifiers */,
 				7E20F4202AB7753A009DAB58 /* Color */,
 				7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */,
@@ -410,6 +470,7 @@
 			files = (
 				7E6CFAF12ADD9C5900639E80 /* GroupView.swift in Sources */,
 				7E6270B12A9E788F006067CD /* Debt.swift in Sources */,
+				7E532D732AF0058600B2E72F /* AlertView.swift in Sources */,
 				7E29B5852AEC3CC300991F84 /* AnimatedCheckmark.swift in Sources */,
 				7E01B2472AB653C7005D5F7B /* ExpenseView.swift in Sources */,
 				7E6270BD2A9EA58A006067CD /* SignUpView.swift in Sources */,
@@ -458,13 +519,16 @@
 				7E48D16D2AE1903100C29750 /* Model.swift in Sources */,
 				7E90FA412ADC8D4D00F1B2CE /* TransactionView.swift in Sources */,
 				7E0E98442ABA141400AA974D /* AuthenticationViewModel.swift in Sources */,
+				7E532D762AF005F800B2E72F /* ToastManager.swift in Sources */,
 				7ED4938A2AC36D4A003F5B2C /* UserSplitView.swift in Sources */,
+				7E532D6F2AF0052700B2E72F /* ToastViewModifier.swift in Sources */,
 				7E073C9B2ADD8D6A00F3DD1C /* ActivitySupabaseManager.swift in Sources */,
 				7EF7B2462AC0C26700BB1CFA /* ColorSchemeViewModifier.swift in Sources */,
 				7E6270A12A9D26AC006067CD /* AuthenticationView.swift in Sources */,
 				7E4B2DF02AA10BB500967E3E /* UserPhotoView.swift in Sources */,
 				7E0E98482ABA1E5700AA974D /* UserInfo.swift in Sources */,
 				7E6270BF2A9EB1C7006067CD /* LoginView.swift in Sources */,
+				7E532D712AF0055C00B2E72F /* View.swift in Sources */,
 				7E4E7DB22AB643CB004D6617 /* StatusBarColorModifier.swift in Sources */,
 				7E93579C2AE2E04500F7950F /* Payment.swift in Sources */,
 				7E6270B72A9E8DE6006067CD /* TransactionsView.swift in Sources */,

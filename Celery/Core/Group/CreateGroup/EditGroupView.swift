@@ -10,6 +10,7 @@ import SwiftUI
 struct EditGroupView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var model: Model
+    @EnvironmentObject var toastManager: ToastManager
     @Environment(\.dismiss) var dismiss
     
     let group: GroupInfo
@@ -182,10 +183,16 @@ struct EditGroupView: View {
                                 try? await removeUser(currentUser.id)
                                 model.removeGroup(group.id)
                             }
+                            toastManager.successTitle = "You left \(group.group_name ?? "the group")"
+                            toastManager.isSuccess = true
+                            toastManager.showAlert = true
                             path.removeLast(path.count)
                             dismiss()
                         case .group:
+                            toastManager.successTitle = "\(group.group_name ?? "Group") has been deleted"
                             await deleteGroup()
+                            toastManager.isSuccess = true
+                            toastManager.showAlert = true
                             path.removeLast(path.count)
                             dismiss()
                         }
@@ -222,4 +229,5 @@ struct EditGroupView: View {
     EditGroupView(group: GroupInfo.example, members: [UserInfo.example], path: .constant(NavigationPath()))
         .environmentObject(AuthenticationViewModel())
         .environmentObject(Model())
+        .environmentObject(ToastManager())
 }

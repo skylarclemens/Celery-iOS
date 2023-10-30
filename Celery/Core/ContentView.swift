@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject var toastManager = ToastManager.shared
     
     @State var openAuthView: Bool = false
     
@@ -141,6 +142,10 @@ struct ContentView: View {
                 LaunchView()
             }
         }
+        .toast(isPresenting: $toastManager.showAlert) {
+            ActionAlertView(isSuccess: $toastManager.isSuccess, successTitle: toastManager.successTitle, errorMessage: toastManager.errorMessage)
+        }
+        .environmentObject(toastManager)
     }
 }
 
@@ -148,6 +153,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(ToastManager())
     }
 }
 

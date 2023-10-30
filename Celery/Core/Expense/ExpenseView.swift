@@ -12,6 +12,7 @@ struct ExpenseView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var model: Model
+    @EnvironmentObject var toastManager: ToastManager
     let expense: Expense
     @State var debts: [Debt]? = nil
     @State var activities: [Activity]?
@@ -125,7 +126,10 @@ struct ExpenseView: View {
         .alert("Delete \(expense.description ?? "expense")", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
                 Task {
+                    toastManager.successTitle = "\(expense.description ?? "Expense") has been deleted"
                     await deleteExpense()
+                    toastManager.isSuccess = true
+                    toastManager.showAlert = true
                     dismiss()
                 }
             }
@@ -147,7 +151,9 @@ struct ExpenseView: View {
 #Preview {
     NavigationStack{
         ExpenseView(expense: Expense.example)
+            .environmentObject(AuthenticationViewModel())
             .environmentObject(Model())
+            .environmentObject(ToastManager())
     }
 }
 
