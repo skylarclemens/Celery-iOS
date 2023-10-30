@@ -345,21 +345,7 @@ struct HomeBalanceView: View {
                             )
                     }
                     VStack(spacing: 12) {
-                        Picker("Show Transactions", selection: $balanceType) {
-                            ForEach(BalanceType.allCases) { type in
-                                Text(type.rawValue.localizedCapitalized).tag(type)
-                            }
-                        }
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(.primary.opacity(0.125))
-                        )
-                        .pickerStyle(.segmented)
-                        .frame(maxWidth: 260)
-                        .onAppear {
-                            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-                            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.label], for: .selected)
-                        }
+                        TransactionPicker(selected: $balanceType)
                         VStack {
                             Text(currentBalance, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
                                 .font(.system(size: 42, weight: .bold, design: .rounded))
@@ -384,4 +370,65 @@ struct HomeBalanceView: View {
         }
         .listRowInsets(EdgeInsets())
     }
+}
+
+struct TransactionPicker: View {
+    @Binding var selected: BalanceType
+    @Namespace var namespace
+    
+    var body: some View {
+        HStack(alignment: .center) {
+            ForEach(BalanceType.allCases) { type in
+                Button {
+                    withAnimation {
+                        selected = type
+                    }
+                } label: {
+                    ZStack {
+                        if selected == type {
+                            Capsule()
+                                .fill(.white
+                                    .shadow(.inner(color: .black.opacity(0.05), radius: 0, y: -3))
+                                )
+                                .matchedGeometryEffect(id: "selectedBackground", in: namespace)
+                                .animation(.default, value: selected)
+                                .zIndex(1)
+                                .opacity(selected == type ? 1 : 0)
+                                .blendMode(.difference)
+                                
+                        }
+                        Text(type.rawValue.localizedCapitalized).tag(type)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                    }
+                    .compositingGroup()
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .frame(maxWidth: 200, maxHeight: 40)
+        .padding(.horizontal, 3)
+        .padding(.vertical, 3)
+        .background(
+            Capsule()
+                .foregroundStyle(
+                    .linearGradient(
+                        stops: [
+                        Gradient.Stop(color: .black.opacity(0.2), location: 0.13),
+                        Gradient.Stop(color: Color(red: 0.42, green: 0.61, blue: 0.36).opacity(0.2), location: 0.47),
+                        Gradient.Stop(color: Color(red: 0.86, green: 0.33, blue: 0.22).opacity(0.2), location: 0.85),
+                    ],
+                    startPoint: UnitPoint(x: 0, y: 0.5),
+                    endPoint: UnitPoint(x: 1, y: 0.5))
+                    .shadow(.inner(radius: 10))
+                )
+        )
+        .background(Capsule().fill(.black.opacity(0.11)))
+    }
+}
+
+#Preview {
+    TransactionPicker(selected: .constant(.all))
 }
