@@ -15,35 +15,43 @@ struct GroupsView: View {
     @State var openCreateGroup: Bool = false
     @State private var path = NavigationPath()
     
+    let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+    
     var body: some View {
         NavigationStack(path: $path) {
-            VStack {
-                List {
-                    if self.loading == .success {
-                        if let groups = model.groups {
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    if self.loading == .success,
+                       let groups = model.groups {
+                        if !groups.isEmpty {
                             ForEach(groups) { group in
                                 NavigationLink(value: group) {
-                                    HStack(spacing: 12) {
-                                        UserPhotoView(size: 40, imagePath: group.avatar_url, type: .group)
-                                        Text(group.group_name ?? "Unknown group")
-                                    }
+                                    GroupLinkView(group: group)
                                 }
+                                .buttonStyle(.plain)
                             }
-                            Section {
-                                Rectangle()
-                                    .fill(Color.clear)
-                                    .frame(height: 0)
-                            }
-                            .listRowBackground(Color.clear)
+                        } else {
+                            Text("No groups")
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity)
                         }
                     }
                 }
                 .navigationDestination(for: GroupInfo.self) { value in
                     GroupView(group: value, path: $path)
                 }
-                .refreshable {
-                    await fetchGroups()
-                }
+                .padding(.horizontal)
+            }
+            .background(
+                Rectangle()
+                    .fill(Color(UIColor.systemGroupedBackground))
+                    .ignoresSafeArea()
+            )
+            .refreshable {
+                await fetchGroups()
             }
             .navigationTitle("Groups")
             .navigationBarTitleDisplayMode(.inline)
@@ -87,4 +95,40 @@ struct GroupsView: View {
             .environmentObject(AuthenticationViewModel())
             .environmentObject(Model())
     }
+}
+
+struct GroupLinkView: View {
+    @Environment(\.colorScheme) var colorScheme
+    let group: GroupInfo
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
+                UserPhotoView(size: 40, imagePath: group.avatar_url, type: .group)
+                Spacer()
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: 30)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            Text(group.group_name ?? "Group")
+                .font(.system(size: 16, weight: .medium))
+                .multilineTextAlignment(.leading)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, maxHeight: 120, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+}
+
+#Preview {
+    GroupLinkView(group: GroupInfo.example)
 }

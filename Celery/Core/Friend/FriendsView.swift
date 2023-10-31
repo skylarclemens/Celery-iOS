@@ -62,24 +62,26 @@ struct FriendsView: View {
                             .buttonStyle(.plain)
                         }
                         if let friendsList = friends.friendsList {
-                            ForEach(friendsList) { friend in
-                                if let user = friend.friend,
-                                   let debts = model.debts {
-                                    let sharedDebts = debts.filter {
-                                        $0.creditor?.id == user.id || $0.debtor?.id == user.id
+                            if !friendsList.isEmpty {
+                                ForEach(friendsList) { friend in
+                                    if let user = friend.friend,
+                                       let debts = model.debts {
+                                        let sharedDebts = debts.filter {
+                                            $0.creditor?.id == user.id || $0.debtor?.id == user.id
+                                        }
+                                        FriendOverviewView(debts: sharedDebts, user: user)
                                     }
-                                    FriendOverviewView(debts: sharedDebts, user: user)
                                 }
+                            } else {
+                                Text("No friends")
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(Color(UIColor.secondarySystemGroupedBackground))
+                                    )
                             }
-                        } else {
-                            Text("No friends")
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color(UIColor.secondarySystemGroupedBackground))
-                                )
                         }
                     } else if loading == .loading {
                         VStack {
