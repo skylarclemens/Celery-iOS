@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum LoadingState {
-    case loading, success, error
-}
-
 struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @EnvironmentObject var model: Model
@@ -39,7 +35,7 @@ struct HomeView: View {
             return Array(filteredArraySlice)
         }
     }
-    
+
     var balances: Balance {
         guard let debts = model.debts else { return Balance() }
         return balanceCalc(using: debts)
@@ -57,26 +53,35 @@ struct HomeView: View {
                     .padding(.horizontal)
                 if let recentUsers = model.recentUsers,
                    let debts = model.debts {
-                    VStack(alignment: .leading) {
-                        Text("Recent Transactions")
-                            .font(.system(size: 18, weight: .semibold, design: .rounded))
-                            .padding(.leading)
-                        ScrollView(.horizontal) {
-                            LazyHStack(spacing: 12) {
-                                ForEach(filteredTransactionList) { debt in
-                                    RecentTransaction(debt: debt)
+                        VStack(alignment: .leading) {
+                            Text("Recent Transactions")
+                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                .padding(.leading)
+                            ScrollView(.horizontal) {
+                                LazyHStack(spacing: 12) {
+                                    ForEach(filteredTransactionList) { debt in
+                                        RecentTransaction(debt: debt)
+                                    }
                                 }
+                                .padding([.horizontal, .bottom])
                             }
-                            .padding([.horizontal, .bottom])
+                            .scrollIndicators(.hidden)
                         }
-                        .scrollIndicators(.hidden)
+                        .padding(.top)
+                        VStack(alignment: .leading) {
+                            RecentUsersView(users: recentUsers, debts: debts)
+                        }
+                        .padding()
+                        .padding(.bottom, 40)
+                } else {
+                    VStack(alignment: .center) {
+                        Text("You have no expenses.")
+                            .font(.system(size: 16, weight: .semibold))
+                            .fontWeight(.medium)
+                            .padding(.top, 40)
                     }
-                    .padding(.top)
-                    VStack(alignment: .leading) {
-                        RecentUsersView(users: recentUsers, debts: debts)
-                    }
-                    .padding()
-                    .padding(.bottom, 40)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
             }
             .animation(.default, value: filteredTransactionList)
@@ -395,7 +400,6 @@ struct TransactionPicker: View {
                                 .zIndex(1)
                                 .opacity(selected == type ? 1 : 0)
                                 .blendMode(.difference)
-                                
                         }
                         Text(type.rawValue.localizedCapitalized).tag(type)
                             .font(.system(size: 14, weight: .semibold))

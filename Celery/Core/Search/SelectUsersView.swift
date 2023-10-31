@@ -192,6 +192,7 @@ struct SelectUsersView: View {
                     // MARK: User's groups
                     if showGroups,
                        let usersGroups,
+                       !usersGroups.isEmpty,
                        selectedGroup == nil {
                         VStack(alignment: .leading) {
                             Text("Groups")
@@ -245,6 +246,7 @@ struct SelectUsersView: View {
                     
                     // MARK: Most recent users list
                     if let recentUsers = model.recentUsers,
+                       !recentUsers.isEmpty,
                         selectedGroup == nil,
                        viewModel.debouncedQuery.isEmpty {
                         VStack(alignment: .leading) {
