@@ -6,6 +6,12 @@
 	<string>${SUPABASE_API_KEY}</string>
 	<key>SUPABASE_URL</key>
 	<string>https://${SUPABASE_URL}</string>
+	<key>ONESIGNAL_APP_ID</key>
+	<string>${ONESIGNAL_APP_ID}</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>

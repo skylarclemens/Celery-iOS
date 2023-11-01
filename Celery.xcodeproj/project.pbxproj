@@ -61,6 +61,11 @@
 		7E9357982AE2C1C200F7950F /* UserBalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9357972AE2C1C200F7950F /* UserBalanceView.swift */; };
 		7E93579A2AE2C61300F7950F /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E9357992AE2C61300F7950F /* Balance.swift */; };
 		7E93579C2AE2E04500F7950F /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E93579B2AE2E04500F7950F /* Payment.swift */; };
+		7EA62DA82AF1752D00759A22 /* OneSignalExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 7EA62DA72AF1752D00759A22 /* OneSignalExtension */; };
+		7EA62DAA2AF1752D00759A22 /* OneSignalFramework in Frameworks */ = {isa = PBXBuildFile; productRef = 7EA62DA92AF1752D00759A22 /* OneSignalFramework */; };
+		7EA62DB22AF176B600759A22 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA62DB12AF176B600759A22 /* NotificationService.swift */; };
+		7EA62DB62AF176B600759A22 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7EA62DAF2AF176B600759A22 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7EA62DBD2AF1777700759A22 /* OneSignalExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 7EA62DBC2AF1777700759A22 /* OneSignalExtension */; };
 		7EB7CFDF2A5F75B3000B04FE /* CeleryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */; };
 		7EB7CFE12A5F75B3000B04FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE02A5F75B3000B04FE /* ContentView.swift */; };
 		7EB7CFE32A5F75B4000B04FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EB7CFE22A5F75B4000B04FE /* Assets.xcassets */; };
@@ -77,6 +82,30 @@
 		7EF7B2462AC0C26700BB1CFA /* ColorSchemeViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7B2452AC0C26700BB1CFA /* ColorSchemeViewModifier.swift */; };
 		7EF7B2482AC0D05400BB1CFA /* SelectUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF7B2472AC0D05400BB1CFA /* SelectUsersView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7EA62DB42AF176B600759A22 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7EB7CFD32A5F75B3000B04FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7EA62DAE2AF176B600759A22;
+			remoteInfo = OneSignalNotificationServiceExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7EA62DBA2AF176B600759A22 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				7EA62DB62AF176B600759A22 /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7E01B2462AB653C7005D5F7B /* ExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseView.swift; sourceTree = "<group>"; };
@@ -134,6 +163,9 @@
 		7E9357972AE2C1C200F7950F /* UserBalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBalanceView.swift; sourceTree = "<group>"; };
 		7E9357992AE2C61300F7950F /* Balance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		7E93579B2AE2E04500F7950F /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
+		7EA62DAF2AF176B600759A22 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EA62DB12AF176B600759A22 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		7EA62DB32AF176B600759A22 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7EB7CFDB2A5F75B3000B04FE /* Celery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EB7CFDE2A5F75B3000B04FE /* CeleryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CeleryApp.swift; sourceTree = "<group>"; };
 		7EB7CFE02A5F75B3000B04FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -153,11 +185,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7EA62DAC2AF176B600759A22 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EA62DBD2AF1777700759A22 /* OneSignalExtension in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EB7CFD82A5F75B3000B04FE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EA62DAA2AF1752D00759A22 /* OneSignalFramework in Frameworks */,
 				7E24D1492AC5FB5E003D9E51 /* Supabase in Frameworks */,
+				7EA62DA82AF1752D00759A22 /* OneSignalExtension in Frameworks */,
 				7E0E983F2ABA109400AA974D /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,11 +380,29 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		7EA62DB02AF176B600759A22 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				7EA62DB12AF176B600759A22 /* NotificationService.swift */,
+				7EA62DB32AF176B600759A22 /* Info.plist */,
+			);
+			path = OneSignalNotificationServiceExtension;
+			sourceTree = "<group>";
+		};
+		7EA62DBB2AF1777700759A22 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7EB7CFD22A5F75B3000B04FE = {
 			isa = PBXGroup;
 			children = (
 				7EB7CFDD2A5F75B3000B04FE /* Celery */,
+				7EA62DB02AF176B600759A22 /* OneSignalNotificationServiceExtension */,
 				7EB7CFDC2A5F75B3000B04FE /* Products */,
+				7EA62DBB2AF1777700759A22 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -350,6 +410,7 @@
 			isa = PBXGroup;
 			children = (
 				7EB7CFDB2A5F75B3000B04FE /* Celery.app */,
+				7EA62DAF2AF176B600759A22 /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -397,6 +458,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7EA62DAE2AF176B600759A22 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7EA62DB72AF176B600759A22 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
+			buildPhases = (
+				7EA62DAB2AF176B600759A22 /* Sources */,
+				7EA62DAC2AF176B600759A22 /* Frameworks */,
+				7EA62DAD2AF176B600759A22 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneSignalNotificationServiceExtension;
+			packageProductDependencies = (
+				7EA62DBC2AF1777700759A22 /* OneSignalExtension */,
+			);
+			productName = OneSignalNotificationServiceExtension;
+			productReference = 7EA62DAF2AF176B600759A22 /* OneSignalNotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7EB7CFDA2A5F75B3000B04FE /* Celery */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EB7CFE92A5F75B4000B04FE /* Build configuration list for PBXNativeTarget "Celery" */;
@@ -404,15 +485,19 @@
 				7EB7CFD72A5F75B3000B04FE /* Sources */,
 				7EB7CFD82A5F75B3000B04FE /* Frameworks */,
 				7EB7CFD92A5F75B3000B04FE /* Resources */,
+				7EA62DBA2AF176B600759A22 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7EA62DB52AF176B600759A22 /* PBXTargetDependency */,
 			);
 			name = Celery;
 			packageProductDependencies = (
 				7E0E983E2ABA109400AA974D /* Supabase */,
 				7E24D1482AC5FB5E003D9E51 /* Supabase */,
+				7EA62DA72AF1752D00759A22 /* OneSignalExtension */,
+				7EA62DA92AF1752D00759A22 /* OneSignalFramework */,
 			);
 			productName = Celery;
 			productReference = 7EB7CFDB2A5F75B3000B04FE /* Celery.app */;
@@ -425,9 +510,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					7EA62DAE2AF176B600759A22 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
 					7EB7CFDA2A5F75B3000B04FE = {
 						CreatedOnToolsVersion = 14.3.1;
 					};
@@ -444,17 +532,26 @@
 			mainGroup = 7EB7CFD22A5F75B3000B04FE;
 			packageReferences = (
 				7E0E983D2ABA109400AA974D /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				7EA62DA62AF1752D00759A22 /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */,
 			);
 			productRefGroup = 7EB7CFDC2A5F75B3000B04FE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				7EB7CFDA2A5F75B3000B04FE /* Celery */,
+				7EA62DAE2AF176B600759A22 /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7EA62DAD2AF176B600759A22 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EB7CFD92A5F75B3000B04FE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -467,6 +564,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7EA62DAB2AF176B600759A22 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EA62DB22AF176B600759A22 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EB7CFD72A5F75B3000B04FE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -541,7 +646,76 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		7EA62DB52AF176B600759A22 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7EA62DAE2AF176B600759A22 /* OneSignalNotificationServiceExtension */;
+			targetProxy = 7EA62DB42AF176B600759A22 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		7EA62DB82AF176B600759A22 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2798XB6UZN;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SkylarClemens.Celery.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7EA62DB92AF176B600759A22 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2798XB6UZN;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SkylarClemens.Celery.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		7EB7CFE72A5F75B4000B04FE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7E6F5AEF2AC8F0DC00E976CA /* Config.xcconfig */;
@@ -661,6 +835,7 @@
 		7EB7CFEA2A5F75B4000B04FE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Celery/Celery.entitlements;
@@ -691,6 +866,7 @@
 		7EB7CFEB2A5F75B4000B04FE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Celery/Celery.entitlements;
@@ -721,6 +897,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7EA62DB72AF176B600759A22 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7EA62DB82AF176B600759A22 /* Debug */,
+				7EA62DB92AF176B600759A22 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7EB7CFD62A5F75B3000B04FE /* Build configuration list for PBXProject "Celery" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -750,6 +935,14 @@
 				minimumVersion = 0.3.0;
 			};
 		};
+		7EA62DA62AF1752D00759A22 /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OneSignal/OneSignal-XCFramework";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -762,6 +955,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7E0E983D2ABA109400AA974D /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		7EA62DA72AF1752D00759A22 /* OneSignalExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7EA62DA62AF1752D00759A22 /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalExtension;
+		};
+		7EA62DA92AF1752D00759A22 /* OneSignalFramework */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7EA62DA62AF1752D00759A22 /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalFramework;
+		};
+		7EA62DBC2AF1777700759A22 /* OneSignalExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7EA62DA62AF1752D00759A22 /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalExtension;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

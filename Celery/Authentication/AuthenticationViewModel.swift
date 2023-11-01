@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Supabase
 import AuthenticationServices
+import OneSignalFramework
 
 enum AuthState: Equatable {
     case authenticating
@@ -94,6 +95,7 @@ final class AuthenticationViewModel: ObservableObject {
             if let user = self.session?.user {
                 self.currentUser = user
                 self.currentUserInfo = try await SupabaseManager.shared.getUser(userId: user.id)
+                OneSignal.login(user.id.uuidString)
                 self.authState = .signedIn
             } else {
                 self.resetValues()
