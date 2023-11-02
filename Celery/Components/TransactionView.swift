@@ -20,9 +20,7 @@ struct TransactionView: View {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(Color(hex: Category.categoryList.first(where: {
-                            $0.name == debt.expense?.category?.capitalized
-                        })?.colorUInt ?? 0x6A9B5D)
+                        .fill((debt.expense?.categoryColor ?? Color("green"))
                             .shadow(.inner(color: .black.opacity(0.1), radius: 10, y: -2))
                             .shadow(.drop(color: .black.opacity(0.2), radius: 2, y: 1))
                         )
