@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Expense: Codable, Identifiable, Hashable {
     let id: UUID
@@ -17,6 +18,12 @@ struct Expense: Codable, Identifiable, Hashable {
     let category: String?
     let date: Date?
     let created_at: Date?
+    
+    var categoryColor: Color {
+        Category.categoryList.first(where: {
+            $0.name == self.category?.capitalized
+        })?.color ?? Color("green")
+    }
     
     init(id: UUID, paid: Bool? = false, description: String?, amount: Double?, payer_id: UUID?, group_id: UUID? = nil, category: String?, date: Date?, created_at: Date? = nil) {
         self.id = id

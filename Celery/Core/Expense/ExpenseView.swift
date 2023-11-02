@@ -162,9 +162,7 @@ struct ExpenseHeader: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             Rectangle()
-                .fill(Color(hex: Category.categoryList.first(where: {
-                    $0.name == expense.category?.capitalized
-                })?.colorUInt ?? 0x6A9B5D))
+                .fill(expense.categoryColor)
                 .overlay(
                     Rectangle()
                         .fill(

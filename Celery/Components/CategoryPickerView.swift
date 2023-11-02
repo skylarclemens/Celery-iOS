@@ -22,7 +22,7 @@ struct CategoryPickerView: View {
         VStack {
             AtomView(showAtomColor: false) {
                 Circle()
-                    .fill(Color(hex: selectedCategory?.colorUInt ?? 0x6A9B5D)
+                    .fill((selectedCategory?.color ?? Color("green"))
                         .shadow(.inner(color: .black.opacity(0.05), radius: 0, y: 3)))
                 Image(category == "Category" ? "General" : category)
                     .resizable()
