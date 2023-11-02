@@ -220,7 +220,7 @@ struct EditGroupView: View {
     }
     
     func updateGroup() async {
-        let updatedGroup = GroupInfo(id: group.id, group_name: groupName, created_at: group.created_at, avatar_url: avatarUrl, color: group.color)
+        let updatedGroup = GroupModel(id: group.id, group_name: groupName, created_at: group.created_at, avatar_url: avatarUrl, color: group.color)
         try? await model.updateGroup(updatedGroup)
     }
 }

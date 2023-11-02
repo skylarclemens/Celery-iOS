@@ -132,7 +132,7 @@ struct CreateGroupView: View {
         self.loading = .loading
         do {
             let newGroupId = UUID()
-            let newGroup = GroupInfo(id: newGroupId, group_name: self.groupName, created_at: Date(), avatar_url: self.avatarUrl.isEmpty ? nil : self.avatarUrl, color: nil)
+            let newGroup = GroupModel(id: newGroupId, group_name: self.groupName, created_at: Date(), avatar_url: self.avatarUrl.isEmpty ? nil : self.avatarUrl, color: nil)
             let returnedGroup = try await model.addGroup(newGroup, members: groupMembers)
             if let returnedGroup {
                 path.append(returnedGroup)

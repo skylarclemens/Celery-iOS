@@ -39,6 +39,28 @@ extension SupabaseManager {
         }
     }
     
+    func getUsersGroupsWithMembers() async throws -> [GroupInfo]? {
+        do {
+            let currentUserId = try await self.client.auth.session.user.id
+            let groups: [GroupInfo] = try await client.database.from("group")
+                .select(columns: """
+                    *,
+                    members: users(*),
+                    user_ids: users!inner(id)
+                """)
+                .eq(column: "user_ids.id", value: currentUserId)
+                .execute()
+                .value
+            /*if let responseData = String(data: response.underlyingResponse.data, encoding: .utf8) {
+                print("got dataString: \n\(responseData)")
+            }*/
+            return groups
+        } catch {
+            print(error)
+            return nil
+        }
+    }
+    
     func getGroupMembers(groupId: UUID) async throws -> [UserInfo]? {
         do {
             let users: [UserInfo] = try await client.database.from("user_group")
@@ -74,7 +96,7 @@ extension SupabaseManager {
         }
     }
     
-    func addNewGroup(group: GroupInfo) async throws -> GroupInfo? {
+    func addNewGroup(group: GroupModel) async throws -> GroupInfo? {
         do {
             let group: [GroupInfo] = try await self.client.database.from("group")
                 .insert(values: group, returning: .representation)
@@ -142,7 +164,7 @@ extension SupabaseManager {
         }
     }
 
-    func updateGroup(group: GroupInfo) async throws -> GroupInfo? {
+    func updateGroup(group: GroupModel) async throws -> GroupInfo? {
         do {
             let updatedGroup: [GroupInfo] = try await self.client.database.from("group")
                 .update(values: group, returning: .representation)

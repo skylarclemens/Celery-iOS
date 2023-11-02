@@ -51,11 +51,14 @@ struct HomeView: View {
             ScrollView {
                 HomeBalanceView(balances: balances, balanceType: $balanceType)
                     .padding(.horizontal)
-                if let recentUsers = model.recentUsers,
+                if transactionsState == .loading {
+                    ProgressView()
+                        .padding()
+                } else if let recentUsers = model.recentUsers,
                    let debts = model.debts {
                         VStack(alignment: .leading) {
                             Text("Recent Transactions")
-                                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                .font(.system(size: 17, weight: .semibold, design: .rounded))
                                 .padding(.leading)
                             ScrollView(.horizontal) {
                                 LazyHStack(spacing: 12) {
@@ -69,10 +72,11 @@ struct HomeView: View {
                         }
                         .padding(.top)
                         VStack(alignment: .leading) {
+                            Text("Friends")
+                                .font(.system(size: 17, weight: .semibold, design: .rounded))
                             RecentUsersView(users: recentUsers, debts: debts)
                         }
-                        .padding()
-                        .padding(.bottom, 40)
+                        .padding(.horizontal)
                 } else {
                     VStack(alignment: .center) {
                         Text("You have no expenses.")
@@ -188,7 +192,6 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(Model())
     }
 }
-
 
 struct RecentTransaction: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel

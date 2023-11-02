@@ -39,11 +39,11 @@ class Model: ObservableObject {
     }
     
     func fetchGroups() async throws {
-        let usersGroups = try await SupabaseManager.shared.getUsersGroups()
+        let usersGroups = try await SupabaseManager.shared.getUsersGroupsWithMembers()
         self.groups = usersGroups
     }
     
-    func addGroup(_ groupToAdd: GroupInfo, members: [UserInfo]) async throws -> GroupInfo? {
+    func addGroup(_ groupToAdd: GroupModel, members: [UserInfo]) async throws -> GroupInfo? {
         let createdGroup = try await SupabaseManager.shared.addNewGroup(group: groupToAdd)
         if let createdGroup {
             for member in members {
@@ -67,7 +67,7 @@ class Model: ObservableObject {
         }
     }
     
-    func updateGroup(_ updatedGroup: GroupInfo) async throws {
+    func updateGroup(_ updatedGroup: GroupModel) async throws {
         do {
             let newGroup = try await SupabaseManager.shared.updateGroup(group: updatedGroup)
             if let newGroup,
