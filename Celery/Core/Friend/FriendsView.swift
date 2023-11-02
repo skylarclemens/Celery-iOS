@@ -203,6 +203,14 @@ struct RequestRow: View {
                     .multilineTextAlignment(.center)
                     .truncationMode(.tail)
             }
+            .overlay(
+                NavigationLink {
+                    if let user {
+                        ProfileView(user: user, friendship: friendship)
+                    }
+                } label: { }
+                    .opacity(0)
+            )
             Spacer()
             HStack(spacing: 12) {
                 if self.friendship != nil {
@@ -221,6 +229,7 @@ struct RequestRow: View {
                             .font(.system(size: 15))
                             .foregroundStyle(.secondary)
                     }
+                    .buttonStyle(.plain)
                     Button("Accept") {
                         Task {
                             try? await acceptFriendRequest(request: self.request, index: index)
